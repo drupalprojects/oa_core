@@ -23,6 +23,16 @@ function oa_users_menu() {
 }
 
 /**
+ * Implementation of hook_menu
+ */
+function oa_users_menu_alter(&$items) {
+ // print_r($items['user']);
+  //die();
+  return $items;
+}
+
+
+/**
  * Page callback for user/%user/settings. Provide a settings form, and hooks
  * for modules to add their own settings.
  */
