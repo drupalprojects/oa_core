@@ -1468,7 +1468,7 @@ function oa_core_oa_section_ref_process($element, &$form_state, &$complete_form)
     $group_ref_key = implode('--', $group_ref);
     $value = drupal_array_get_nested_value($form_state['input'], $group_ref);
     // Gid == 0 is no group.
-    $gid = $value === 0 || $value != -1 ? $value : oa_core_get_space_context();
+    $gid = isset($value) && ($value === 0 || $value != -1) ? $value : oa_core_get_space_context();
     // Add options based on current selected group.
     if ($gid && $sections = oa_core_space_sections($gid, NODE_PUBLISHED)) {
       foreach($sections as $nid => $title) {
@@ -1491,6 +1491,9 @@ function oa_core_oa_section_ref_process($element, &$form_state, &$complete_form)
       'effect' => 'fade',
       'event' => 'change',
     );
+    if (arg(0) == 'panels' && strpos($_GET['q'], 'ajax')) {
+      $group_element['#ajax']['path'] = 'system/panopoly-magic';
+    }
     // Add a message area to see messages.
     $group_element['messages'] = array(
       '#tag' => 'div',
