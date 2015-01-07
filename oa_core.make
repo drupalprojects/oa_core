@@ -41,7 +41,7 @@ projects[entity][subdir] = contrib
 ; additional patches for OA
 projects[entity][patch][1782134] = http://drupal.org/files/entity-translatable_fields_not_overriding_und_with_empty_values-1782134-5.patch
 ; related to Entity Reference revisions patch (1837650)
-projects[entity][patch][1788568] = https://www.drupal.org/files/issues/entity-1788568-21-entity_metadata_wrapper_revisions.patch
+projects[entity][patch][1788568] = http://drupal.org/files/issues/entity-1788568-12-entity_metadata_wrapper_revisions.patch
 
 ; Entity Reference
 ; Override panopoly_core.make: 1.1
@@ -80,8 +80,8 @@ projects[field_group][subdir] = contrib
 ;projects[field_group][patch][1278618] = http://drupal.org/files/issues/field_group-panels-integration-1278618-58.patch
 
 ; Features
-; Override panopoly_core.make: 2.3
-projects[features][version] = 2.3
+; Override panopoly_core.make: 2.2
+projects[features][version] = 2.2
 projects[features][subdir] = contrib
 ; additional patches for OA
 projects[features][patch][2378343] = http://drupal.org/files/issues/features_improve_features-2378343-1.patch
@@ -120,7 +120,7 @@ projects[colorizer][version] = 1.4
 projects[colorizer][subdir] = contrib
 
 ; Command buttons
-projects[command_buttons][version] = 1.6
+projects[command_buttons][version] = 1.5
 projects[command_buttons][subdir] = contrib
 
 ; Conditional Fields
@@ -227,6 +227,10 @@ projects[mimemail][subdir] = contrib
 projects[mimemail][download][type] = git
 projects[mimemail][download][branch] = 7.x-1.x
 projects[mimemail][download][revision] = e742766
+
+; OA Angular
+projects[oa_angular][version] = 1.0-beta1
+projects[oa_angular][subdir] = contrib
 
 ; OA Responsive Regions
 projects[oa_responsive_regions][version] = 1.0-beta1
