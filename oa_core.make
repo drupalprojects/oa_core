@@ -241,6 +241,8 @@ projects[og][version] = 2.7
 projects[og][subdir] = contrib
 ; Related to Entity Reference revisions patch (1837650)
 projects[og][patch][2363599] = http://drupal.org/files/issues/og-2363599-1-infinite-loop-entityreference-revisions-load.patch
+; For select2widget configuration
+projects[og][patch][2403619] = https://www.drupal.org/files/issues/2403619-og_widget_settings-1.patch
 
 ; Og menu single
 projects[og_menu_single][version] = 1.0-beta2
@@ -281,6 +283,16 @@ projects[reference_option_limit][download][branch] = 7.x-1.x
 projects[reference_option_limit][download][revision] = 0ea5303
 projects[reference_option_limit][patch][1986532] = http://drupal.org/files/1986532_reference_option_limit_og-5.patch
 projects[reference_option_limit][patch][1986526] = http://drupal.org/files/1986526_reference_option_limit_12.patch
+
+; Select 2 Widget
+projects[select2widget][version] = 2.5
+projects[select2widget][subdir] = contrib
+projects[select2widget][patch][2404143] = https://www.drupal.org/files/issues/2404143-select2widget-addclass-1.patch
+
+libraries[select2][download][type] = "get"
+libraries[select2][download][url] = "https://github.com/select2/select2/archive/3.5.2.tar.gz"
+libraries[select2][directory_name] = "select2"
+libraries[select2][destination] = "libraries"
 
 ; Variable
 projects[variable][version] = 2.3

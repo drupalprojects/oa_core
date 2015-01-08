@@ -363,20 +363,28 @@ function oa_core_og_fields_info() {
  * Implements hook_form_alter for node edit forms
  */
 function oa_core_form_node_form_alter(&$form, &$form_state, $form_id) {
-  // we are in an edit form
-  // autofill empty group audience field
-  if (isset($form[OA_SPACE_FIELD]) && empty($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'])) {
-    if (!empty($_GET['og_group_ref'])) {
-      $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'] = check_plain($_GET['og_group_ref']);
-    }
-    elseif (!empty($_SESSION['og_context']['gid'])) {
-      $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'] = $_SESSION['og_context']['gid'];
-    }
-  }
-
-  // modify label on Panelizer layout field
+  // Modify label on Panelizer layout field.
   if (isset($form['panelizer'])) {
     $form['panelizer']['page_manager']['name']['#title'] = t('Select Layout');
+  }
+}
+
+/**
+ * Implements hook_node_prepare().
+ *
+ * Default the GId to current GID 
+ */
+function oa_core_node_prepare($node) {
+  if (empty($node->nid) && field_info_instance('node', OA_SPACE_FIELD, $node->type)) {
+    if (!empty($_GET['og_group_ref'])) {
+      $gid = oa_core_get_space_context();
+    }
+    else {
+      $gid = oa_core_get_space_context();
+    }
+    if ($gid) {
+      $node->{OA_SPACE_FIELD}[LANGUAGE_NONE][0]['target_id'] = $gid;
+    }
   }
 }
 
