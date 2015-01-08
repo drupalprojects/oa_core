@@ -16,6 +16,7 @@ dependencies[] = og
 dependencies[] = options
 dependencies[] = panopoly_pages
 dependencies[] = reference_option_limit
+dependencies[] = select2widget
 dependencies[] = strongarm
 dependencies[] = taxonomy
 dependencies[] = text

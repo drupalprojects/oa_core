@@ -11,6 +11,7 @@ dependencies[] = options
 dependencies[] = page_manager
 dependencies[] = panelizer
 dependencies[] = panopoly_pages
+dependencies[] = select2widget
 dependencies[] = strongarm
 dependencies[] = text
 dependencies[] = views
