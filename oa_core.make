@@ -288,6 +288,7 @@ projects[reference_option_limit][patch][1986526] = http://drupal.org/files/19865
 projects[select2widget][version] = 2.5
 projects[select2widget][subdir] = contrib
 projects[select2widget][patch][2404143] = https://www.drupal.org/files/issues/2404143-select2widget-addclass-1.patch
+projects[select2widget][patch][2404175] = https://www.drupal.org/files/issues/2404175-select2widget-og_complex-1.patch
 
 libraries[select2][download][type] = "get"
 libraries[select2][download][url] = "https://github.com/select2/select2/archive/3.5.2.tar.gz"
