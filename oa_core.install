@@ -234,3 +234,10 @@ function oa_core_update_7224() {
 function oa_core_update_7225() {
   module_enable(array('oa_angular'));
 }
+
+/**
+ * Enable oa_files and oa_related modules
+ */
+function oa_core_update_7226() {
+  module_enable(array('oa_files', 'oa_related'));
+}
