@@ -377,7 +377,7 @@ function oa_core_form_node_form_alter(&$form, &$form_state, $form_id) {
 function oa_core_node_prepare($node) {
   if (empty($node->nid) && field_info_instance('node', OA_SPACE_FIELD, $node->type)) {
     if (!empty($_GET['og_group_ref'])) {
-      $gid = oa_core_get_space_context();
+      $gid = $_GET['og_group_ref'];
     }
     else {
       $gid = oa_core_get_space_context();
