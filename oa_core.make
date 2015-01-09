@@ -281,7 +281,7 @@ projects[reference_option_limit][subdir] = contrib
 projects[reference_option_limit][download][type] = git
 projects[reference_option_limit][download][branch] = 7.x-1.x
 projects[reference_option_limit][download][revision] = 0ea5303
-projects[reference_option_limit][patch][1986532] = http://drupal.org/files/1986532_reference_option_limit_og-5.patch
+projects[reference_option_limit][patch][1986532] = https://www.drupal.org/files/issues/1986532-reference_option_limit-og-7.patch
 projects[reference_option_limit][patch][1986526] = http://drupal.org/files/1986526_reference_option_limit_12.patch
 
 ; Select 2 Widget
@@ -291,7 +291,7 @@ projects[select2widget][patch][2404143] = https://www.drupal.org/files/issues/24
 projects[select2widget][patch][2404175] = https://www.drupal.org/files/issues/2404175-select2widget-og_complex-2.patch
 
 libraries[select2][download][type] = "get"
-libraries[select2][download][url] = "https://github.com/select2/select2/archive/3.5.2.tar.gz"
+libraries[select2][download][url] = "https://github.com/ivaynberg/select2/archive/3.5.2.tar.gz"
 libraries[select2][directory_name] = "select2"
 libraries[select2][destination] = "libraries"
 
