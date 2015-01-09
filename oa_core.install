@@ -236,8 +236,8 @@ function oa_core_update_7225() {
 }
 
 /**
- * Enable oa_files and oa_related modules
+ * Enable features_template, references_dialog, oa_files and oa_related modules
  */
 function oa_core_update_7226() {
-  module_enable(array('oa_files', 'oa_related'));
+  module_enable(array('features_template', 'references_dialog', 'oa_files', 'oa_related'));
 }
