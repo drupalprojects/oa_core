@@ -28,7 +28,7 @@ function oa_core_views_data() {
  */
 function oa_core_views_data_alter(&$data) {
   if (isset($data['og_membership']['og_group_ref_target_id']['filter']['handler'])) {
-    $data['og_membership']['og_group_ref_target_id']['filter']['handler'] = 'oa_core_og_group_ref_views_handler_filter_in_operator';
+    $data['og_membership']['og_group_ref_target_id']['filter']['handler'] = 'oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete';
   }
   if (isset($data['og_membership']['oa_parent_space_target_id']['filter']['handler'])) {
     $data['og_membership']['oa_parent_space_target_id']['filter']['handler'] = 'oa_core_og_group_ref_views_handler_filter_in_operator';

@@ -168,7 +168,93 @@ function oa_core_menu() {
       'file path' => drupal_get_path('module', 'oa_core') . '/includes',
     );
   }
+  // Two ajax path to return group options for select2widget.
+  // One for pane (with Current Group) option and one for just exposed.
+  $items['oacoreselect2widget/ajax/%/%/%/%'] = array(
+    'title' => 'Ajax callback',
+    'page callback' => 'oa_core_select2widget_ajax_callback',
+    'page arguments' => array(FALSE, 2, 3, 4, 5),
+    'access callback' => 'field_access',
+    'access arguments' => array('edit', 2, 3),
+    'type' => MENU_CALLBACK,
+  );
+  $items['oacoreselect2widgetpanes/ajax/%/%/%/%'] = array(
+    'title' => 'Ajax callback',
+    'page callback' => 'oa_core_select2widget_ajax_callback',
+    'page arguments' => array(TRUE, 2, 3, 4, 5),
+    'access callback' => 'field_access',
+    'access arguments' => array('edit', 2, 3),
+    'type' => MENU_CALLBACK,
+  );
   return $items;
+}
+
+/**
+ * Copy of select2widget_ajax_callback to add in All/current space.
+ */
+function oa_core_select2widget_ajax_callback($add_current_option, $field_name, $entity_type, $bundle_name, $entity_id = '') {
+  $string = '';
+
+  if (isset($_GET['search_string']) && !empty($_GET['search_string'])) {
+    $string = $_GET['search_string'];
+  }
+
+  $field = field_info_field('og_group_ref');
+  $instance = field_info_instance($entity_type, $field_name, $bundle_name);
+
+  $matches = array();
+  $options = array();
+
+  $entity = NULL;
+  if ($entity_id !== 'NULL') {
+    $entity = entity_load_single($entity_type, $entity_id);
+    if (!$entity || !entity_access('view', $entity_type, $entity)) {
+      return MENU_ACCESS_DENIED;
+    }
+  }
+  // We pass in "all", which doesn't mean anything to og but skips the "default"
+  // and "admin" functionality that restricts based on user or not user groups.
+  $instance['field_mode'] = 'all';
+  // Just use default settings for selection criteria.
+  $settings = $instance['settings']['behaviors']['og_widget']['default']['widget_settings']['select2widgetajax'];
+
+  $handler = entityreference_get_selection_handler($field, $instance, $entity_type, $entity);
+  $entity_labels = $handler->getReferencableEntities($string, $settings['match_operator'], 20);
+  $matches = array();
+
+  // Current for the pane config so current isn't hard coded (for cloning).
+  if ($add_current_option) {
+    $matches[] = array(
+      'id' => 'CURRENT',
+      'title' => _oa_core_select2widget_current_label(),
+      'data' => '<div class="reference-select2widget">' . _oa_core_select2widget_current_label() . '</div>',
+    );
+  }
+
+  // Add in an all option so users can see all content.
+  $matches[] = array(
+    'id' => 'All',
+    'title' => _oa_core_select2widget_all_label(),
+    'data' => '<div class="reference-select2widget">' . _oa_core_select2widget_all_label() . '</div>',
+  );
+
+  $matches = array_merge($matches, select2widget_render_modes($entity_labels, $settings['view_mode'], $field['settings']['target_type']));
+
+  drupal_json_output($matches);
+}
+
+/**
+ * Return translated Any option.
+ */
+function _oa_core_select2widget_all_label() {
+  return t('- Any -');
+}
+
+/**
+ * Return translated Active option.
+ */
+function _oa_core_select2widget_current_label() {
+  return t('- Active Space -');
 }
 
 /**
@@ -789,7 +875,7 @@ function oa_core_views_pre_view(&$view) {
 function oa_core_form_views_content_views_panes_content_type_edit_form_alter(&$form, &$form_state, $form_id) {
   $conf = $form_state['conf'];
   $pane = $form_state['pane'];
-  // Add in te Active options
+  // Add in the Active options
   // @todo be a bit smarter on this, check type of field.
   $group = oa_core_get_space_context();
   if (isset($form['exposed']['filter-oa_parent_space_target_id']['oa_parent_space_target_id'])) {
@@ -800,8 +886,6 @@ function oa_core_form_views_content_views_panes_content_type_edit_form_alter(&$f
     }
   }
   if (isset($form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id'])) {
-    $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#options'] =
-      array('' => t('- Active Space -')) + $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#options'];
     if (!isset($pane->configuration['exposed']['og_group_ref_target_id'])) {
       $pane->configuration['exposed']['og_group_ref_target_id'] = '';
     }
@@ -811,11 +895,16 @@ function oa_core_form_views_content_views_panes_content_type_edit_form_alter(&$f
       '#default_value' => !empty($conf['exposed']['og_group_ref_target_id_mine']),
       '#parents' => array('exposed', 'og_group_ref_target_id_mine'),
     );
+    // Replace autocomplete path to one that returns Current Space as an option.
+    if (isset($form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#autocomplete_path'])) {
+      $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#autocomplete_path'] = str_replace('oacoreselect2widget', 'oacoreselect2widgetpanes', $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#autocomplete_path']);
+    }
     $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#states'] = array(
       'visible' => array(
         ':input[name="exposed[og_group_ref_target_id_mine]"]' => array('checked' => FALSE),
       ),
     );
+    $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#after_build'][] = 'oa_core_adjust_og_group_ref_for_select2';
   }
   if (isset($form['exposed']['filter-oa_section_ref_target_id']['oa_section_ref_target_id'])) {
     // Add a process that change ajax path so can return multiple changes.
@@ -862,6 +951,22 @@ function oa_core_form_views_content_views_panes_content_type_edit_form_alter(&$f
       $pane->configuration['show_exposed_form'] = FALSE;
     }
   }
+}
+
+/**
+ * Adjust element so select2 works.
+ */
+function oa_core_adjust_og_group_ref_for_select2($element) {
+  $form_state = array();
+  // Because how panes extract fields from exposed forms, this is not correct.
+  oa_core_select2widget_entity_validate_field($element, $form_state, array());
+  // Remove the autosubmit exclude that panopoly adds cause field is autocomplete.
+  if (isset($element['#attributes']['class'])) {
+    foreach ($element['#attributes']['class'] as $key => $value) {
+      $element['#attributes']['class'][$key] = str_replace($value, 'ctools-auto-submit-exclude', '');
+    }
+  }
+  return $element;
 }
 
 /**
@@ -914,13 +1019,6 @@ function oa_core_refresh_oa_section_ref_target_id($form, $form_state) {
     $form['exposed']['filter-oa_section_ref_target_id']['oa_section_ref_target_id']['#theme_wrappers'] = array();
     $form['exposed']['filter-oa_section_ref_target_id']['oa_section_ref_target_id']['#attributes']['id'] = 'edit-exposed-oa-section-ref-target-id';
     $return['#commands'][] = ajax_command_replace('#edit-exposed-oa-section-ref-target-id', drupal_render($form['exposed']['filter-oa_section_ref_target_id']['oa_section_ref_target_id']));
-  }
-  // The "my spaces" may have changed this, so update it.
-  if (isset($form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id'])) {
-    $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#theme_wrappers'] = array();
-    $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#attributes']['id'] = 'edit-exposed-og-group-ref-target-id';
-    $return['#commands'][] = ajax_command_replace('#edit-exposed-og-group-ref-target-id', drupal_render($form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']));
-
   }
 
   return $return;
@@ -976,15 +1074,6 @@ function oa_core_form_views_exposed_form_alter(&$form, &$form_state) {
       'All' => t('- Any -')
     ) + oa_core_space_sections($space_id, NULL, $bypass_access);
     $form['oa_section_ref_target_id']['#options'] = $sections;
-
-    // check if configured space id is in space options
-    if (!in_array($space_id, array_keys($form['og_group_ref_target_id']['#options']))) {
-      // if not, they don't have access to see this space, so change it to prevent
-      // the "Illegal choice" error on the space id filter field.
-      // Filter on space = -1 since that node id will never exist
-      $form_state['input']['og_group_ref_target_id'] = -1;
-      $form['og_group_ref_target_id']['#options'][] = array( -1 => 'None');
-    }
   }
 }
 

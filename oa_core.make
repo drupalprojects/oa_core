@@ -52,6 +52,8 @@ projects[entityreference][download][branch] = 7.x-1.x
 projects[entityreference][download][revision] = c4bb9b
 ; Add revision support.  Related patches in Entity (1788568) and OG (2363599)
 projects[entityreference][patch][1837650] = http://drupal.org/files/issues/entityreference-n1837650-47.patch
+; Add autocomplete ability for group filters.
+projects[entityreference][patch][1492260] = https://www.drupal.org/files/issues/1492260-54.patch
 
 ; Panelizer
 ; Override panopoly_core.make: 3.1 -> 3.x-dev
@@ -289,6 +291,7 @@ projects[select2widget][version] = 2.5
 projects[select2widget][subdir] = contrib
 projects[select2widget][patch][2404143] = https://www.drupal.org/files/issues/2404143-select2widget-addclass-1.patch
 projects[select2widget][patch][2404175] = https://www.drupal.org/files/issues/2404175-select2widget-og_complex-2.patch
+projects[select2widget][patch][2405941] = https://www.drupal.org/files/issues/2405941-select2widget-ajaxreplace-1.patch
 
 libraries[select2][download][type] = "get"
 libraries[select2][download][url] = "https://github.com/ivaynberg/select2/archive/3.5.2.tar.gz"
