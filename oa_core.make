@@ -54,6 +54,8 @@ projects[entityreference][download][revision] = c4bb9b
 projects[entityreference][patch][1837650] = http://drupal.org/files/issues/entityreference-n1837650-47.patch
 ; Add autocomplete ability for group filters.
 projects[entityreference][patch][1492260] = https://www.drupal.org/files/issues/1492260-54.patch
+; Add recursion protection
+projects[entityreference][patch][2301499] = https://www.drupal.org/files/issues/entityreference_prevent_recursion-2301499-11.patch
 
 ; Panelizer
 ; Override panopoly_core.make: 3.1 -> 3.x-dev
