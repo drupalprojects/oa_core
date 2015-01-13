@@ -192,6 +192,10 @@ function _oa_sections_get_current_selected_space($entity, $set_value = NULL) {
   else {
     $value = oa_core_get_space_context();
   }
+  $matches = array();
+  if (is_string($value) && !is_numeric($value) && preg_match('/.*\(([0-9]*)\)/', $value, $matches) && !empty($matches[1])) {
+    $value = $matches[1];
+  }
   $found_value = $value;
   // Make sure the current user has access.
   if (!is_numeric($value) || !($node = node_load($value)) || !node_access('view', $node)) {
