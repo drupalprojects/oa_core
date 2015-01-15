@@ -1474,7 +1474,7 @@ function oa_core_views_query_alter(&$view, &$query) {
             || substr($condition['field'], -strlen($column)-2) === "__{$column}")) {
           // Move the condition to our new where group.
           $query->add_where($group, $condition['field'], $condition['value'], $condition['operator']);
-          $extra_groups = $condition['value'];
+          $extra_groups[] = $condition['value'];
           unset($query->where[1]['conditions'][$key]);
           break;
         }
