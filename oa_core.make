@@ -42,6 +42,8 @@ projects[entity][subdir] = contrib
 projects[entity][patch][1782134] = http://drupal.org/files/entity-translatable_fields_not_overriding_und_with_empty_values-1782134-5.patch
 ; related to Entity Reference revisions patch (1837650)
 projects[entity][patch][1788568] = http://drupal.org/files/issues/entity-1788568-21-entity_metadata_wrapper_revisions.patch
+; fix for recursive entity views
+projects[entity][patch][2407905] = http://drupal.org/files/issues/entity_unsupported_operand-2407905-1.patch
 
 ; Entity Reference
 ; Override panopoly_core.make: 1.1
@@ -54,8 +56,6 @@ projects[entityreference][download][revision] = c4bb9b
 projects[entityreference][patch][1837650] = http://drupal.org/files/issues/entityreference-n1837650-47.patch
 ; Add autocomplete ability for group filters.
 projects[entityreference][patch][1492260] = https://www.drupal.org/files/issues/1492260-54.patch
-; Add recursion protection
-projects[entityreference][patch][2301499] = https://www.drupal.org/files/issues/entityreference_prevent_recursion-2301499-11.patch
 
 ; Panelizer
 ; Override panopoly_core.make: 3.1 -> 3.x-dev
