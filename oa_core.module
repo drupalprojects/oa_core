@@ -1497,7 +1497,11 @@ function oa_core_views_query_alter(&$view, &$query) {
             foreach ($query->where[$where_group]['conditions'] as $key => $condition) {
               if ($condition['field'] === $column ||
                 (is_string($condition['field']) && substr($condition['field'], -strlen($column) - 2) === "__{$column}")) {
-                $query->where[$where_group]['conditions'][$key]['value'] = array_merge($query->where[$where_group]['conditions'][$key]['value'], $extra_sections);
+                $value = $query->where[$where_group]['conditions'][$key]['value'];
+                if (!is_array($value)) {
+                  $value = array($value);
+                }
+                $query->where[$where_group]['conditions'][$key]['value'] = array_merge($value, $extra_sections);
               }
             }
           }
