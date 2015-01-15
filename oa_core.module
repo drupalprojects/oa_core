@@ -1441,6 +1441,38 @@ function oa_core_node_delete_redirect($form, &$form_state) {
 }
 
 /**
+ * Modify the views query where condition for the specified columns to include the $ids
+ * @param $query
+ * @param $columns
+ * @param $ids
+ */
+function oa_core_view_query_modify_condition(&$query, $columns, $ids) {
+  if (empty($ids)) {
+    return;
+  }
+  if (!is_array($columns)) {
+    $columns = array($columns);
+  }
+  // Loop over all conditions in all 'where groups'.
+  foreach (array_keys($query->where) as $where_group) {
+    foreach ($query->where[$where_group]['conditions'] as $key => $condition) {
+      // If it matches the column or an alias.
+      foreach ($columns as $column) {
+        if ($condition['field'] === $column ||
+          (is_string($condition['field']) && substr($condition['field'], -strlen($column)-2) === "__{$column}")) {
+          $value = $query->where[$where_group]['conditions'][$key]['value'];
+          if (!is_array($value)) {
+            $value = array($value);
+            $query->where[$where_group]['conditions'][$key]['operator'] = 'IN';
+          }
+          $query->where[$where_group]['conditions'][$key]['value'] = array_merge($value, $ids);
+        }
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_views_query_alter().
  */
 function oa_core_views_query_alter(&$view, &$query) {
@@ -1490,21 +1522,10 @@ function oa_core_views_query_alter(&$view, &$query) {
           && !empty($view->exposed_input['oa_section_ref_target_id'])
           && is_numeric($view->exposed_input['oa_section_ref_target_id'])
           && !empty($view->filter['oa_section_ref_target_id']->options['exposed'])) {
-          $column = 'field_data_oa_section_ref.oa_section_ref_target_id';
+          $columns = array('field_data_oa_section_ref.oa_section_ref_target_id');
           // get a list of matching section names in the other spaces
           $extra_sections = oa_subspaces_matching_sections($view->exposed_input['oa_section_ref_target_id'], array(), $extra_groups);
-          foreach (array_keys($query->where) as $where_group) {
-            foreach ($query->where[$where_group]['conditions'] as $key => $condition) {
-              if ($condition['field'] === $column ||
-                (is_string($condition['field']) && substr($condition['field'], -strlen($column) - 2) === "__{$column}")) {
-                $value = $query->where[$where_group]['conditions'][$key]['value'];
-                if (!is_array($value)) {
-                  $value = array($value);
-                }
-                $query->where[$where_group]['conditions'][$key]['value'] = array_merge($value, $extra_sections);
-              }
-            }
-          }
+          oa_core_view_query_modify_condition($query, $columns, $extra_sections);
         }
       }
     }
