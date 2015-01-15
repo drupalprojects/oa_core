@@ -134,6 +134,11 @@ class OgSubspacesSelectionHandler extends EntityReference_SelectionHandler_Gener
     $field_mode = $this->instance['field_mode'];
     $user_groups = oa_core_get_groups_by_user(NULL, $group_type);
     $user_groups = array_merge($user_groups, $this->getGidsForCreate());
+    // This is a workaround for not being able to choice which default value for
+    // 'my groups', which causes my groups to be lost.
+    // @todo find a way to default my groups based on selection handler.
+    $user_groups_only = og_get_entity_groups();
+    $user_groups_only = !empty($user_groups_only['node']) ? $user_groups_only['node'] : array();
 
     // Show the user only the groups they belong to.
     if ($field_mode == 'default') {
@@ -170,20 +175,20 @@ class OgSubspacesSelectionHandler extends EntityReference_SelectionHandler_Gener
         $query->propertyCondition($entity_info['entity keys']['id'], -1, '=');
       }
     }
-    elseif ($field_mode == 'admin' && $user_groups) {
+    elseif ($field_mode == 'admin' && $user_groups_only) {
       // Show only groups the user doesn't belong to.
       if (!empty($this->instance) && $this->instance['entity_type'] == 'node') {
         // Don't include the groups, the user doesn't have create
         // permission.
         $node_type = $this->instance['bundle'];
-        foreach ($user_groups as $delta => $gid) {
+        foreach ($user_groups_only as $delta => $gid) {
           if (!og_user_access($group_type, $gid, "create $node_type content")) {
-            unset($user_groups[$delta]);
+            unset($user_groups_only[$delta]);
           }
         }
       }
       if ($user_groups) {
-        $query->propertyCondition($entity_info['entity keys']['id'], $user_groups, 'NOT IN');
+        $query->propertyCondition($entity_info['entity keys']['id'], $user_groups_only, 'NOT IN');
       }
     }
 
