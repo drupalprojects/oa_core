@@ -1269,6 +1269,7 @@ function oa_core_trim_text($value, $more_link = '', $max_length = NULL) {
 function oa_core_get_summary($node) {
   $body_field = field_view_field('node', $node, 'body');
   $more_link = l(t('(more)'), 'node/' . $node->nid . '/view');
-  $body = !empty($body_field[0]['#markup']) ? oa_core_trim_text($body_field[0]['#markup'], $more_link) : '';
+  $body = !empty($body_field['#items'][0]['summary']) ? $body_field['#items'][0]['summary'] :
+    (!empty($body_field[0]['#markup']) ? oa_core_trim_text($body_field[0]['#markup'], $more_link) : '');
   return $body;
 }
