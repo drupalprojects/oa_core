@@ -1204,3 +1204,71 @@ function oa_core_create_term($vocab_name, $name, $params, $update = TRUE) {
   }
   return $term;
 }
+
+/**
+ * Helper function to replace HTML tags in $str.
+ * @param $str - string to process
+ * @param $tags - array of oldtag=>newtag items
+ * @return string
+ */
+function oa_core_replace_tags($str, $tags) {
+  foreach ($tags as $old => $new) {
+    $str = preg_replace("~<(/)?$old>~", "<\\1$new>", $str);
+  }
+  return $str;
+}
+
+/**
+ * Trim text to a specified length
+ * Similar to views_trim_text or the Smart Trim module
+ * but includes consistent options for removing tags needed by OA2
+ */
+function oa_core_trim_text($value, $more_link = '', $max_length = NULL) {
+  $max_length = isset($max_length) ? $max_length : variable_get('teaser_length', 600);
+  if (drupal_strlen($value) > $max_length) {
+    $value = drupal_substr($value, 0, $max_length);
+
+    // only trim on word boundries
+    $regex = "(.*)\b.+";
+    if (function_exists('mb_ereg')) {
+      mb_regex_encoding('UTF-8');
+      $found = mb_ereg($regex, $value, $matches);
+    }
+    else {
+      $found = preg_match("/$regex/us", $value, $matches);
+    }
+    if ($found) {
+      $value = $matches[1];
+    }
+
+    // Remove scraps of HTML entities from the end of a strings
+    $value = rtrim(preg_replace('/(?:<(?!.+>)|&(?!.+;)).*$/us', '', $value));
+
+    // Remove and replace some HTML tags
+    $value = oa_core_replace_tags($value, array(
+      'h1' => 'h4',
+      'h2' => 'h4',
+      'h3' => 'h4',
+    ));
+    $value = strip_tags($value, '<br> <p> <h1> <h2> <h3> <h4> <h5> <h6> <ol> <ul> <li> <dl> <dd> <dt> <a> <b> <i> <strong> <em> <table> <tbody> <th> <tr> <td>');
+
+    if (!empty($more_link)) {
+      $value .= ' <span class="more-link">' . $more_link . '</span> ';
+    }
+    $value .= '…';
+  }
+  $value = _filter_htmlcorrector($value);
+
+  return $value;
+}
+
+/**
+ * Helper function to return the summary of a node or the trimmed body text
+ * @param $node
+ */
+function oa_core_get_summary($node) {
+  $body_field = field_view_field('node', $node, 'body');
+  $more_link = l(t('(more)'), 'node/' . $node->nid . '/view');
+  $body = !empty($body_field[0]['#markup']) ? oa_core_trim_text($body_field[0]['#markup'], $more_link) : '';
+  return $body;
+}
