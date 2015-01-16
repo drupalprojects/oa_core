@@ -69,3 +69,7 @@
 #modal-content .panels-section-column fieldset legend {
   max-width: 100%;
 }
+
+.pane-node-field-oa-media .field-item {
+  margin-bottom: 5px;
+}
