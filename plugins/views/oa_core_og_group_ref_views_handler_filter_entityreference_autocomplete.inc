@@ -77,7 +77,7 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
       '#init' => $entity_labels,
       '#field_name' => 'og_group_ref',
       '#language' => LANGUAGE_NONE,
-      '#bundle' => 'oa_discussion_post',
+      '#bundle' => $instance['bundle'],
       '#entity_type' => 'node',
       '#field' => $field,
       '#field_parents' => array(),
@@ -122,51 +122,4 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
       $this->validated_exposed_input = $form_state['values'][$identifier];
     }
   }
-}
-
-/**
- * Set the field settings for select2widget_entity_process_callback.
- *
- * Due to how panes work, the form_state isn't preserved so we add this in here.
- */
-function oa_core_exposed_og_group_ref_fix_cardinality($element, &$form_state, $form) {
-  $cardinality = $form_state['field'][$element['#field_name']][$element['#language']]['field'] = $element['#field'];
-  return $element;
-}
-
-/**
- *
- */
-function oa_core_select2widget_entity_validate_field(&$element, &$form_state, $form) {
-  $entity_labels = array();
-  $settings = $element['#settings']['select2widgetajax'];
-
-  $target_entities = explode(',', $element['#value']);
-
-  foreach ($target_entities as &$target_entity) {
-    if (is_numeric($target_entity)) {
-      $entity = entity_load_single('node', $target_entity);
-      if (entity_load_single('node', $target_entity)) {
-        $label = entity_label('node', $entity);
-        $key = "$label - $target_entity";
-        // Labels containing commas or quotes must be wrapped in quotes.
-        if (strpos($key, ',') !== FALSE || strpos($key, '"') !== FALSE) {
-          $key = '"' . str_replace('"', '""', $key) . '"';
-        }
-        $entity_labels[$target_entity] = $key;
-      }
-    }
-    elseif (preg_match("/.+\((\d+)\)/", $target_entity, $matches)) {
-      $entity_labels[$matches[1]] = $target_entity;
-    }
-    elseif ($target_entity == 'All') {
-      $entity_labels['All'] = _oa_core_select2widget_all_label();
-    }
-    elseif ($target_entity == 'CURRENT') {
-      $entity_labels['CURRENT'] = _oa_core_select2widget_current_label();
-    }
-  }
-
-  // Update default values.
-  $element['#attached']['js'][0]['data']['select2widgetajax']['elements'][$element['#id']]['init'] = $entity_labels;
 }

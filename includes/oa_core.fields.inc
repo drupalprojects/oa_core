@@ -23,22 +23,106 @@ function oa_core_element_info() {
 /**
  * Process function of the og_group_ref field.
  */
-function oa_core_og_group_ref_process($element, $form_state, $complete_form) {
+function oa_core_og_group_ref_process($element, &$form_state, &$complete_form) {
   global $user;
-  $element['#type'] = 'select';
   $element += array(
     '#title' => t('Space'),
     '#description' => t('Select a space'),
   );
-  $element['#options'][-1] = t(' - Current Space - ');
-  if (empty($element['#required'])) {
-    $element['#options'][0] = t(' - None - ');
+  if (empty($element['#use_select'])) {
+    // Below is mocking what og/select2widget does so it thinks this is a
+    // select2 element.
+    $field = field_info_field('og_group_ref');
+    $type = 'select2widgetajax';
+    $required = !empty($element['#required']);
+    $has_value = !empty($element['#default_value']);
+    $instances = field_read_instances(array('field_name' => 'og_group_ref'));
+    $instance = reset($instances);
+    $instance = og_get_mocked_instance($instance, 'default');
+    $settings = $instance['widget']['settings'];
+    $id = 'NULL';
+    $entity_labels = array();
+    $autocomplete_path = 'oacoreselect2widget/ajax/' . $field['field_name'] . '/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $id . '?field_mode=all';
+    $element = array(
+      '#type' => 'textfield',
+      '#default_value' => implode(',', $entity_labels),
+      '#autocomplete_path' => $autocomplete_path,
+      '#element_validate' => array('oa_core_select2widget_entity_validate_field'),
+      '#settings' => $instance['widget']['settings'],
+      '#maxlength' => 1024,
+      '#init' => $entity_labels,
+      '#field_name' => 'og_group_ref',
+      '#language' => LANGUAGE_NONE,
+      '#bundle' => $instance['bundle'],
+      '#entity_type' => 'node',
+      '#field' => $field,
+      '#field_parents' => array(),
+    ) + $element;
+    $element['#settings']['select2widgetajax']['width'] = '300px';
+    $element['#settings']['select2widgetajax']['min_char'] = 0;
+    $form_state['field'][$element['#field_name']][$element['#language']]['field'] = $field;
+    $element = oa_core_exposed_og_group_ref_fix_cardinality($element, $form_state, $complete_form);
+    $element = select2widget_entity_process_callback($element, $form_state, $complete_form);
   }
-  if (($groups = oa_core_get_groups_by_user($user, 'node')) && ($titles = oa_core_get_titles($groups, '', 'title', array('title')))) {
-    $element['#options'] += $titles['titles'];
+  else {
+    $element['#type'] = 'select';
+    $element['#options'][-1] = t(' - Current Space - ');
+    if (empty($element['#required'])) {
+      $element['#options'][0] = t(' - Any - ');
+    }
+    if (($groups = oa_core_get_groups_by_user($user, 'node')) && ($titles = oa_core_get_titles($groups, '', 'title', array('title')))) {
+      $element['#options'] += $titles['titles'];
+    }
   }
-  $element += element_info('select');
+  $element += element_info($element['#type']);
   return $element;
+}
+
+/**
+ * Set the field settings for select2widget_entity_process_callback.
+ *
+ * Due to how panes work, the form_state isn't preserved so we add this in here.
+ */
+function oa_core_exposed_og_group_ref_fix_cardinality($element, &$form_state, $form) {
+  $cardinality = $form_state['field'][$element['#field_name']][$element['#language']]['field'] = $element['#field'];
+  return $element;
+}
+
+/**
+ * Validate the entities as real, including custom all/current.
+ */
+function oa_core_select2widget_entity_validate_field(&$element, &$form_state, $form) {
+  $entity_labels = array();
+  $settings = $element['#settings']['select2widgetajax'];
+
+  $target_entities = explode(',', $element['#value']);
+
+  foreach ($target_entities as &$target_entity) {
+    if (is_numeric($target_entity)) {
+      $entity = entity_load_single('node', $target_entity);
+      if (entity_load_single('node', $target_entity)) {
+        $label = entity_label('node', $entity);
+        $key = "$label - $target_entity";
+        // Labels containing commas or quotes must be wrapped in quotes.
+        if (strpos($key, ',') !== FALSE || strpos($key, '"') !== FALSE) {
+          $key = '"' . str_replace('"', '""', $key) . '"';
+        }
+        $entity_labels[$target_entity] = $key;
+      }
+    }
+    elseif (preg_match("/.+\((\d+)\)/", $target_entity, $matches)) {
+      $entity_labels[$matches[1]] = $target_entity;
+    }
+    elseif ($target_entity == 'All') {
+      $entity_labels['All'] = _oa_core_select2widget_all_label();
+    }
+    elseif ($target_entity == 'CURRENT') {
+      $entity_labels['CURRENT'] = _oa_core_select2widget_current_label();
+    }
+  }
+
+  // Update default values.
+  $element['#attached']['js'][0]['data']['select2widgetajax']['elements'][$element['#id']]['init'] = $entity_labels;
 }
 
 /**
