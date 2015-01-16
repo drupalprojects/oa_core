@@ -1224,6 +1224,14 @@ function oa_core_replace_tags($str, $tags) {
  * but includes consistent options for removing tags needed by OA2
  */
 function oa_core_trim_text($value, $more_link = '', $max_length = NULL) {
+  // Remove and replace some HTML tags
+  $value = oa_core_replace_tags($value, array(
+    'h1' => 'h4',
+    'h2' => 'h4',
+    'h3' => 'h4',
+  ));
+  $value = strip_tags($value, '<br><p><h1><h2><h3><h4><h5><h6><ol><ul><li><dl><dd><dt><a><b><i><strong><em><table><tbody><th><tr><td>');
+
   $max_length = isset($max_length) ? $max_length : variable_get('teaser_length', 600);
   if (drupal_strlen($value) > $max_length) {
     $value = drupal_substr($value, 0, $max_length);
@@ -1244,18 +1252,13 @@ function oa_core_trim_text($value, $more_link = '', $max_length = NULL) {
     // Remove scraps of HTML entities from the end of a strings
     $value = rtrim(preg_replace('/(?:<(?!.+>)|&(?!.+;)).*$/us', '', $value));
 
-    // Remove and replace some HTML tags
-    $value = oa_core_replace_tags($value, array(
-      'h1' => 'h4',
-      'h2' => 'h4',
-      'h3' => 'h4',
-    ));
-    $value = strip_tags($value, '<br> <p> <h1> <h2> <h3> <h4> <h5> <h6> <ol> <ul> <li> <dl> <dd> <dt> <a> <b> <i> <strong> <em> <table> <tbody> <th> <tr> <td>');
-
     if (!empty($more_link)) {
-      $value .= ' <span class="more-link">' . $more_link . '</span> ';
+      $value .= ' <span class="more-link">' .
+        '(' . l(t('more…'), $more_link) . ')' . '</span> ';
     }
-    $value .= '…';
+    else {
+      $value .= '…';
+    }
   }
   $value = _filter_htmlcorrector($value);
 
@@ -1268,8 +1271,7 @@ function oa_core_trim_text($value, $more_link = '', $max_length = NULL) {
  */
 function oa_core_get_summary($node) {
   $body_field = field_view_field('node', $node, 'body');
-  $more_link = l(t('(more)'), 'node/' . $node->nid . '/view');
   $body = !empty($body_field['#items'][0]['summary']) ? $body_field['#items'][0]['summary'] :
-    (!empty($body_field[0]['#markup']) ? oa_core_trim_text($body_field[0]['#markup'], $more_link) : '');
+    (!empty($body_field[0]['#markup']) ? oa_core_trim_text($body_field[0]['#markup'], 'node/' . $node->nid . '/view') : '');
   return $body;
 }
