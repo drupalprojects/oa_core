@@ -41,8 +41,8 @@ function oa_core_og_group_ref_process($element, &$form_state, &$complete_form) {
     $instance = og_get_mocked_instance($instance, 'default');
     $settings = $instance['widget']['settings'];
     $id = 'NULL';
-    $entity_labels = array();
-    $autocomplete_path = 'oacoreselect2widget/ajax/' . $field['field_name'] . '/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $id . '?field_mode=all';
+    $entity_labels = _oa_core_select2widget_process_entity_labels($element['#default_value']);
+    $autocomplete_path = (!empty($element['#allow_current']) ? 'oacoreselect2widgetpanes' : 'oacoreselect2widget') . '/ajax/' . $field['field_name'] . '/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $id . '?field_mode=all';
     $element = array(
       '#type' => 'textfield',
       '#default_value' => implode(',', $entity_labels),
@@ -92,11 +92,16 @@ function oa_core_exposed_og_group_ref_fix_cardinality($element, &$form_state, $f
  * Validate the entities as real, including custom all/current.
  */
 function oa_core_select2widget_entity_validate_field(&$element, &$form_state, $form) {
+  $entity_labels = _oa_core_select2widget_process_entity_labels($element['#value']);
+  $element['#attached']['js'][0]['data']['select2widgetajax']['elements'][$element['#id']]['init'] = $entity_labels;
+}
+
+/**
+ * Turn the current values to labels for select2 init/default value.
+ */
+function _oa_core_select2widget_process_entity_labels($value) {
+  $target_entities = explode(',', $value);
   $entity_labels = array();
-  $settings = $element['#settings']['select2widgetajax'];
-
-  $target_entities = explode(',', $element['#value']);
-
   foreach ($target_entities as &$target_entity) {
     if (is_numeric($target_entity)) {
       $entity = entity_load_single('node', $target_entity);
@@ -120,9 +125,7 @@ function oa_core_select2widget_entity_validate_field(&$element, &$form_state, $f
       $entity_labels['CURRENT'] = _oa_core_select2widget_current_label();
     }
   }
-
-  // Update default values.
-  $element['#attached']['js'][0]['data']['select2widgetajax']['elements'][$element['#id']]['init'] = $entity_labels;
+  return $entity_labels;
 }
 
 /**
