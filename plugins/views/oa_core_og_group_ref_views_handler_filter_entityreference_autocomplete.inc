@@ -12,7 +12,7 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
     if (!empty($this->options['expose']['identifier']))
       $id = $this->options['expose']['identifier'];
       if (empty($this->options['expose']['oa_core_no_auto'])) {
-        if (isset($exposed[$id]) && (empty($exposed[$id]) || $exposed[$id] == 'CURRENT')) {
+        if (isset($exposed[$id]) && (empty($exposed[$id]) || $exposed[$id] == OA_SPACE_CURRENT)) {
           if ($group = oa_core_get_space_context()) {
             $exposed[$id] = $group;
           }
@@ -58,31 +58,31 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
     // select2 element.
     $type = 'select2widgetajax';
     $required = !empty($form['value']['#required']);
-    $has_value = isset($items[0][$value_key]);
     $instances = field_read_instances(array('field_name' => $this->definition['field_name']));
     $instance = reset($instances);
     $instance = og_get_mocked_instance($instance, 'default');
     $settings = $instance['widget']['settings'];
     $id = 'NULL';
-    $entity_labels = array();
     $autocomplete_path = 'oacoreselect2widget/ajax/' . $field['field_name'] . '/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $id . '?field_mode=all';
     $form['value'] = array(
       '#type' => 'textfield',
-      '#default_value' => implode(',', $entity_labels),
+      // #validate works on defaulting this for us.
+      '#default_value' => '',
       '#autocomplete_path' => $autocomplete_path,
       '#element_validate' => array('oa_core_select2widget_entity_validate_field'),
       '#settings' => $instance['widget']['settings'],
       '#process' => array('oa_core_exposed_og_group_ref_fix_cardinality', 'select2widget_entity_process_callback', 'ajax_process_form'),
       '#maxlength' => 1024,
-      '#init' => $entity_labels,
+      '#init' => array(),
       '#field_name' => 'og_group_ref',
       '#language' => LANGUAGE_NONE,
       '#bundle' => $instance['bundle'],
       '#entity_type' => 'node',
       '#field' => $field,
       '#field_parents' => array(),
+      '#convert_empty_to_current' => TRUE,
     ) + $form['value'];
-    $form['value']['#settings']['select2widgetajax']['width'] = '300px';
+    $form['value']['#settings']['select2widgetajax']['width'] = '400px';
     $form['value']['#settings']['select2widgetajax']['min_char'] = 0;
     $form_state['field'][$form['value']['#field_name']][$form['value']['#language']]['field'] = $field;
   }

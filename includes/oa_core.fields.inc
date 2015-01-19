@@ -92,6 +92,10 @@ function oa_core_exposed_og_group_ref_fix_cardinality($element, &$form_state, $f
  * Validate the entities as real, including custom all/current.
  */
 function oa_core_select2widget_entity_validate_field(&$element, &$form_state, $form) {
+  // Legacy support, empty means current.
+  if (!empty($element['#convert_empty_to_current']) && empty($element['#value'])) {
+    $element['#value'] = OA_SPACE_CURRENT;
+  }
   $entity_labels = _oa_core_select2widget_process_entity_labels($element['#value']);
   $element['#attached']['js'][0]['data']['select2widgetajax']['elements'][$element['#id']]['init'] = $entity_labels;
 }
@@ -121,8 +125,8 @@ function _oa_core_select2widget_process_entity_labels($value) {
     elseif ($target_entity == 'All') {
       $entity_labels['All'] = _oa_core_select2widget_all_label();
     }
-    elseif ($target_entity == 'CURRENT') {
-      $entity_labels['CURRENT'] = _oa_core_select2widget_current_label();
+    elseif ($target_entity == OA_SPACE_CURRENT) {
+      $entity_labels[OA_SPACE_CURRENT] = _oa_core_select2widget_current_label();
     }
   }
   return $entity_labels;

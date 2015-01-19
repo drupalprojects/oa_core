@@ -44,6 +44,10 @@ define('OA_ACCESS_REALM', 'oa_access');
  * The access realm of unpublished content.
  */
 define('OA_UNPUBLISHED_REALM', 'oa_unpublished');
+/**
+ * The access realm of unpublished content.
+ */
+define('OA_SPACE_CURRENT', 'CURRENT');
 
 /**
  * Implements hook_ctools_plugin_directory().
