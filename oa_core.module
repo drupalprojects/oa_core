@@ -1543,3 +1543,10 @@ function oa_core_views_query_alter(&$view, &$query) {
   }
 }
 
+/**
+ * Implements hook_oa_related_allowed_default().
+ */
+function oa_core_oa_related_allowed_default() {
+  return array(OA_SECTION_TYPE, OA_SECTION_TYPE);
+}
+
