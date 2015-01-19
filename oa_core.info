@@ -67,6 +67,7 @@ features[node][] = oa_space
 features[page_manager_pages][] = oa_spaces
 features[page_manager_pages][] = page_oa_groups
 features[page_manager_pages][] = page_user_groups
+features[page_manager_pages][] = space_content
 features[page_manager_pages][] = space_members
 features[page_manager_pages][] = user_spaces
 features[taxonomy][] = space_type
