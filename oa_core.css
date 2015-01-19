@@ -25,8 +25,9 @@
 .views-widget-filter-og_group_ref_target_id div.form-item.form-type-checkbox {
   display: inline-block;
 }
-.views-exposed-form .views-exposed-widget.views-widget-filter-og_group_ref_target_id {
-  padding-bottom: 0.5em;
+
+.views-exposed-widget .help-block {
+  display: none;
 }
 
 .oa_pending_count {

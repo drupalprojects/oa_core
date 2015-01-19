@@ -113,8 +113,8 @@ function oa_users_picture($user = NULL, $image_style = 'oa_small_thumbnail', $ur
     $image = array(
       'style_name' => $image_style,
       'path' => drupal_get_path('module', 'oa_users') . '/oa-user.png',
-      'width' => 30,
-      'height' => 30,
+      'width' => 90,
+      'height' => 90,
       'alt' => t('Your profile picture'),
     );
     // Image styles only supported for images in /files dir so for now, ignore
