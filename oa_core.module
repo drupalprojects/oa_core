@@ -53,8 +53,8 @@ define('OA_SPACE_CURRENT', 'CURRENT');
  * Implements hook_ctools_plugin_directory().
  */
 function oa_core_ctools_plugin_directory($owner, $plugin_type) {
-  if ($owner == 'ctools' && $plugin_type == 'content_types') {
-    return 'plugins/content_types';
+  if ($owner == 'ctools') {
+    return 'plugins/' . $plugin_type;
   }
   elseif ($owner == 'entityreference') {
     return "plugins/entityreference/$plugin_type";
