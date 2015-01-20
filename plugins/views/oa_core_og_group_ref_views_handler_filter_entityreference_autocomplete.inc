@@ -96,7 +96,7 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
     $exposed = $this->view->get_exposed_input();
     $groups = oa_core_get_groups_by_user($user, 'node');
     // check is to check if part of any spaces.
-    if (($id = $this->options['expose']['identifier']) && $groups && !empty($form[$id]['#options']) && array_intersect_key($groups, $form[$id]['#options'])) {
+    if (($id = $this->options['expose']['identifier']) && $groups) {
       $form[$id . '_mine'] = array(
         '#title' => t('My Spaces'),
         '#default_value' => 0,
