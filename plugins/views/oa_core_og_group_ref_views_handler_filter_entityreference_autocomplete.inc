@@ -50,6 +50,8 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
   }
 
   function value_form(&$form, &$form_state) {
+    $saved_value = $this->value;
+    $this->value = array();
     parent::value_form($form, $form_state);
     $field = field_info_field('og_group_ref');
     $value_key = key($field['columns']);
@@ -63,17 +65,18 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
     $instance = og_get_mocked_instance($instance, 'default');
     $settings = $instance['widget']['settings'];
     $id = 'NULL';
-    $autocomplete_path = 'oacoreselect2widget/ajax/' . $field['field_name'] . '/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $id . '?field_mode=all';
+    $admin_form = !empty($form_state['form_id']) && $form_state['form_id'] == 'views_ui_config_item_form';
+    $autocomplete_path = ($admin_form ? 'oacoreselect2widgetpanes' : 'oacoreselect2widget') .'/ajax/' . $field['field_name'] . '/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $id . '?field_mode=all';
+    $entity_labels = is_string($saved_value) ? _oa_core_select2widget_process_entity_labels($saved_value) : array();
     $form['value'] = array(
       '#type' => 'textfield',
-      // #validate works on defaulting this for us.
-      '#default_value' => '',
+      '#default_value' => implode(', ', $entity_labels),
       '#autocomplete_path' => $autocomplete_path,
       '#element_validate' => array('oa_core_select2widget_entity_validate_field'),
       '#settings' => $instance['widget']['settings'],
       '#process' => array('oa_core_exposed_og_group_ref_fix_cardinality', 'select2widget_entity_process_callback', 'ajax_process_form'),
       '#maxlength' => 1024,
-      '#init' => array(),
+      '#init' => $entity_labels,
       '#field_name' => 'og_group_ref',
       '#language' => LANGUAGE_NONE,
       '#bundle' => $instance['bundle'],
@@ -86,6 +89,7 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
     $form['value']['#settings']['select2widgetajax']['min_char'] = 0;
     $form_state['field'][$form['value']['#field_name']][$form['value']['#language']]['field'] = $field;
   }
+
   function exposed_form(&$form, &$form_state) {
     parent::exposed_form($form, $form_state);
     global $user;
