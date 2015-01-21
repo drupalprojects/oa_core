@@ -17,12 +17,10 @@ projects[views][patch][1979926] = http://drupal.org/files/1979926-views-reset_fe
 projects[views][patch][1735096] = http://drupal.org/files/1735096-views-mltiple-instance-exposed-form-8.patch
 
 ; CTools
-; Override panopoly_core.make: 1.4
-projects[ctools][version] = 1.4
+; Override panopoly_core.make: 1.5
+projects[ctools][version] = 1.5
 projects[ctools][subdir] = contrib
 ; patches from Panopoly
-projects[ctools][patch][2280875] = http://drupal.org/files/issues/ctools-icon-text-renderer-2280875-5.patch
-projects[ctools][patch][581670] = http://drupal.org/files/fix-autocomplete-581670.patch
 projects[ctools][patch][2312505] = http://drupal.org/files/issues/ctools-views-pane-more-link-2312505-1.patch
 projects[ctools][patch][1978378] = http://www.drupal.org/files/ctools-page-title-check-plained-twice-1978378-1.patch
 projects[ctools][patch][1565782] = http://www.drupal.org/files/1565782-obey-view-display-defaults-5.patch
@@ -32,7 +30,6 @@ projects[ctools][patch][2055785] = http://drupal.org/files/issues/Modal-window-t
 projects[ctools][patch][1910608] = http://drupal.org/files/issues/1910608-views_content-ajax-13.patch
 projects[ctools][patch][1901106] = http://drupal.org/files/issues/ctools-views_content-exposed_form_override-1901106-24.patch
 projects[ctools][patch][2023705] = http://drupal.org/files/2023705-ctools-autosubmit-2_0.patch
-projects[ctools][patch][2195471] = http://drupal.org/files/issues/ctools-n2195471-1.patch
 
 ; Entity API
 ; Override panopoly_core.make: 1.5
