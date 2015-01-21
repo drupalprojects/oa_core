@@ -400,7 +400,7 @@ function oa_layouts_default_panels_mini() {
     );
     $pane->css = array(
       'css_id' => '',
-      'css_class' => 'spaces-mobile-menu pull-right',
+      'css_class' => 'search-mobile-menu pull-right',
     );
     $pane->extras = array();
     $pane->position = 6;

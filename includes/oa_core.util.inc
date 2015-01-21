@@ -800,7 +800,8 @@ function oa_core_space_sections($gid, $status = NULL, $bypass_access_check = FAL
     ->condition('og.entity_type', 'node')
     ->condition('og.field_name', OA_SPACE_FIELD)
     ->condition('og.gid', $gid)
-    ->orderBy('w.field_oa_section_weight_value');
+    ->orderBy('w.field_oa_section_weight_value')
+    ->orderBy('n.title');
   if (!$bypass_access_check) {
     $query->addTag('node_access');
   }
