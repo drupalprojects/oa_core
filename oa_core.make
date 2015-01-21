@@ -124,7 +124,7 @@ projects[colorizer][version] = 1.4
 projects[colorizer][subdir] = contrib
 
 ; Command buttons
-projects[command_buttons][version] = 1.6
+projects[command_buttons][version] = 1.7
 projects[command_buttons][subdir] = contrib
 
 ; Conditional Fields
@@ -247,6 +247,8 @@ projects[og][subdir] = contrib
 projects[og][patch][2363599] = http://drupal.org/files/issues/og-2363599-1-infinite-loop-entityreference-revisions-load.patch
 ; For select2widget configuration
 projects[og][patch][2403619] = https://www.drupal.org/files/issues/2403619-og_widget_settings-1.patch
+; Fix group manager regranted default
+projects[og][patch][2411041] = https://www.drupal.org/files/issues/2411041-og-og_is_member-4-2.7-do-not-test.patch
 
 ; Og menu single
 projects[og_menu_single][version] = 1.0-beta2

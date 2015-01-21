@@ -241,3 +241,10 @@ function oa_core_update_7225() {
 function oa_core_update_7226() {
   module_enable(array('features_template', 'references_dialog', 'oa_files', 'oa_related', 'select2widget'));
 }
+
+/**
+ * Fix accidentatly given roles.
+ */
+function oa_core_update_7227() {
+  db_query("DELETE FROM {og_users_roles} where gid in (SELECT gid from {og_role} where gid > 0) and rid in (SELECT rid from {og_role} where gid = 0)");
+}
