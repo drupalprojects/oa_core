@@ -532,7 +532,7 @@ function _oa_core_build_visibility_links($type, $node, $field, $bundle = '') {
     foreach ($values as $value) {
       if ($type == 'node') {
         $value_node = node_load($value['target_id']);
-        if (empty($bundle) || ($bundle == $value_node->type)) {
+        if (!empty($value_node) && ((empty($bundle) || ($bundle == $value_node->type)))) {
           $links[] = l($value_node->title, "node/" . $value_node->nid);
         }
       }
