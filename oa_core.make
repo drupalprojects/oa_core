@@ -90,13 +90,11 @@ projects[features][patch][2378343] = http://drupal.org/files/issues/features_imp
 
 ; File Entity
 ; Override panopoly_widgets.make: 20f3070
-projects[file_entity][version] = 2.x-dev
+projects[file_entity][version] = 2.0-beta1
 projects[file_entity][subdir] = contrib
-projects[file_entity][download][type] = git
-projects[file_entity][download][revision] = 20f3070
-projects[file_entity][download][branch] = 7.x-2.x
 ; additional patches for OA
 projects[file_entity][patch][2360043] = https://www.drupal.org/files/issues/file_entity-destination-token-decode-2360043-1.patch
+projects[file_entity][patch][2386015] = https://www.drupal.org/files/issues/2386015-file_entity-trigger-1.patch
 
 ; ************ End Panopoly Overrides ************
 ; ************************************************
