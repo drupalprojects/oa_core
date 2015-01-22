@@ -151,7 +151,9 @@ function oa_permissions_og_features_default_permissions() {
 
   // Exported og permission: 'node:oa_space:administer group'
   $permissions['node:oa_space:administer group'] = array(
-    'roles' => array(),
+    'roles' => array(
+      'administrator member' => 'administrator member',
+    ),
   );
 
   // Exported og permission: 'node:oa_space:administer taxonomy'
