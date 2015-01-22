@@ -15,6 +15,7 @@ projects[views][patch][2037469] = http://drupal.org/files/views-exposed-sorts-20
 ; additional patches for OA
 projects[views][patch][1979926] = http://drupal.org/files/1979926-views-reset_fetch_data-2.patch
 projects[views][patch][1735096] = http://drupal.org/files/1735096-views-mltiple-instance-exposed-form-8.patch
+projects[views][patch][2411922] = https://www.drupal.org/files/issues/2411922-views-group_name-1.patch
 
 ; CTools
 ; Override panopoly_core.make: 1.5
@@ -121,7 +122,7 @@ projects[colorizer][version] = 1.4
 projects[colorizer][subdir] = contrib
 
 ; Command buttons
-projects[command_buttons][version] = 1.7
+projects[command_buttons][version] = 1.8
 projects[command_buttons][subdir] = contrib
 
 ; Conditional Fields
@@ -156,7 +157,7 @@ projects[features_override][version] = 2.0-rc2
 projects[features_override][subdir] = contrib
 
 ; Features Template
-projects[features_template][version] = 1.0-beta1
+projects[features_template][version] = 1.0-beta2
 projects[features_template][subdir] = contrib
 
 ; Feeds - latest dev needed by date_ical v3.1
