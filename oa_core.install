@@ -13,6 +13,16 @@ function oa_core_install() {
 }
 
 /**
+ * Implements hook_update_dependencies().
+ */
+function oa_core_update_dependencies() {
+  $dependencies['oa_core'][7224] = array(
+    'entityreference' => 7003,
+  );
+  return $dependencies;
+}
+
+/**
  * Create the default Space and Section taxonomy terms
  */
 function oa_core_create_default_terms() {
