@@ -60,7 +60,7 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
     // select2 element.
     $type = 'select2widgetajax';
     $required = !empty($form['value']['#required']);
-    $instances = field_read_instances(array('field_name' => $this->definition['field_name']));
+    $instances = field_read_instances(array('field_name' => 'og_group_ref'));
     $instance = reset($instances);
     $instance = og_get_mocked_instance($instance, 'default');
     $settings = $instance['widget']['settings'];
