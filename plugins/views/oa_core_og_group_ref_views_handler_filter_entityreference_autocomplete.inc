@@ -94,7 +94,9 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
     parent::exposed_form($form, $form_state);
     global $user;
     $exposed = $this->view->get_exposed_input();
-    $groups = oa_core_get_groups_by_user($user, 'node');
+    // just call OG for spaces, we don't care about subspaces
+    // really we just need a count, but at least this doesn't load every space
+    $groups = og_get_groups_by_user($user, 'node');
     // check is to check if part of any spaces.
     if (($id = $this->options['expose']['identifier']) && $groups) {
       $form[$id . '_mine'] = array(
