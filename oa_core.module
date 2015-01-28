@@ -178,16 +178,16 @@ function oa_core_menu() {
     'title' => 'Ajax callback',
     'page callback' => 'oa_core_select2widget_ajax_callback',
     'page arguments' => array(FALSE, 2, 3, 4, 5),
-    'access callback' => 'field_access',
-    'access arguments' => array('edit', 2, 3),
+    'access callback' => 'select2widget_autocomplete_access',
+    'access arguments' => array(2, 3, 4, 5),
     'type' => MENU_CALLBACK,
   );
   $items['oacoreselect2widgetpanes/ajax/%/%/%/%'] = array(
     'title' => 'Ajax callback',
     'page callback' => 'oa_core_select2widget_ajax_callback',
     'page arguments' => array(TRUE, 2, 3, 4, 5),
-    'access callback' => 'field_access',
-    'access arguments' => array('edit', 2, 3),
+    'access callback' => 'select2widget_autocomplete_access',
+    'access arguments' => array(2, 3, 4, 5),
     'type' => MENU_CALLBACK,
   );
   return $items;
