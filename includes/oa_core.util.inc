@@ -622,12 +622,13 @@ function oa_core_create_node($bundle, $title = '', $context = NULL) {
  * @param  array  $ids array of node ids to fetch
  * @param  string $type optional node type to filter
  * @param  array $fields a list of fields to fetch (link is a special fieldname)
+ * @param  integer $limit max number of return results
  * @return array      associative array:
  *   'titles' is a list of node titles (clean)
  *   'links' is a list of node links
  *   'ids' is a list of the node ids
  */
-function oa_core_get_titles($ids = array(), $type = '', $sort_field = 'title', $fields = array('title', 'link', 'id', 'type'), $sanitize = TRUE) {
+function oa_core_get_titles($ids = array(), $type = '', $sort_field = 'title', $fields = array('title', 'link', 'id', 'type'), $sanitize = TRUE, $limit = 100) {
   $query_fields = array('nid', 'title');
   $return = array();
   foreach ($fields as $field) {
@@ -658,6 +659,7 @@ function oa_core_get_titles($ids = array(), $type = '', $sort_field = 'title', $
     if (!empty($type)) {
       $query->condition('n.type', $type);
     }
+    $query->range(0, $limit);
     $result = $query->execute();
 
     // if $sort_field is empty, maintain the order of the original $ids
