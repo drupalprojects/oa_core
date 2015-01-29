@@ -98,6 +98,38 @@ class OgSubspacesSelectionHandler extends EntityReference_SelectionHandler_Gener
   }
 
   /**
+   * Implements EntityReferenceHandler::countReferencableEntities().
+   */
+  public function countReferencableEntities($match = NULL, $match_operator = 'CONTAINS') {
+    // Organic Groups calls this method in og_node_access to determine "create X content" permission.
+    // There comment is this:
+    // -----
+    // We can't check if user has create permissions using og_user_access(), as
+    // there is no group context. However, we can check if there are any groups
+    // the user will be able to select, and if not, we don't allow access.
+    // @see OgSelectionHandler::getReferencableEntities()
+    // -----
+    // Well, in Open Atrium, we DO know the group context because it's stored in the session
+    // So we can just use og_user_access('create X content', $space_id) to determine access
+    // Since this method isn't used anywhere else, we'll return a zero or one to determine
+    // create X access.
+    // BEWARE: If you use some other module that relies on the TRUE count, it won't work
+
+    $space_id = oa_core_get_space_context();
+    if (($space_id > 0) && !empty($this->instance) && ($this->instance['entity_type'] == 'node')) {
+      $node_type = $this->instance['bundle'];
+      return og_user_access('node', $space_id, 'create ' . $node_type . ' content') ? 1 : 0;
+    }
+    return 0;
+/*
+    $query = $this->buildEntityFieldQuery($match, $match_operator);
+    return $query
+      ->count()
+      ->execute();
+*/
+  }
+
+  /**
    * Build an EntityFieldQuery to get referencable entities.
    */
   public function buildEntityFieldQuery($match = NULL, $match_operator = 'CONTAINS') {
