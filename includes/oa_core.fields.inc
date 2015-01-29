@@ -36,9 +36,7 @@ function oa_core_og_group_ref_process($element, &$form_state, &$complete_form) {
     $type = 'select2widgetajax';
     $required = !empty($element['#required']);
     $has_value = !empty($element['#default_value']);
-    $instances = field_read_instances(array('field_name' => 'og_group_ref'));
-    $instance = reset($instances);
-    $instance = og_get_mocked_instance($instance, 'default');
+    $instance = _oa_core_get_og_group_ref_mocked_field_instance();
     $settings = $instance['widget']['settings'];
     $id = 'NULL';
     $entity_labels = _oa_core_select2widget_process_entity_labels($element['#default_value']);
@@ -275,4 +273,18 @@ function oa_core_test_form() {
   );
 
   return $form;
+}
+
+/**
+ * Return an instance to be used to mock the field.
+ */
+function _oa_core_get_og_group_ref_mocked_field_instance() {
+  $instances = field_read_instances(array('field_name' => 'og_group_ref'));
+  $field_mode = 'default';
+  foreach ($instances as $instance) {
+    if (isset($instance['settings']['behaviors']['og_widget'][$field_mode]['widget_settings']['select2widgetajax'])) {
+      break;
+    }
+  }
+  return og_get_mocked_instance($instance, 'default');
 }
