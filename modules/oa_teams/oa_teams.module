@@ -71,6 +71,9 @@ function oa_teams_get_teams_for_space($gid = NULL, $include_inherited = TRUE) {
   if (!isset($gid)) {
     $gid = oa_core_get_space_context();
   }
+  if (!$gid) {
+    return array();
+  }
 
   $query = db_select('node', 'n');
   $query->rightJoin('og_membership', 'og', 'n.nid = og.etid');
