@@ -727,20 +727,31 @@ function oa_core_truncate_list($list, $count, $more_link = '', $always_link = FA
  *   items aren't included.
  * @param bool $check_access
  *   Check node access, defaults to TRUE.
- * @param int $limit optional limit to number of spaces to return
+ * @param bool $only_top restrict to top-level spaces
  *
  * @return array
  *   An array of Space NIDs.
  */
-function oa_core_get_public_spaces($group_types = array(OA_SPACE_TYPE => OA_SPACE_TYPE), $status = NULL, $include_archived = FALSE, $check_access = TRUE, $limit = NULL) {
+function oa_core_get_public_spaces($group_types = array(OA_SPACE_TYPE => OA_SPACE_TYPE), $status = NULL, $include_archived = FALSE, $check_access = TRUE, $only_top = FALSE) {
   $cache = &drupal_static(__FUNCTION__);
 
   $group_types_cid = implode(',', $group_types);
   if (!isset($cache[$group_types_cid][$status][$include_archived])) {
     $query = db_select('node', 'n');
-    $query->rightJoin('field_data_group_access', 'g', "n.nid = g.entity_id AND g.entity_type = 'node'");
+    $query->join('field_data_group_access', 'g', "n.nid = g.entity_id AND g.entity_type = 'node'");
+    $query->fields('n', array('nid'));
+    if ($only_top) {
+      // need to restrict to space with either no parent, or just oa_group parents
+      $query->leftJoin('og_membership', 'og', "og.etid = n.nid AND og.entity_type = 'node'");
+      $query->leftJoin('node', 'pn', 'og.gid = pn.nid');
+      $query->fields('pn', array('type'));
+      // trick is to group the results and count the number of different parent types
+      $query->addExpression('COUNT(pn.type)', 'num');
+      $query->groupBy('n.nid');
+      // so we either return spaces with 0 parents, or 1 parent type that is a group
+      $query->having("num = 0 OR (num = 1 AND pn.type = '" . OA_GROUP_TYPE . "')");
+    }
     $query
-      ->fields('n', array('nid'))
       ->condition('n.type', $group_types, 'IN')
       ->condition('g.group_access_value', 0);
     if (isset($status)) {
@@ -756,9 +767,6 @@ function oa_core_get_public_spaces($group_types = array(OA_SPACE_TYPE => OA_SPAC
         // will be NULL if the join didn't connect anything.
         $query->isNull('a.uid');
       }
-    }
-    if (isset($limit)) {
-      $query->range(0, $limit);
     }
 
     $cache[$group_types_cid][$status][$include_archived] = $query->execute()->fetchCol(0);
