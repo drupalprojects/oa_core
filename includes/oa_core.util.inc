@@ -746,7 +746,7 @@ function oa_core_get_public_spaces($group_types = array(OA_SPACE_TYPE => OA_SPAC
       $query->leftJoin('node', 'pn', 'og.gid = pn.nid');
       $query->fields('pn', array('type'));
       // trick is to group the results and count the number of different parent types
-      $query->addExpression('COUNT(pn.type)', 'num');
+      $query->addExpression('COUNT(DISTINCT pn.type)', 'num');
       $query->groupBy('n.nid');
       // so we either return spaces with 0 parents, or 1 parent type that is a group
       $query->having("num = 0 OR (num = 1 AND pn.type = '" . OA_GROUP_TYPE . "')");
