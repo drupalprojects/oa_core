@@ -727,11 +727,12 @@ function oa_core_truncate_list($list, $count, $more_link = '', $always_link = FA
  *   items aren't included.
  * @param bool $check_access
  *   Check node access, defaults to TRUE.
+ * @param int $limit optional limit to number of spaces to return
  *
  * @return array
  *   An array of Space NIDs.
  */
-function oa_core_get_public_spaces($group_types = array(OA_SPACE_TYPE => OA_SPACE_TYPE), $status = NULL, $include_archived = FALSE, $check_access = TRUE) {
+function oa_core_get_public_spaces($group_types = array(OA_SPACE_TYPE => OA_SPACE_TYPE), $status = NULL, $include_archived = FALSE, $check_access = TRUE, $limit = NULL) {
   $cache = &drupal_static(__FUNCTION__);
 
   $group_types_cid = implode(',', $group_types);
@@ -755,6 +756,9 @@ function oa_core_get_public_spaces($group_types = array(OA_SPACE_TYPE => OA_SPAC
         // will be NULL if the join didn't connect anything.
         $query->isNull('a.uid');
       }
+    }
+    if (isset($limit)) {
+      $query->range(0, $limit);
     }
 
     $cache[$group_types_cid][$status][$include_archived] = $query->execute()->fetchCol(0);
