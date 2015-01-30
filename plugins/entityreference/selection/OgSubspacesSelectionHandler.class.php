@@ -101,32 +101,40 @@ class OgSubspacesSelectionHandler extends EntityReference_SelectionHandler_Gener
    * Implements EntityReferenceHandler::countReferencableEntities().
    */
   public function countReferencableEntities($match = NULL, $match_operator = 'CONTAINS') {
-    // Organic Groups calls this method in og_node_access to determine "create X content" permission.
-    // There comment is this:
-    // -----
-    // We can't check if user has create permissions using og_user_access(), as
-    // there is no group context. However, we can check if there are any groups
-    // the user will be able to select, and if not, we don't allow access.
-    // @see OgSelectionHandler::getReferencableEntities()
-    // -----
-    // Well, in Open Atrium, we DO know the group context because it's stored in the session
-    // So we can just use og_user_access('create X content', $space_id) to determine access
-    // Since this method isn't used anywhere else, we'll return a zero or one to determine
-    // create X access.
-    // BEWARE: If you use some other module that relies on the TRUE count, it won't work
-
-    $space_id = oa_core_get_space_context();
-    if (($space_id > 0) && !empty($this->instance) && ($this->instance['entity_type'] == 'node')) {
-      $node_type = $this->instance['bundle'];
-      return og_user_access('node', $space_id, 'create ' . $node_type . ' content') ? 1 : 0;
+    if (!empty($this->instance) && ($this->instance['entity_type'] == 'node')) {
+      // Organic Groups calls this method in og_node_access to determine "create X content" permission.
+      // There comment is this:
+      // -----
+      // We can't check if user has create permissions using og_user_access(), as
+      // there is no group context. However, we can check if there are any groups
+      // the user will be able to select, and if not, we don't allow access.
+      // @see OgSelectionHandler::getReferencableEntities()
+      // -----
+      // Well, in Open Atrium, we DO know the group context because it's stored in the session
+      // So we can just use og_user_access('create X content', $space_id) to determine access
+      // Since this method isn't used anywhere else, we'll return a zero or one to determine
+      // create X access.
+      // ------
+      // We directly check session as oa_core_get_space_context checks menu_get_item
+      // which checks node_access.
+      // ------
+      // BEWARE: If you use some other module that relies on the TRUE count, it won't work
+      $space_id = &drupal_static('oa_core_count_ref_space_id', NULL);
+      if (!isset($space_id)) {
+        if (!empty($_SESSION['og_context']['group_type']) && $_SESSION['og_context']['group_type'] == 'node'
+          && ($node = node_load($_SESSION['og_context']['gid'])) && node_access('view', $node)) {
+          $space_id = $_SESSION['og_context']['gid'];
+        }
+        else {
+          $space_id = FALSE;
+        }
+      }
+      if ($space_id) {
+        $node_type = $this->instance['bundle'];
+        return og_user_access('node', $space_id, 'create ' . $node_type . ' content') ? 1 : 0;
+      }
     }
     return 0;
-/*
-    $query = $this->buildEntityFieldQuery($match, $match_operator);
-    return $query
-      ->count()
-      ->execute();
-*/
   }
 
   /**
