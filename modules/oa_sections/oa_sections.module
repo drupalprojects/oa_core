@@ -50,7 +50,7 @@ function oa_sections_menu() {
 function oa_sections_node_update($node) {
   // If the Section has been moved to a new Space, then we need to update all
   // the content inside the Section to also be in the new Space.
-  if (!empty($node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'])) {
+  if ($node->type == 'oa_section' && !empty($node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'])) {
     $original = $node->original;
     $space_nid = $node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'];
     if (empty($original->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id']) || $original->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'] != $space_nid) {
