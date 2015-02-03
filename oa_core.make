@@ -87,6 +87,7 @@ projects[features][version] = 2.3
 projects[features][subdir] = contrib
 ; additional patches for OA
 projects[features][patch][2378343] = http://drupal.org/files/issues/features_improve_features-2378343-1.patch
+projects[features][patch][2419479] = https://www.drupal.org/files/issues/2419479-features-foreignkey-1.patch
 
 ; File Entity
 ; Override panopoly_widgets.make: 20f3070
