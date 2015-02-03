@@ -230,10 +230,6 @@ projects[mimemail][download][type] = git
 projects[mimemail][download][branch] = 7.x-1.x
 projects[mimemail][download][revision] = e742766
 
-; OA Angular
-projects[oa_angular][version] = 1.0-rc1
-projects[oa_angular][subdir] = contrib
-
 ; OA Responsive Regions
 projects[oa_responsive_regions][version] = 1.0-beta1
 projects[oa_responsive_regions][subdir] = contrib
