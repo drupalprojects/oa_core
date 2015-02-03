@@ -15,6 +15,15 @@
   white-space: normal;
 }
 
+.node-teaser .user-picture {
+  float: left;
+  margin-right: 5px;
+}
+
+.node-teaser .submitted {
+  font-style: italic;
+}
+
 #modal-content .widget-preview-title {
   /* move Add button to left so wide tables doesnt scroll */
   left: 10px;
