@@ -120,10 +120,6 @@ libraries[chosen][destination] = "libraries"
 projects[colorizer][version] = 1.4
 projects[colorizer][subdir] = contrib
 
-; Command buttons
-projects[command_buttons][version] = 1.9
-projects[command_buttons][subdir] = contrib
-
 ; Conditional Fields
 projects[conditional_fields][version] = 3.x-dev
 projects[conditional_fields][subdir] = contrib
