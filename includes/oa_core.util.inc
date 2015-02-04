@@ -863,6 +863,8 @@ function oa_core_get_users_for_space($space_id, $state = OG_STATE_ACTIVE) {
     ->condition('og.state', $state)
     ->condition('og.group_type', 'node')
     ->condition('og.gid', $space_id);
+  $query->join('users', 'u', 'u.uid = og.etid');
+  $query->condition('u.status', 1);
   $uids = $query->execute()->fetchCol();
   return user_load_multiple($uids);
 }
