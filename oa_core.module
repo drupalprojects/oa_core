@@ -432,6 +432,14 @@ function oa_core_og_fields_info() {
     ),
     'instance' => array(
       'label' => t('Open Atrium Section'),
+      'options_limit' => 1,
+      'options_limit_empty_behaviour' => 1,
+      'options_limit_fields' => array(
+        'body' => 0,
+        'oa_section_ref' => 0,
+        'og_group_ref' => 'og_group_ref',
+      ),
+      'options_optomize_entityreferences' => 1,
       'widget' => array(
         'active' => 0,
         'module' => 'options',
