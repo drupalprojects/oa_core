@@ -99,15 +99,31 @@ function oa_teams_get_teams_for_space($gid = NULL, $include_inherited = TRUE) {
 }
 
 /**
+ * Get the members of the team.
+ *
  * @param $team_id
- * @return mixed
+ *  The NID of the team.
+ *
+ * @return
+ *  An array of uids that are in the team.
  */
 function oa_teams_get_team_members($team_id) {
+  $groups = og_get_entity_groups('node', node_load($team_id)); 
+  $uid = OA_TEAM_USERS_FIELD . '_target_id';
   $query = db_select('field_data_' . OA_TEAM_USERS_FIELD, 'f')
-      ->fields('f', array(OA_TEAM_USERS_FIELD . '_target_id'))
-      ->condition('entity_type', 'node')
-      ->condition('entity_id', $team_id)
-      ->condition('deleted', 0);
+      ->fields('f', array($uid))
+      ->condition('f.entity_type', 'node')
+      ->condition('f.entity_id', $team_id)
+      ->condition('f.deleted', 0);
+  // Make sure team member is member of group.
+
+  if (!empty($groups['node'])) {
+    if (module_exists('og_subgroups')) {
+      $groups = og_subgroups_parents_load_multiple(array('node' => $groups['node']));
+    }
+    $query->innerJoin('og_membership', 'og', "f." . $uid . " = og.etid AND og.entity_type = 'user' AND og.group_type = 'node'");
+    $query->condition('og.gid', $groups['node']);
+  }
   return $query->execute()->fetchAllAssoc(OA_TEAM_USERS_FIELD . '_target_id');
 }
 
