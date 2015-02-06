@@ -115,8 +115,8 @@ function oa_teams_get_team_members($team_id) {
       ->condition('f.entity_type', 'node')
       ->condition('f.entity_id', $team_id)
       ->condition('f.deleted', 0);
-  // Make sure team member is member of group.
 
+  // Make sure team member is member of group.
   if (!empty($groups['node'])) {
     if (module_exists('og_subgroups')) {
       $groups = og_subgroups_parents_load_multiple(array('node' => $groups['node']));
