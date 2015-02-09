@@ -141,7 +141,7 @@ projects[date_facets][version] = 1.x-dev
 projects[date_facets][subdir] = contrib
 projects[date_facets][download][type] = git
 projects[date_facets][download][branch] = 7.x-1.x
-projects[date_facets][download][revision] = a7a35f8
+projects[date_facets][download][revision] = 9037608
 
 ; Diff
 projects[diff][version] = 3.2
