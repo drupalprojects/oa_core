@@ -258,3 +258,14 @@ function oa_core_update_7226() {
 function oa_core_update_7227() {
   db_query("DELETE FROM {og_users_roles} where gid in (SELECT gid from {og_role} where gid > 0) and rid in (SELECT rid from {og_role} where gid = 0)");
 }
+
+/**
+ * Change the oa_unpublished gids from nid to uid.
+ *
+ * Since the access change is rather simple, we're just scripting it for so big
+ * sites do not have a super long update.
+ */
+function oa_core_update_7228() {
+  db_query('DELETE from {node_access} WHERE realm = :realm', array(':realm' => OA_UNPUBLISHED_REALM));
+  db_query('INSERT into {node_access} SELECT nid, uid, :realm, 1, 0, 0 from {node} WHERE status = 0 AND uid > 1', array(':realm' => OA_UNPUBLISHED_REALM));
+}
