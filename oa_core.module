@@ -286,11 +286,23 @@ function oa_core_create_space_page_callback($type, $space_tid) {
       'language' => LANGUAGE_NONE,
     );
 
-    $types = node_type_get_types();
-    drupal_set_title(t('Create @name @type', array(
-      '@name' => $space_type->name,
-      '@type' => $types[$type]->name,
-    )));
+    $title = t('Create @name', array('@name' => $space_type->name));
+    $pattern = '';
+    if ($type == OA_SPACE_TYPE) {
+      $pattern = '/space/i';
+    }
+    elseif ($type == OA_SECTION_TYPE) {
+      $pattern = '/section/i';
+    }
+    // if Taxonomy term name doesn't contain the type of page, then add it
+    if (!empty($pattern) && (preg_match($pattern, $title) == 0)) {
+      $types = node_type_get_types();
+      $title = t('Create @name @type', array(
+        '@name' => $space_type->name,
+        '@type' => $types[$type]->name,
+      ));
+    }
+    drupal_set_title($title);
 
     // Load the file with page_manager_node_edit().
     module_load_include('inc', 'ctools', 'page_manager/plugins/tasks/node_edit');
