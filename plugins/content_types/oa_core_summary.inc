@@ -56,6 +56,12 @@ function oa_core_summary_render($subtype, $conf, $args, $context = NULL) {
         'alt' => $picture['alt'],
       ));
     }
+
+    if (isset($space->field_oa_related)) {
+      $paragraphs = field_view_field('node', $space, 'field_oa_related');
+      $paragraphs['#label_display'] = 'hidden';
+      $vars['related'] = drupal_render($paragraphs);
+    }
   }
 
   $vars['links'] = array();
