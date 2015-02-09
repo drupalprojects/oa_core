@@ -25,19 +25,14 @@ function oa_sections_field_default_field_bases() {
     'locked' => 0,
     'module' => 'entityreference',
     'settings' => array(
-      'handler' => 'base',
+      'handler' => 'oa_groups_selection',
       'handler_settings' => array(
         'behaviors' => array(
           'views-select-list' => array(
             'status' => 1,
           ),
         ),
-        'sort' => array(
-          'type' => 'none',
-        ),
-        'target_bundles' => array(
-          'oa_group' => 'oa_group',
-        ),
+        'include_space' => 1,
       ),
       'target_type' => 'node',
     ),

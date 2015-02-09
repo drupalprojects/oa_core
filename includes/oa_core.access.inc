@@ -490,14 +490,15 @@ function oa_core_visibility_data($node) {
 
       if (!$data['public']) {
 
-        if (!empty($visibility[0]['value'])) {
+        $spaces = _oa_core_build_visibility_links('node', $section_node, OA_GROUP_FIELD, OA_SPACE_TYPE);
+        if (!empty($visibility[0]['value']) || !empty($spaces)) {
           $data['accessors']['space'] = array(
-            'links' => _oa_core_build_visibility_links('node', $section_node, OA_SPACE_FIELD, OA_SPACE_TYPE),
+            'links' => $spaces + _oa_core_build_visibility_links('node', $section_node, OA_SPACE_FIELD, OA_SPACE_TYPE),
             'label' => t('Spaces'),
           );
         }
         $data['accessors']['group'] = array(
-          'links' => _oa_core_build_visibility_links('node', $section_node, OA_GROUP_FIELD),
+          'links' => _oa_core_build_visibility_links('node', $section_node, OA_GROUP_FIELD, OA_GROUP_TYPE),
           'label' => t('Groups'),
         );
         $data['accessors']['teams'] = array(
