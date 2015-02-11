@@ -33,7 +33,7 @@ function oa_core_context_handler_url() {
     }
     $node_type = $wizard->field_wizard_type[LANGUAGE_NONE][0]['value'];
   }
-  if (!$node_type || !($fields = og_get_group_audience_fields('node', $node_type))) {
+  if (empty($node_type) || !($fields = og_get_group_audience_fields('node', $node_type))) {
     return;
   }
   $gids = array();
