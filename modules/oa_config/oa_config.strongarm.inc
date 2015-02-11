@@ -129,6 +129,7 @@ function oa_config_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'og_context_negotiation_group_context';
   $strongarm->value = array(
+    'oa_core_url' => array(),
     'sessions' => array(),
   );
   $export['og_context_negotiation_group_context'] = $strongarm;
