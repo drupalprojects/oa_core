@@ -22,6 +22,9 @@ function oa_widgets_content_visibility_render($subtype, $conf, $args, $context =
   if (!isset($context->data)) {
     return;
   }
+  if (!variable_get('oa_show_visibility_panel', TRUE)) {
+    return;
+  }
   $block = new stdClass();
   $block->title = t('Content Visibility');
 
