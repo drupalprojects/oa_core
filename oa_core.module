@@ -344,12 +344,14 @@ function oa_core_configure_form($form, &$form_state) {
     if (function_exists($function)) {
       $child_forms = call_user_func_array($function, array(&$form_state));
       foreach ($child_forms as $key => $child_form) {
-        $form[$child_form['caption']] = array(
-          '#type' => 'fieldset',
-          '#title' => $child_form['caption'],
-          '#group' => 'oa_settings',
-          '#attributes' => array('class' => array('collapsible')),
-        );
+        if (!isset($form[$child_form['caption']])) {
+          $form[$child_form['caption']] = array(
+            '#type' => 'fieldset',
+            '#title' => $child_form['caption'],
+            '#group' => 'oa_settings',
+            '#attributes' => array('class' => array('collapsible')),
+          );
+        }
         $form[$child_form['caption']][] = $child_form['form'];
         if (!empty($child_form['submit'])) {
           $form['#submit'][] = $child_form['submit'];
