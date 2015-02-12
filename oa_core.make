@@ -8,7 +8,7 @@ core = 7.x
 
 ; Views
 ; Override panopoly_core.make: 3.8
-projects[views][version] = 3.8
+projects[views][version] = 3.10
 projects[views][subdir] = contrib
 ; patches from Panopoly
 projects[views][patch][2037469] = http://drupal.org/files/views-exposed-sorts-2037469-1.patch
@@ -20,18 +20,14 @@ projects[views][patch][2018737] = https://www.drupal.org/files/issues/views-asse
 
 ; CTools
 ; Override panopoly_core.make: 1.5
-projects[ctools][version] = 1.5
+projects[ctools][version] = 1.6
 projects[ctools][subdir] = contrib
-; patches from Panopoly
-projects[ctools][patch][2312505] = http://drupal.org/files/issues/ctools-views-pane-more-link-2312505-1.patch
-projects[ctools][patch][1978378] = http://www.drupal.org/files/ctools-page-title-check-plained-twice-1978378-1.patch
-projects[ctools][patch][1565782] = http://www.drupal.org/files/1565782-obey-view-display-defaults-5.patch
-projects[ctools][patch][2012188] = http://www.drupal.org/files/issues/2012188-9-ctools_entity_field_content_type_admin_title.patch
-projects[ctools][patch][2055785] = http://drupal.org/files/issues/Modal-window-top-and-left-style-values-2055785-3.patch
+projects[ctools][patch][2119357] = http://www.drupal.org/files/issues/2119357-6_0.patch
 ; additional patches for OA
-projects[ctools][patch][1910608] = http://drupal.org/files/issues/1910608-views_content-ajax-13.patch
-projects[ctools][patch][1901106] = http://drupal.org/files/issues/ctools-views_content-exposed_form_override-1901106-24.patch
+projects[ctools][patch][1910608] = https://www.drupal.org/files/issues/views_content-ajax-1910608-23_0.patch
+projects[ctools][patch][1901106] = https://www.drupal.org/files/issues/ctools-views_content-exposed_form_override-1901106-27.patch
 projects[ctools][patch][2023705] = http://drupal.org/files/2023705-ctools-autosubmit-2_0.patch
+projects[ctools][patch][2423839] = https://www.drupal.org/files/issues/2423839-ctools-node_tag-2.patch
 
 ; Entity API
 ; Override panopoly_core.make: 1.5
