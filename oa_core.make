@@ -14,7 +14,7 @@ projects[views][subdir] = contrib
 projects[views][patch][2037469] = http://drupal.org/files/views-exposed-sorts-2037469-1.patch
 ; additional patches for OA
 projects[views][patch][1979926] = http://drupal.org/files/1979926-views-reset_fetch_data-2.patch
-projects[views][patch][1735096] = http://drupal.org/files/1735096-views-mltiple-instance-exposed-form-8.patch
+projects[views][patch][1735096] = https://www.drupal.org/files/issues/1735096-views-multiple-instance-exposed-form-15.patch
 projects[views][patch][2411922] = https://www.drupal.org/files/issues/2411922-views-group_name-3.patch
 projects[views][patch][2018737] = https://www.drupal.org/files/issues/views-asset-diff-2018737-37.patch
 
