@@ -52,19 +52,6 @@ projects[entityreference][patch][1837650] = http://drupal.org/files/issues/entit
 ; Add autocomplete ability for group filters.
 projects[entityreference][patch][1492260] = https://www.drupal.org/files/issues/1492260-54.patch
 
-; Panelizer
-; Override panopoly_core.make: 3.1 -> 3.x-dev
-projects[panelizer][version] = 3.x-dev
-projects[panelizer][subdir] = contrib
-projects[panelizer][download][type] = git
-projects[panelizer][download][branch] = 7.x-3.x
-projects[panelizer][download][revision] = 66d184
-; patches from Panopoly
-projects[panelizer][patch][1623536] = http://drupal.org/files/issues/array-to-object-on-update-1623536-26.patch
-projects[panelizer][patch][2416505] = http://www.drupal.org/files/issues/panelizer-search_api-2416505-3.patch
-; additional patches for OA
-projects[panelizer][patch][1982654] = http://drupal.org/files/1982654-panelizer-dontaskmethatagain-2.patch
-
 ; Token
 ; Override panopoly_core.make: 1.5
 projects[token][version] = 1.5
