@@ -61,6 +61,7 @@ projects[panelizer][download][branch] = 7.x-3.x
 projects[panelizer][download][revision] = 66d184
 ; patches from Panopoly
 projects[panelizer][patch][1623536] = http://drupal.org/files/issues/array-to-object-on-update-1623536-26.patch
+projects[panelizer][patch][2416505] = http://www.drupal.org/files/issues/panelizer-search_api-2416505-3.patch
 ; additional patches for OA
 projects[panelizer][patch][1982654] = http://drupal.org/files/1982654-panelizer-dontaskmethatagain-2.patch
 
