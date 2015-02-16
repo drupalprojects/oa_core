@@ -55,8 +55,7 @@ function oa_core_get_groups_by_user($account = NULL, $group_type = NULL, $includ
     ->condition('ogm.etid', $account->uid)
     ->condition('ogm.entity_type', 'user')
     ->condition('ogm.state', OG_STATE_ACTIVE)
-    ->condition('n.type', array(OA_SPACE_TYPE, OA_GROUP_TYPE), 'IN')
-    ->addTag('node_access');
+    ->condition('n.type', array(OA_SPACE_TYPE, OA_GROUP_TYPE), 'IN');
 
   if (module_exists('flag') && !$include_archived) {
     if ($flag = flag_get_flag('trash')) {
@@ -395,13 +394,13 @@ function oa_core_get_groups_by_parent($nids, $bundle = OA_SPACE_TYPE, $status = 
   $query
     ->fields('n', array('nid'))
     ->condition('f.entity_type', 'node')
-    ->orderBy('n.title')
-    ->addTag('node_access');
+    ->orderBy('n.title');
 
   // to find all subspaces, we query *all* spaces with parents
   // otherwise, if just getting top level children we can filter it here.
   if (!$subspaces) {
-    $query->condition('f.gid', $nids, 'IN');
+    $query->condition('f.gid', $nids, 'IN')
+    ->addTag('node_access');
   }
 
   if (isset($bundle)) {
