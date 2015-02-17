@@ -426,6 +426,9 @@ function oa_core_get_groups_by_parent($nids, $bundle = OA_SPACE_TYPE, $status = 
 
   if ($subspaces) {
     $query->fields('f', array('gid'));
+    $query->condition('f.etid', $nids, 'NOT IN');
+    $query->join('field_data_og_user_inheritance', 'inh', "inh.entity_id = f.etid && inh.entity_type = 'node'");
+    $query->condition('inh.og_user_inheritance_value', 1);
     $all_parents = $query->execute()->fetchAll();
     // to get a list of all subspaces, we can now loop through the list of all parents recursively
     // to build our children list
