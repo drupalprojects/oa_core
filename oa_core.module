@@ -486,7 +486,6 @@ function oa_core_form_node_form_alter(&$form, &$form_state, $form_id) {
     && isset($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default'])
     && empty($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'])
     && ($group = node_load($form['#node']->{OA_SPACE_FIELD}[LANGUAGE_NONE][0]['target_id']))
-    && (node_access('view', $group))
     && (!isset($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin'])
       || ($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin']['#default_value'] == $group->title . ' (' . $group->nid . ')'))
     ) {
