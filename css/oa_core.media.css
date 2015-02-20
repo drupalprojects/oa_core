@@ -19,3 +19,7 @@
   height: 100px;
   padding-bottom: 20px;
 }
+
+#media-browser-tabset .views-exposed-form .views-submit-button {
+  margin-top: 0;
+}
