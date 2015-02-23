@@ -1366,3 +1366,79 @@ function oa_core_get_summary($node) {
     (!empty($body_field[0]['#markup']) ? oa_core_trim_text($body_field[0]['#markup'], 'node/' . $node->nid . '/view') : '');
   return $body;
 }
+
+
+/**
+ * Determine whether a user has a given privilege for groups.
+ *
+ * This modules the logic of og_user_access but for multiple node groups.
+ * IMPORTANT, any changes to og_user_access reflect here AND
+ * hook_og_user_access_alter is ignored.
+ *
+ * @param $nids
+ *   Array of node nids that are groups.
+ *
+ * @return
+ *   An array of nids to access.
+ */
+function oa_user_access_nids($nids, $string, $account = NULL) {
+  global $user;
+  $access = &drupal_static(__FUNCTION__, array());
+
+  if (empty($account)) {
+    $account = clone $user;
+  }
+
+  $nids = drupal_map_assoc($nids);
+
+  // Administer group permission.
+  if ($account->uid == 1 || user_access('administer group', $account)) {
+    foreach ($nids as $nid) {
+      $access[$nid] = TRUE;
+    }
+    return array_intersect_key($access[$string], $nids);
+  }
+
+  if (!empty($perms[$string])) {
+    $lookup = array_diff_key($nids, $access[$string]);
+    // No new NIDS, return access.
+    if (!$lookup) {
+      return array_intersect_key($access[$string], $nids);
+    }
+  }
+  else {
+    $lookup = $nids;
+  }
+
+  // Group manager has all privileges (if variable is TRUE).
+  if (!empty($account->uid) && variable_get('og_group_manager_full_access', TRUE)) {
+    $authored = db_query('SELECT nid FROM {node} WHERE nid in :nids AND uid = :uid', array('nids' => $lookup, ':uid' => $account->uid))->fetchCol();
+    foreach ($authored as $nid) {
+      $access[$string][$nid] = TRUE;
+      unset($lookup[$nid]);
+    }
+  }
+
+  if ($lookup && !empty($account->uid)) {
+    $query = db_select('og_role_permission', 'orp');
+    $query->innerJoin('og_users_roles', 'our', 'our.rid = orp.rid');
+    $query->innerJoin('og_membership', 'om', "om.group_type = 'node' AND  our.group_type = 'node' AND our.gid = om.gid AND om.etid = our.uid AND entity_type='user'");
+    $query->fields('om', array('gid'));
+    $query->condition('om.etid', $account->uid);
+    $query->condition('orp.permission', array('administer group', $string));
+    $query->condition('state', OG_STATE_ACTIVE);
+    $query->condition('om.gid', $lookup);
+    $result = $query->execute();
+    $permission_nids = $result->fetchCol();
+    foreach ($permission_nids as $nid) {
+      $access[$string][$nid] = TRUE;
+      unset($lookup[$nid]);
+    }
+  }
+  // Any extra NID is no access.
+  foreach ($lookup as $nid) {
+    $access[$string][$nid] = FALSE;
+  }
+
+  return array_intersect_key($access[$string], $nids);
+}
