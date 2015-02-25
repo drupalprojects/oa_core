@@ -197,21 +197,17 @@ class OgSubspacesSelectionHandler extends EntityReference_SelectionHandler_Gener
           // Determine which groups should be selectable.
           $node = $this->entity;
           $node_type = $this->instance['bundle'];
-          $ids = array();
-          foreach ($user_groups as $gid) {
-            // Check if user has "create" permissions on those groups.
-            // If the user doesn't have create permission, check if perhaps the
-            // content already exists and the user has edit permission.
-            if (og_user_access($group_type, $gid, "create $node_type content")) {
-              $ids[] = $gid;
+          $has_create_access = array_keys(array_filter(oa_user_access_nids('node', $user_groups, "create $node_type content")));
+          $has_update_access = array();
+          $remaining = array_diff($user_groups, $has_create_access);
+          if (!empty($node->nid) && $remaining && ($node_groups = array_diff(og_get_entity_groups('node', $node->nid), $remaining))) {
+            $check_perms = array("update any $node_type content");
+            if ($user->uid == $node->uid) {
+              $check_perms = "update own $node_type content";
             }
-            elseif (!empty($node->nid) && (og_user_access($group_type, $gid, "update any $node_type content") || ($user->uid == $node->uid && og_user_access($group_type, $gid, "update own $node_type content")))) {
-              $node_groups = isset($node_groups) ? $node_groups : og_get_entity_groups('node', $node->nid);
-              if (in_array($gid, $node_groups['node'])) {
-                $ids[] = $gid;
-              }
-            }
+            $has_update_access = array_keys(array_filter(oa_user_access_nids('node', $node_groups, $check_perms)));
           }
+          $ids = array_merge($has_update_access, $has_create_access);
         }
         else {
           $ids = $user_groups;
