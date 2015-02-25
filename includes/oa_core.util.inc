@@ -1372,73 +1372,192 @@ function oa_core_get_summary($node) {
  * Determine whether a user has a given privilege for groups.
  *
  * This modules the logic of og_user_access but for multiple node groups.
- * IMPORTANT, any changes to og_user_access reflect here AND
- * hook_og_user_access_alter is ignored.
+ * IMPORTANT, any changes to og_user_access reflect here.
  *
+ * We cannot offer any speed improvements if og_user_access_alter is implemented
+ * as it requires a entity_load.
+ *
+ * @param $group_type
+ *  This will fall through to og_user_access access if not 'node'
  * @param $nids
  *   Array of node nids that are groups.
+ * @param $string
+ *  String can be a string or array of strings (which diverges from 
+ *   og_user_access) of permissions to check. If an array is passed,
+ *   it'll be TRUE for that group if user has ANY of the permissions.
  *
  * @return
  *   An array of nids to access.
  */
-function oa_user_access_nids($nids, $string, $account = NULL) {
+function oa_user_access_nids($group_type, $nids, $string, $account = NULL, $skip_alter = FALSE, $ignore_admin = FALSE) {
   global $user;
-  $access = &drupal_static(__FUNCTION__, array());
+  $strings = is_array($string) ? $string : array($string);
 
+  $access = &drupal_static(__FUNCTION__, array());
   if (empty($account)) {
-    $account = clone $user;
+    $account = $user;
   }
 
   $nids = drupal_map_assoc($nids);
 
-  // Administer group permission.
-  if ($account->uid == 1 || user_access('administer group', $account)) {
+  // Administer group permission. We don't cache it cause ignore_admin can change.
+  if ($account->uid == 1 || (!$ignore_admin && user_access('administer group', $account))) {
+    $return = array();
     foreach ($nids as $nid) {
-      $access[$nid] = TRUE;
+      $return[$nid] = TRUE;
     }
-    return array_intersect_key($access[$string], $nids);
+    return $return;
   }
 
-  if (!empty($perms[$string])) {
-    $lookup = array_diff_key($nids, $access[$string]);
-    // No new NIDS, return access.
-    if (!$lookup) {
-      return array_intersect_key($access[$string], $nids);
+  // We don't handle not-nodes (cause hard to look up owner), the alter hook
+  // (it needs full node_load).
+  $alter = module_implements('og_user_access_alter');
+  foreach (array('og_subgroups', 'og_ui') as $remove) {
+    $pos = array_search($remove, $alter);
+    if ($pos !== FALSE) {
+      unset($alter[$pos]);
     }
   }
-  else {
-    $lookup = $nids;
+  if ($group_type != 'node' || (!$skip_alter && $alter)) {
+    foreach ($nids as $nid) {
+      foreach ($strings as $string) {
+        if (!isset($access[$account->uid][$string][$nid])) {
+          $access[$account->uid][$string][$nid] = og_user_access($group_type, $nid, $string, $account, $skip_alter, $ignore_admin);
+        }
+      }
+    }
+  }
+
+  $lookup = array();
+  $all_lookup = array();
+  // Find what nodes/permissions still need to be looked up.
+  foreach ($strings as $string) {
+    if (!empty($access[$account->uid][$string])) {
+      $lookup[$string] = array_diff_key($nids, $access[$account->uid][$string]);
+    }
+    else {
+      $lookup[$string] = $nids;
+    }
+    if (!$lookup[$string]) {
+      unset($lookup[$string]);
+    }
+  }
+  foreach ($lookup as $string => $nids_array) {
+    $all_lookup += $nids_array;
   }
 
   // Group manager has all privileges (if variable is TRUE).
-  if (!empty($account->uid) && variable_get('og_group_manager_full_access', TRUE)) {
-    $authored = db_query('SELECT nid FROM {node} WHERE nid in :nids AND uid = :uid', array('nids' => $lookup, ':uid' => $account->uid))->fetchCol();
+  if ($all_lookup && !empty($account->uid) && variable_get('og_group_manager_full_access', TRUE)) {
+    $authored = db_query('SELECT nid FROM {node} WHERE nid in :nids AND uid = :uid', array('nids' => $all_lookup, ':uid' => $account->uid))->fetchCol();
     foreach ($authored as $nid) {
-      $access[$string][$nid] = TRUE;
-      unset($lookup[$nid]);
+      foreach ($strings as $string) {
+        $access[$account->uid][$string][$nid] = TRUE;
+        unset($lookup[$string][$nid]);
+        unset($all_lookup[$nid]);
+      }
     }
   }
 
-  if ($lookup && !empty($account->uid)) {
+  if ($all_lookup && !empty($account->uid)) {
+    // Add administer group as first permission checked (as most likely).
+    if (!$ignore_admin) {
+      array_unshift($strings, 'administer group');
+    }
+
+    /**
+     * The query needed is quite complex for regular oa access.
+     *
+     * The rid in og_users_roles can either be associated with no group if
+     * the roles have not been overriden or with the group if they have.
+     *
+     * The rid can either be associated with the user or the 'member' role
+     * which is added automatically.
+     *
+     * Below is a sample query.
+     * @code
+     * SELECT om.gid, orp.permission
+     * FROM og_role_permission orp
+     * INNER JOIN og_role oro ON oro.rid = orp.rid
+     * INNER JOIN og_membership om ON om.group_type = 'node' AND oro.group_type = 'node' AND om.entity_type='user'
+     * INNER JOIN field_data_og_roles_permissions fdp on fdp.entity_type = 'node' AND fdp.entity_id = om.gid
+     * LEFT JOIN og_users_roles our ON our.rid = oro.rid AND our.uid = om.etid AND our.group_type = "node" AND our.gid = om.gid
+     * WHERE om.etid = 159 
+     *   AND (oro.gid = om.gid OR (fdp.og_roles_permissions_value = 0 and oro.gid = 0)) 
+     *   AND (our.uid = 159 OR oro.name = 'member')
+     *   AND om.state = 1 AND om.gid IN (139);
+     * @endcode
+     */
     $query = db_select('og_role_permission', 'orp');
-    $query->innerJoin('og_users_roles', 'our', 'our.rid = orp.rid');
-    $query->innerJoin('og_membership', 'om', "om.group_type = 'node' AND  our.group_type = 'node' AND our.gid = om.gid AND om.etid = our.uid AND entity_type='user'");
+    $query->innerJoin('og_role', 'oro', 'oro.rid = orp.rid');
+    $query->innerJoin('og_membership', 'om', "om.group_type = 'node' AND oro.group_type = 'node' AND om.entity_type='user'");
+    $query->innerJoin('field_data_og_roles_permissions', 'fdp', "fdp.entity_type = 'node' AND fdp.entity_id = om.gid");
+    $query->leftJoin('og_users_roles', 'our', "our.rid = oro.rid AND our.uid = om.etid AND our.group_type = 'node' AND our.gid = om.gid");
     $query->fields('om', array('gid'));
+    $query->fields('orp', array('permission'));
     $query->condition('om.etid', $account->uid);
-    $query->condition('orp.permission', array('administer group', $string));
+    $and = db_and()
+      ->condition('fdp.og_roles_permissions_value', 0)
+      ->condition('oro.gid', 0);
+    $or = db_or()
+      ->where('oro.gid = om.gid')
+      ->condition($and);
+    $query->condition($or);
+    $or = db_or()
+      ->condition('our.uid', $account->uid)
+      ->condition('oro.name', 'member');;
+    $query->condition($or);
+    $query->condition('orp.permission', $strings);
     $query->condition('state', OG_STATE_ACTIVE);
-    $query->condition('om.gid', $lookup);
+    $query->condition('om.gid', $all_lookup);
     $result = $query->execute();
-    $permission_nids = $result->fetchCol();
-    foreach ($permission_nids as $nid) {
-      $access[$string][$nid] = TRUE;
-      unset($lookup[$nid]);
+    $rows = $result->fetchAll();
+    foreach ($rows as $row) {
+      $access[$account->uid][$row->permission][$row->gid] = TRUE;
+      unset($lookup[$row->permission][$row->gid]);
     }
   }
   // Any extra NID is no access.
-  foreach ($lookup as $nid) {
-    $access[$string][$nid] = FALSE;
+  foreach ($lookup as $string => $nids_array) {
+    foreach ($nids_array as $nid) {
+      // This should not be set, but just in case only set to false if not.
+      if (!isset($access[$account->uid][$string][$nid])) {
+        $access[$account->uid][$string][$nid] = FALSE;
+      }
+    }
   }
 
-  return array_intersect_key($access[$string], $nids);
+  // Figure out if user has any access.
+  $return = array();
+  $remaining_nids = $nids;
+  do {
+    $string = array_shift($strings);
+    if (!empty($access[$account->uid][$string])) {
+      $return += array_filter(array_intersect_key($access[$account->uid][$string], $remaining_nids));
+    }
+    $remaining_nids = array_diff_key($nids, $return);
+  } while ($remaining_nids && $strings);
+  // If no strings left, there are no access.
+  if ($remaining_nids) {
+    foreach ($remaining_nids as $nid) {
+      $return[$nid] = FALSE;
+    }
+  }
+
+  // Need to return array as combination of strings.
+  return $return;
 }
+
+/**
+ * Replacement for og_user_access.
+ *
+ * Because we don't use the alter hook, we don't need to do the full entity load
+ * so often checking via direct query (if node is unlikely to have been loaded)
+ * is faster.
+ *
+ * @see og_user_access
+ */
+function oa_user_access($group_type, $gid, $string, $account = NULL, $skip_alter = FALSE, $ignore_admin = FALSE) {
+  $access = oa_user_access_nids($group_type, array($gid), $string, $account, $skip_alter, $ignore_admin);
+  return reset($access);
+}
+

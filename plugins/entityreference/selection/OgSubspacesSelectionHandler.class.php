@@ -285,19 +285,7 @@ class OgSubspacesSelectionHandler extends EntityReference_SelectionHandler_Gener
       return $ids;
     }
 
-    // If og_user_access_alter doesn't exist, we can optomize
-    if (!module_implements('og_user_access_alter') && $this->field['settings']['target_type'] == 'node') {
-      $access = oa_user_access_nids($ids, "create $node_type content");
-      $ids = array_intersect($ids, array_keys(array_filter($access)));
-    }
-    else {
-      $node_type = $this->instance['bundle'];
-      foreach ($ids as $delta => $id) {
-        if (!is_numeric($id) || !$id || !og_user_access($this->field['settings']['target_type'], $id, "create $node_type content")) {
-          unset($ids[$delta]);
-        }
-      }
-    }
-    return $ids;
+    $access = oa_user_access_nids($this->field['settings']['target_type'], $ids, "create $node_type content");
+    return array_intersect($ids, array_keys(array_filter($access)));
   }
 }
