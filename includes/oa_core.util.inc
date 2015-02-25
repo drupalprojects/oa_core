@@ -1418,7 +1418,9 @@ function oa_user_access_nids($group_type, $nids, $string, $account = NULL, $skip
       unset($alter[$pos]);
     }
   }
-  if ($group_type != 'node' || (!$skip_alter && $alter)) {
+  // We cannot replicate unknown alters or unsubscribe logic, so fallback.
+  // @see og_ui_og_user_access_alter().
+  if ($group_type != 'node' || (!$skip_alter && $alter) || in_array('unsubscribe', $strings)) {
     foreach ($nids as $nid) {
       foreach ($strings as $string) {
         if (!isset($access[$account->uid][$string][$nid])) {
@@ -1479,17 +1481,21 @@ function oa_user_access_nids($group_type, $nids, $string, $account = NULL, $skip
      * FROM og_role_permission orp
      * INNER JOIN og_role oro ON oro.rid = orp.rid
      * INNER JOIN og_membership om ON om.group_type = 'node' AND oro.group_type = 'node' AND om.entity_type='user'
+     * INNER JOIN node n ON n.nid = om.gid
      * INNER JOIN field_data_og_roles_permissions fdp on fdp.entity_type = 'node' AND fdp.entity_id = om.gid
      * LEFT JOIN og_users_roles our ON our.rid = oro.rid AND our.uid = om.etid AND our.group_type = "node" AND our.gid = om.gid
      * WHERE om.etid = 159 
-     *   AND (oro.gid = om.gid OR (fdp.og_roles_permissions_value = 0 and oro.gid = 0)) 
+     *   AND (oro.gid = om.gid OR (fdp.og_roles_permissions_value = 0 and oro.gid = 0 AND oro.group_bundle = n.type)) 
      *   AND (our.uid = 159 OR oro.name = 'member')
      *   AND om.state = 1 AND om.gid IN (139);
      * @endcode
+     *
+     * @todo BUNDLE DAMMIT
      */
     $query = db_select('og_role_permission', 'orp');
     $query->innerJoin('og_role', 'oro', 'oro.rid = orp.rid');
     $query->innerJoin('og_membership', 'om', "om.group_type = 'node' AND oro.group_type = 'node' AND om.entity_type='user'");
+    $query->innerJoin('node', 'n', "n.nid = om.gid");
     $query->innerJoin('field_data_og_roles_permissions', 'fdp', "fdp.entity_type = 'node' AND fdp.entity_id = om.gid");
     $query->leftJoin('og_users_roles', 'our', "our.rid = oro.rid AND our.uid = om.etid AND our.group_type = 'node' AND our.gid = om.gid");
     $query->fields('om', array('gid'));
@@ -1497,7 +1503,8 @@ function oa_user_access_nids($group_type, $nids, $string, $account = NULL, $skip
     $query->condition('om.etid', $account->uid);
     $and = db_and()
       ->condition('fdp.og_roles_permissions_value', 0)
-      ->condition('oro.gid', 0);
+      ->condition('oro.gid', 0)
+      ->where('n.type = oro.group_bundle');
     $or = db_or()
       ->where('oro.gid = om.gid')
       ->condition($and);
@@ -1516,6 +1523,20 @@ function oa_user_access_nids($group_type, $nids, $string, $account = NULL, $skip
       unset($lookup[$row->permission][$row->gid]);
     }
   }
+  // Check parent access.
+  // This needs further optomization.
+  if ($lookup && !$skip_alter && in_array('og_subgroups', module_implements('og_user_access_alter'))) {
+    $user_groups = og_subgroup_user_groups_load($account, FALSE);
+    foreach ($lookup as $string => $nids_array) {
+      foreach ($nids_array as $nid) {
+        if (oa_og_subgroups_check_access($string, $group_type, $nid, $user_groups, TRUE)) {
+          $access[$account->uid][$string][$nid] = TRUE;
+          unset($lookup[$string][$nid]);
+        }
+      }
+    }
+  }
+  
   // Any extra NID is no access.
   foreach ($lookup as $string => $nids_array) {
     foreach ($nids_array as $nid) {
@@ -1545,6 +1566,44 @@ function oa_user_access_nids($group_type, $nids, $string, $account = NULL, $skip
 
   // Need to return array as combination of strings.
   return $return;
+}
+
+/**
+ * Check access for this group's parents.
+ *
+ * Copy of _og_subgroups_check_access but using our functions for optomization.
+ *
+ * @see _og_subgroups_check_access().
+ */
+function oa_og_subgroups_check_access($string, $group_type, $id, $user_groups, $check_member_access = FALSE) {
+  // Check only one level at a time due to permission inheritance field.
+  if ($parent_groups = og_subgroups_intersect_groups(og_subgroups_parents_load($group_type, $id, TRUE, FALSE), $user_groups)) {
+    foreach ($parent_groups as $parent_group_type => $ids) {
+      // Find all groups that ahve inheritence set to child (assume inherit
+      // [default] otherwise).
+      $child_inheritence = _og_subgroups_get_field_matching($parent_group_type, $ids, OG_USER_INHERITANCE_PERMISSION_FIELD, OG_USER_INHERITANCE_PERMISSION_CHILD);
+      $parent_inheritence = array_diff($ids, $child_inheritence);
+      if ($parent_inheritence = array_diff($ids, $child_inheritence)) {
+        if (array_filter(oa_user_access_nids($parent_group_type, $parent_inheritence, $string, NULL, TRUE))) {
+          return TRUE;
+        }
+      }
+      if ($check_member_access) {
+        foreach ($child_inheritence as $parent_group_id) {
+          if (og_subgroups_check_member_user_access($group_type, $id, $string)) {
+            return TRUE;
+          }
+        }
+      }
+      // Check parents if neither current nor member gave access.
+      foreach ($parent_inheritence as $parent_group_id) {
+        if (oa_og_subgroups_check_access($string, $parent_group_type, $parent_group_id, $user_groups)) {
+          return TRUE;
+        }
+      }
+    }
+  }
+  return FALSE;
 }
 
 /**

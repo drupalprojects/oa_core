@@ -269,6 +269,7 @@ class OgSubspacesSelectionHandler extends EntityReference_SelectionHandler_Gener
       // Existing node.
       return array();
     }
+    $node_type = $this->instance['bundle'];
 
     // want to check for create access to public spaces
     $ids = oa_core_get_public_spaces();
@@ -281,7 +282,7 @@ class OgSubspacesSelectionHandler extends EntityReference_SelectionHandler_Gener
       }
     }
     // Allow bypassing this logic if user can create content globally.
-    if (user_access('administer group', $account) || (!variable_get('og_node_access_strict', TRUE) || user_access("create $node_type content"))) {
+    if (user_access('administer group') || (!variable_get('og_node_access_strict', TRUE) || user_access("create $node_type content"))) {
       return $ids;
     }
 
