@@ -30,8 +30,8 @@ projects[ctools][patch][2023705] = http://drupal.org/files/2023705-ctools-autosu
 projects[ctools][patch][2423839] = https://www.drupal.org/files/issues/2423839-ctools-node_tag-2.patch
 
 ; Entity API
-; Override panopoly_core.make: 1.5
-projects[entity][version] = 1.5
+; Override panopoly_core.make: 1.6
+projects[entity][version] = 1.6
 projects[entity][subdir] = contrib
 ; additional patches for OA
 projects[entity][patch][1782134] = http://drupal.org/files/entity-translatable_fields_not_overriding_und_with_empty_values-1782134-5.patch
