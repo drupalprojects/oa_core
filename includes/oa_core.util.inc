@@ -343,7 +343,7 @@ function oa_core_get_parents($nid, $bundle = OA_SPACE_TYPE, $status = NULL, $inc
  * @param string|NULL $bundle
  *   (optional) The node type (default: OA_SPACE_TYPE). If NULL is passed, it
  *   will include all node types.
- * @param int|NULL $status 
+ * @param int|NULL $status
  *   (optional) If specified, the node status (ex. NODE_PUBLISHED or
  *   NODE_NOT_PUBLISHED) to look for. If not specified, it return 
  *   nodes of either status.
@@ -381,7 +381,7 @@ function oa_core_get_groups_by_parent($nids, $bundle = OA_SPACE_TYPE, $status = 
     $hash = $nids;
   }
 
-  $cid = oa_core_get_cache_id(OA_CACHE_GROUPS_BY_PARENT, $hash . '_' . $uid, $include_archived, array($bundle, $status, $subspaces));
+  $cid = oa_core_get_cache_id(OA_CACHE_GROUPS_BY_PARENT, $hash . '_' . $uid, $include_archived, array(serialize($bundle), $status, $subspaces));
   if (oa_core_get_cache(OA_CACHE_GROUPS_BY_PARENT, $cid, $result)) {
     return $result;
   }
