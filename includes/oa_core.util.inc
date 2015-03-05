@@ -444,24 +444,30 @@ function oa_core_get_groups_by_parent($nids, $bundle = OA_SPACE_TYPE, $status = 
 }
 
 /**
- * Helper function to return children of a list of parents
+ * Helper function to return children of a list of parents.
+ *
  * @param $all_parents array of nid,gid for all spaces
  * @param $nids array an array of parents we want children for
  */
-function _oa_core_get_all_children(&$all_parents, $nids) {
-  $result = array();
-  $children = array();
-  foreach ($nids as $nid) {
-    foreach ($all_parents as $parent) {
-      if ($parent->gid == $nid) {
-        $children[] = $parent->nid;
-      }
+function _oa_core_get_all_children(&$all_parents, $nids, &$processed = NULL) {
+  if (!isset($processed)) {
+    $processed = array();
+    $save = $all_parents;
+    $all_parents = array();
+    foreach ($save as $parent) {
+      $all_parents[$parent->gid][] = $parent->nid;
     }
   }
-  if (!empty($children)) {
-    $result = _oa_core_get_all_children($all_parents, $children);
+  $processed = array_merge($nids, $processed);
+  $result = array();
+  $children = array();
+  foreach (array_intersect_key($all_parents, array_flip($nids)) as $parent_children) {
+    $children = array_merge($children, $parent_children);
   }
-  $result = array_unique( array_merge($nids, $result), SORT_NUMERIC);
+  if ($new_children = array_diff($children, $processed)) {
+    $result = _oa_core_get_all_children($all_parents, $new_children, $processed);
+  }
+  $result = array_unique(array_merge($nids, $result), SORT_NUMERIC);
   return $result;
 }
 
