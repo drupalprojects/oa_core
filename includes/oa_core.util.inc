@@ -390,17 +390,16 @@ function oa_core_get_groups_by_parent($nids, $bundle = OA_SPACE_TYPE, $status = 
     $nids = array($nids);
   }
   $query = db_select('node', 'n');
-  $query->leftJoin('og_membership', 'f', "n.nid = f.etid");
+  $query->join('og_membership', 'f', "n.nid = f.etid AND f.entity_type = 'node'");
   $query
     ->fields('n', array('nid'))
-    ->condition('f.entity_type', 'node')
     ->orderBy('n.title');
 
   // to find all subspaces, we query *all* spaces with parents
   // otherwise, if just getting top level children we can filter it here.
   if (!$subspaces) {
-    $query->condition('f.gid', $nids, 'IN')
-    ->addTag('node_access');
+    $query->condition('f.gid', $nids, 'IN');
+    $query->addTag('node_access');
   }
 
   if (isset($bundle)) {
@@ -427,7 +426,7 @@ function oa_core_get_groups_by_parent($nids, $bundle = OA_SPACE_TYPE, $status = 
   if ($subspaces) {
     $query->fields('f', array('gid'));
     $query->condition('f.etid', $nids, 'NOT IN');
-    $query->join('field_data_og_user_inheritance', 'inh', "inh.entity_id = f.etid && inh.entity_type = 'node'");
+    $query->join('field_data_og_user_inheritance', 'inh', "inh.entity_id = f.gid && f.group_type = 'node'");
     $query->condition('inh.og_user_inheritance_value', 1);
     $all_parents = $query->execute()->fetchAll();
     // to get a list of all subspaces, we can now loop through the list of all parents recursively
