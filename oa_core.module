@@ -1314,7 +1314,7 @@ function oa_core_oa_core_space_type_options($term, $vocab_name) {
  * Alters a node edit form to hide comment settings.
  */
 function _oa_core_hide_comment_settings(&$form) {
-  if (isset($form['comment_settings'])) {
+  if (isset($form['comment_settings']) && (empty($form['#node']->type) || variable_get('comment_' . $form['#node']->type, COMMENT_NODE_OPEN) == COMMENT_NODE_HIDDEN)) {
     $form['comment_settings']['#access'] = FALSE;
   }
 }
