@@ -285,9 +285,9 @@ function oa_core_get_section_context() {
  *   items aren't included.
  *
  * @return array
- *   Array of parent NIDs.
+ *   Array of parent NIDs to titles.
  */
-function oa_core_get_parents($nid, $bundle = OA_SPACE_TYPE, $status = NULL, $include_archived = FALSE, $account = NULL) {
+function oa_core_get_parents_with_titles($nid, $bundle = OA_SPACE_TYPE, $status = NULL, $include_archived = FALSE, $fetcha_all = TRUE, $account = NULL) {
   if (!isset($account)) {
     global $user;
     $uid = $user->uid;
@@ -299,40 +299,97 @@ function oa_core_get_parents($nid, $bundle = OA_SPACE_TYPE, $status = NULL, $inc
     $uid = $account->uid;
   }
 
-  $cid = oa_core_get_cache_id(OA_CACHE_GET_PARENTS, $nid . '_' . $uid, $include_archived, array($bundle, $status));
+  $cid = oa_core_get_cache_id(OA_CACHE_GET_PARENTS, $nid . '_' . $uid . '_' . ($fetcha_all ? '1' : '0'), $include_archived, array($bundle, $status));
   if (oa_core_get_cache(OA_CACHE_GET_PARENTS, $cid, $result)) {
     return $result;
   }
 
-  $query = db_select('node', 'n');
-  $query->leftJoin('og_membership', 'f', "n.nid = f.gid");
-  if (isset($bundle)) {
-    $query->condition('n.type', $bundle);
-  }
-  if (isset($status)) {
-    $query->condition('n.status', $status);
-  }
-  $query
-    ->fields('n', array('nid'))
-    ->condition('f.etid', $nid)
-    ->condition('f.entity_type', 'node')
-    ->orderBy('n.title')
-    ->addTag('node_access');
-
-  if (module_exists('flag') && !$include_archived) {
-    if ($flag = flag_get_flag('trash')) {
-      $query->leftJoin('flag_content', 'a', "a.fid = :fid AND a.content_id = n.nid", array(':fid' => $flag->fid));
-      // This makes sure that archived content isn't included, because 'uid'
-      // will be NULL if the join didn't connect anything.
-      $query->isNull('a.uid');
-    }
-  }
-
-  $result = $query->execute()->fetchCol(0);
+  $result = og_subgroups_parents_load('node', $nid, FALSE, $fetcha_all);
+  $result = !empty($result['node']) ? oa_core_get_nids_title_matching($result['node'], $bundle, $status, $include_archived, $account) : array();
 
   oa_core_set_cache(OA_CACHE_GET_PARENTS, $cid, $result);
 
   return $result;
+}
+
+/**
+ * Get parent Spaces and Groups.
+ *
+ * @param int $nid
+ *   The NID of the Space or Group to check.
+ * @param string|NULL $bundle
+ *   (optional) The node type (default: OA_SPACE_TYPE). If NULL is passed, it
+ *   will include all node types.
+ * @param int|NULL $status 
+ *   (optional) If specified, the node status (ex. NODE_PUBLISHED or
+ *   NODE_NOT_PUBLISHED) to look for. If not specified, it return 
+ *   nodes of either status.
+ * @param bool $include_archived
+ *   (optional) Whether to include archived nodes or not. By default, archived
+ *   items aren't included.
+ *
+ * @return array
+ *   Array of parent NIDs to titles.
+ */
+function oa_core_get_parents($nid, $bundle = OA_SPACE_TYPE, $status = NULL, $include_archived = FALSE, $fetch_all = FALSE, $account = NULL) {
+  $parents = oa_core_get_parents_with_titles($nid, $bundle, $status, $include_archived, $fetch_all, $account);
+  return array_keys($parents);
+}
+
+/**
+ * Get the nids => title matching criteria from a set of nids.
+ *
+ * @param int $nid
+ *   The NID of the Space or Group to check.
+ * @param string|NULL $bundle
+ *   (optional) The node type (default: OA_SPACE_TYPE). If NULL is passed, it
+ *   will include all node types.
+ * @param int|NULL $status 
+ *   (optional) If specified, the node status (ex. NODE_PUBLISHED or
+ *   NODE_NOT_PUBLISHED) to look for. If not specified, it return 
+ *   nodes of either status.
+ * @param bool $include_archived
+ *   (optional) Whether to include archived nodes or not. By default, archived
+ *   items aren't included.
+ *
+ * @return array
+ *   Array of parent NIDs to title.
+ */
+function oa_core_get_nids_title_matching($nids, $bundle = OA_SPACE_TYPE, $status = NULL, $include_archived = FALSE, $account = NULL) {
+  if (is_numeric($account)) {
+    $account = user_load($uid);
+  }
+  elseif (!$account) {
+    global $user;
+    $account = $user;
+  }
+  sort($nids);
+  $cid = implode(':', $nids);
+  $cache = &drupal_static(__FUNCTION__, array());
+  if (!isset($cache[$cid])) {
+    $query = db_select('node', 'n');
+    if ($bundle) {
+      $query->condition('n.type', $bundle);
+    }
+    if (isset($status)) {
+      $query->condition('n.status', $status);
+    }
+    $query->condition('n.nid', $nids);
+    $query
+      ->fields('n', array('nid', 'title'))
+      ->addTag('node_access')
+      ->addMetaData('account', $account);
+    if (module_exists('oa_archive') && !$include_archived) {
+      if ($flag = flag_get_flag('trash')) {
+        $query->leftJoin('flag_content', 'a', "a.fid = :fid AND a.content_id = n.nid", array(':fid' => $flag->fid));
+        // This makes sure that archived content isn't included, because 'uid'
+        // will be NULL if the join didn't connect anything.
+        $query->isNull('a.uid');
+      }
+    }
+    $cache[$cid] = $query->execute()->fetchAllKeyed();
+  }
+  return $cache[$cid];
 }
 
 /**
