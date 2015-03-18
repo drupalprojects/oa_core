@@ -287,7 +287,7 @@ function oa_core_get_section_context() {
  * @return array
  *   Array of parent NIDs to titles.
  */
-function oa_core_get_parents_with_titles($nid, $bundle = OA_SPACE_TYPE, $status = NULL, $include_archived = FALSE, $fetcha_all = TRUE, $account = NULL) {
+function oa_core_get_parents_with_titles($nid, $bundle = OA_SPACE_TYPE, $status = NULL, $include_archived = FALSE, $fetcha_all = FALSE, $account = NULL) {
   if (!isset($account)) {
     global $user;
     $uid = $user->uid;
