@@ -19,12 +19,11 @@ projects[views][patch][2411922] = https://www.drupal.org/files/issues/2411922-vi
 projects[views][patch][2018737] = https://www.drupal.org/files/issues/views-asset-diff-2018737-37.patch
 
 ; CTools
-; Override panopoly_core.make: 1.5
-projects[ctools][version] = 1.6
+; Override panopoly_core.make: 1.7
+projects[ctools][version] = 1.7
 projects[ctools][subdir] = contrib
-projects[ctools][patch][2119357] = http://www.drupal.org/files/issues/2119357-6_0.patch
 ; additional patches for OA
-projects[ctools][patch][1910608] = https://www.drupal.org/files/issues/views_content-ajax-1910608-23_0.patch
+projects[ctools][patch][1910608] = https://www.drupal.org/files/issues/views_content-ajax-1910608-29.patch
 projects[ctools][patch][1901106] = https://www.drupal.org/files/issues/ctools-views_content-exposed_form_override-1901106-27.patch
 projects[ctools][patch][2023705] = http://drupal.org/files/2023705-ctools-autosubmit-2_0.patch
 projects[ctools][patch][2423839] = https://www.drupal.org/files/issues/2423839-ctools-node_tag-2.patch
