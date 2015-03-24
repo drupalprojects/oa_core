@@ -236,7 +236,7 @@ function oa_core_select2widget_ajax_callback($add_current_option, $field_name, $
   // Current for the pane config so current isn't hard coded (for cloning).
   if ($add_current_option) {
     $matches[] = array(
-      'id' => 'CURRENT',
+      'id' => OA_SPACE_CURRENT,
       'title' => _oa_core_select2widget_current_label(),
       'data' => '<div class="reference-select2widget">' . _oa_core_select2widget_current_label() . '</div>',
     );
@@ -988,6 +988,7 @@ function oa_core_form_views_content_views_panes_content_type_edit_form_alter(&$f
     // Replace autocomplete path to one that returns Current Space as an option.
     if (isset($form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#autocomplete_path'])) {
       $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#autocomplete_path'] = str_replace('oacoreselect2widget', 'oacoreselect2widgetpanes', $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#autocomplete_path']);
+      $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#oa_core_in_pane_config'] = TRUE;
     }
     $form['exposed']['filter-og_group_ref_target_id']['og_group_ref_target_id']['#states'] = array(
       'visible' => array(
