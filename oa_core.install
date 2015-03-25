@@ -298,3 +298,14 @@ function oa_core_update_7229() {
     }
   }
 }
+
+/**
+ * Mark that node access needs to be rebuilt.
+ */
+function oa_core_update_7231() {
+  if (module_exists('oa_plupload') || module_exists('media_multiselect')) {
+    drupal_set_message(t('oa_plupload and media_multiselect have been deprecated for oa_media and will be disabled.'));
+    module_disable(array('oa_plupload', 'media_multiselect'));
+    module_enable(array('oa_media'));
+  }
+}
