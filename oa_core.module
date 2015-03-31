@@ -519,7 +519,7 @@ function oa_core_og_fields_info_alter(&$return) {
 
 
 /**
- * Implements hook_form_alter for node edit forms
+ * Implements hook_form_FORM_ID_alter() node_form.
  */
 function oa_core_form_node_form_alter(&$form, &$form_state, $form_id) {
   // Modify label on Panelizer layout field.
@@ -534,7 +534,9 @@ function oa_core_form_node_form_alter(&$form, &$form_state, $form_id) {
     && empty($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'])
     && ($group = node_load($form['#node']->{OA_SPACE_FIELD}[LANGUAGE_NONE][0]['target_id']))
     && (!isset($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin'])
-      || ($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin']['#default_value'] == $group->title . ' (' . $group->nid . ')'))
+      || ($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin']['#default_value'] == $group->title . ' (' . $group->nid . ')' 
+      // This will return both user groups and subspaces, is cached.
+      && in_array($group->nid, oa_core_get_groups_by_user(NULL, 'node'))))
     ) {
     $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'] = $group->title . ' (' . $group->nid . ')';
     $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#init'][$group->nid] = $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'];
