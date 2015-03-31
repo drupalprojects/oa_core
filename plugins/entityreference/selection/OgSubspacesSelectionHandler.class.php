@@ -144,7 +144,7 @@ class OgSubspacesSelectionHandler extends EntityReference_SelectionHandler_Gener
     if (!$ids) {
       return $ids;
     }
-    $field_mode = $this->instance['field_mode'];
+    $field_mode = isset($this->instance['field_mode']) ? $this->instance['field_mode'] : 'all';
     if ($field_mode == 'default') {
       $group_type = $this->field['settings']['target_type'];
       $user_groups = oa_core_get_groups_by_user(NULL, $group_type);
