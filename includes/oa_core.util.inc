@@ -795,7 +795,9 @@ function oa_core_get_titles($ids = array(), $type = '', $sort_field = 'title', $
     if (!empty($type)) {
       $query->condition('n.type', $type);
     }
-    $query->range(0, $limit);
+    if ($limit) {
+      $query->range(0, $limit);
+    }
     $result = $query->execute();
 
     // if $sort_field is empty, maintain the order of the original $ids

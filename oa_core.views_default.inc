@@ -188,10 +188,6 @@ function oa_core_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Open Atrium: Is Parent */
-  $handler->display->display_options['filters']['is_parent']['id'] = 'is_parent';
-  $handler->display->display_options['filters']['is_parent']['table'] = 'field_data_oa_parent';
-  $handler->display->display_options['filters']['is_parent']['field'] = 'is_parent';
   /* Filter criterion: Content: Type */
   $handler->display->display_options['filters']['type_1']['id'] = 'type_1';
   $handler->display->display_options['filters']['type_1']['table'] = 'node';
@@ -464,10 +460,6 @@ function oa_core_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Open Atrium: Is Parent */
-  $handler->display->display_options['filters']['is_parent']['id'] = 'is_parent';
-  $handler->display->display_options['filters']['is_parent']['table'] = 'field_data_oa_parent';
-  $handler->display->display_options['filters']['is_parent']['field'] = 'is_parent';
   /* Filter criterion: Content: Type */
   $handler->display->display_options['filters']['type_1']['id'] = 'type_1';
   $handler->display->display_options['filters']['type_1']['table'] = 'node';
