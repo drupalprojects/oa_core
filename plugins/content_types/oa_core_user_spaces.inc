@@ -49,7 +49,10 @@ function oa_core_user_spaces_render($subtype, $conf, $args, $context = NULL) {
     $group_types = array(OA_SPACE_TYPE => OA_SPACE_TYPE);
   }
   $all_spaces_ids = oa_core_get_public_spaces($group_types);
-  $active_spaces_ids = oa_core_get_groups_by_user_access($account);
+  $active_spaces_ids = array();
+  foreach ($group_types as $type) {
+    $active_spaces_ids = array_merge($active_spaces_ids, oa_core_get_groups_by_user_access($account, FALSE, NULL, NULL, NULL, $type));
+  }
   $active_spaces_ids = array_map(
     function($node) { return $node->nid; },
     $active_spaces_ids);
