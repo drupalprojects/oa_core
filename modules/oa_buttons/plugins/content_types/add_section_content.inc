@@ -46,6 +46,8 @@ function oa_buttons_add_section_content_render($subtype, $conf, $args, $context)
         'wrapper_class' => array(
           'oa-buttons',
         ),
+        'use_dropdowns' => FALSE,
+        'dropdown_label' => NULL,
       );
       $block = new stdClass();
       $block->title = t('Create Content');
