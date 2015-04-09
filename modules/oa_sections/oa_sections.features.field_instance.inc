@@ -63,7 +63,8 @@ function oa_sections_field_default_field_instances() {
   // Exported field_instance: 'node-oa_section-field_oa_group_ref'
   $field_instances['node-oa_section-field_oa_group_ref'] = array(
     'bundle' => 'oa_section',
-    'default_value' => NULL,
+    'comment_alter' => 0,
+    'default_value' => array(),
     'deleted' => 0,
     'description' => 'Leave empty for public access, otherwise select Groups that can view this Section.',
     'display' => array(
@@ -92,6 +93,12 @@ function oa_sections_field_default_field_instances() {
     'entity_type' => 'node',
     'field_name' => 'field_oa_group_ref',
     'label' => 'Groups',
+    'options_limit' => 0,
+    'options_limit_empty_behaviour' => 0,
+    'options_limit_fields' => array(
+      'body' => 0,
+      'og_group_ref' => 0,
+    ),
     'required' => 0,
     'settings' => array(
       'behaviors' => array(
@@ -109,11 +116,16 @@ function oa_sections_field_default_field_instances() {
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'options',
+      'module' => 'select2widget',
       'settings' => array(
-        'apply_chosen' => 0,
+        'select2widgetajax' => array(
+          'match_operator' => 'CONTAINS',
+          'min_char' => 1,
+          'view_mode' => 'select2widget_labels',
+          'width' => '',
+        ),
       ),
-      'type' => 'options_select',
+      'type' => 'select2widgetajax',
       'weight' => 4,
     ),
   );
@@ -270,7 +282,8 @@ function oa_sections_field_default_field_instances() {
   // Exported field_instance: 'node-oa_section-field_oa_team_ref'
   $field_instances['node-oa_section-field_oa_team_ref'] = array(
     'bundle' => 'oa_section',
-    'default_value' => NULL,
+    'comment_alter' => 0,
+    'default_value' => array(),
     'default_value_function' => '',
     'deleted' => 0,
     'description' => 'Leave empty for public access, otherwise select Teams that can view this Section.',
@@ -300,6 +313,12 @@ function oa_sections_field_default_field_instances() {
     'entity_type' => 'node',
     'field_name' => 'field_oa_team_ref',
     'label' => 'Teams',
+    'options_limit' => 0,
+    'options_limit_empty_behaviour' => 0,
+    'options_limit_fields' => array(
+      'body' => 0,
+      'og_group_ref' => 0,
+    ),
     'required' => 0,
     'settings' => array(
       'behaviors' => array(
@@ -311,11 +330,16 @@ function oa_sections_field_default_field_instances() {
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'options',
+      'module' => 'select2widget',
       'settings' => array(
-        'apply_chosen' => 0,
+        'select2widgetajax' => array(
+          'match_operator' => 'CONTAINS',
+          'min_char' => 1,
+          'view_mode' => 'select2widget_labels',
+          'width' => '',
+        ),
       ),
-      'type' => 'options_select',
+      'type' => 'select2widgetajax',
       'weight' => 5,
     ),
   );
@@ -323,7 +347,8 @@ function oa_sections_field_default_field_instances() {
   // Exported field_instance: 'node-oa_section-field_oa_user_ref'
   $field_instances['node-oa_section-field_oa_user_ref'] = array(
     'bundle' => 'oa_section',
-    'default_value' => NULL,
+    'comment_alter' => 0,
+    'default_value' => array(),
     'default_value_function' => '',
     'deleted' => 0,
     'description' => 'Leave empty for public access, otherwise select Space Members that can view this Section.',
@@ -353,6 +378,9 @@ function oa_sections_field_default_field_instances() {
     'entity_type' => 'node',
     'field_name' => 'field_oa_user_ref',
     'label' => 'Users',
+    'options_limit' => FALSE,
+    'options_limit_empty_behaviour' => 0,
+    'options_limit_fields' => array(),
     'required' => 0,
     'settings' => array(
       'behaviors' => array(
@@ -364,11 +392,16 @@ function oa_sections_field_default_field_instances() {
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'options',
+      'module' => 'select2widget',
       'settings' => array(
-        'apply_chosen' => 0,
+        'select2widgetajax' => array(
+          'match_operator' => 'CONTAINS',
+          'min_char' => 1,
+          'view_mode' => 'select2widget_labels',
+          'width' => '',
+        ),
       ),
-      'type' => 'options_select',
+      'type' => 'select2widgetajax',
       'weight' => 6,
     ),
   );

@@ -5,6 +5,7 @@ package = Open Atrium
 dependencies[] = ctools
 dependencies[] = entityreference
 dependencies[] = features
+dependencies[] = features_template
 dependencies[] = field_group
 dependencies[] = image
 dependencies[] = list

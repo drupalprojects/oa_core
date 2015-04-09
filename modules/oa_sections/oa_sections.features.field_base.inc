@@ -28,11 +28,15 @@ function oa_sections_field_default_field_bases() {
       'handler' => 'oa_groups_selection',
       'handler_settings' => array(
         'behaviors' => array(
+          'views-autocomplete' => array(
+            'status' => 0,
+          ),
           'views-select-list' => array(
             'status' => 1,
           ),
         ),
         'include_space' => 1,
+        'target_bundles' => array(),
       ),
       'target_type' => 'node',
     ),
@@ -166,6 +170,9 @@ function oa_sections_field_default_field_bases() {
       'handler' => 'oa_teams',
       'handler_settings' => array(
         'behaviors' => array(
+          'views-autocomplete' => array(
+            'status' => 0,
+          ),
           'views-select-list' => array(
             'status' => 0,
           ),
@@ -195,6 +202,9 @@ function oa_sections_field_default_field_bases() {
       'handler' => 'views',
       'handler_settings' => array(
         'behaviors' => array(
+          'views-autocomplete' => array(
+            'status' => 0,
+          ),
           'views-select-list' => array(
             'status' => 0,
           ),

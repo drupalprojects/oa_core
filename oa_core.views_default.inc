@@ -216,7 +216,7 @@ function oa_core_views_default_views() {
     4 => 0,
     6 => 0,
   );
-  /* Filter criterion: Content: Open Atrium Section (oa_section_ref:target_id) */
+  /* Filter criterion: Content: Section (oa_section_ref:target_id) */
   $handler->display->display_options['filters']['oa_section_ref_target_id']['id'] = 'oa_section_ref_target_id';
   $handler->display->display_options['filters']['oa_section_ref_target_id']['table'] = 'field_data_oa_section_ref';
   $handler->display->display_options['filters']['oa_section_ref_target_id']['field'] = 'oa_section_ref_target_id';
@@ -488,7 +488,7 @@ function oa_core_views_default_views() {
     4 => 0,
     6 => 0,
   );
-  /* Filter criterion: Content: Open Atrium Section (oa_section_ref:target_id) */
+  /* Filter criterion: Content: Section (oa_section_ref:target_id) */
   $handler->display->display_options['filters']['oa_section_ref_target_id']['id'] = 'oa_section_ref_target_id';
   $handler->display->display_options['filters']['oa_section_ref_target_id']['table'] = 'field_data_oa_section_ref';
   $handler->display->display_options['filters']['oa_section_ref_target_id']['field'] = 'oa_section_ref_target_id';
@@ -783,6 +783,19 @@ function oa_core_views_default_views() {
   $handler->display->display_options['arguments']['gid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['gid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['gid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['gid']['oa_subspaces_expand'] = TRUE;
+  /* Contextual filter: OG membership: Group_type */
+  $handler->display->display_options['arguments']['group_type']['id'] = 'group_type';
+  $handler->display->display_options['arguments']['group_type']['table'] = 'og_membership';
+  $handler->display->display_options['arguments']['group_type']['field'] = 'group_type';
+  $handler->display->display_options['arguments']['group_type']['relationship'] = 'og_membership_rel';
+  $handler->display->display_options['arguments']['group_type']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['group_type']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['group_type']['default_argument_options']['argument'] = 'node';
+  $handler->display->display_options['arguments']['group_type']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['group_type']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['group_type']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['group_type']['limit'] = '0';
   /* Filter criterion: User: Active */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'users';

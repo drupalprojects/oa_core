@@ -224,6 +224,7 @@ projects[og][patch][2363599] = http://drupal.org/files/issues/og-2363599-1-infin
 projects[og][patch][2403619] = https://www.drupal.org/files/issues/2403619-og_widget_settings-1.patch
 ; Fix group manager regranted default
 projects[og][patch][2411041] = https://www.drupal.org/files/issues/2411041-og-og_is_member-4-2.7-do-not-test.patch
+projects[og][patch][2468545] = https://www.drupal.org/files/issues/2468545-select2widget-labels-1.patch
 
 ; Og menu single
 projects[og_menu_single][version] = 1.0-beta2
