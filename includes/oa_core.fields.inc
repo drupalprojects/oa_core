@@ -82,7 +82,7 @@ function oa_core_og_group_ref_process($element, &$form_state, &$complete_form) {
  * Due to how panes work, the form_state isn't preserved so we add this in here.
  */
 function oa_core_exposed_og_group_ref_fix_cardinality($element, &$form_state, $form) {
-  $cardinality = $form_state['field'][$element['#field_name']][$element['#language']]['field'] = $element['#field'];
+  $form_state['field'][$element['#field_name']][$element['#language']]['field'] = $element['#field'];
   return $element;
 }
 
