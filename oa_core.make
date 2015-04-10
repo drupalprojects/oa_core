@@ -224,7 +224,6 @@ projects[og][patch][2363599] = http://drupal.org/files/issues/og-2363599-1-infin
 projects[og][patch][2403619] = https://www.drupal.org/files/issues/2403619-og_widget_settings-1.patch
 ; Fix group manager regranted default
 projects[og][patch][2411041] = https://www.drupal.org/files/issues/2411041-og-og_is_member-4-2.7-do-not-test.patch
-projects[og][patch][2468545] = https://www.drupal.org/files/issues/2468545-select2widget-labels-1.patch
 
 ; Og menu single
 projects[og_menu_single][version] = 1.0-beta2
@@ -276,6 +275,7 @@ projects[select2widget][patch][2404175] = https://www.drupal.org/files/issues/24
 projects[select2widget][patch][2405941] = https://www.drupal.org/files/issues/2405941-select2widget-ajaxreplace-1.patch
 projects[select2widget][patch][2411707] = https://www.drupal.org/files/issues/2411707-select2-suggestions-2.patch
 projects[select2widget][patch][2414409] = https://www.drupal.org/files/issues/2414409-select2widget-menu_access-2.patch
+projects[select2widget][patch][2468545] = https://www.drupal.org/files/issues/2468545-select2widget-labels-1.patch
 
 libraries[select2][download][type] = "get"
 libraries[select2][download][url] = "https://github.com/ivaynberg/select2/archive/3.5.2.tar.gz"
