@@ -317,7 +317,7 @@ function oa_access_get_permissions($reset = FALSE) {
 /**
  * Get a list of this user's Groups.
  * 
- * @param object|NULL $user 
+ * @param object $account
  *   (Optional) The user to get groups for. If NULL, it will find groups for
  *   the currently logged in user.
  *
