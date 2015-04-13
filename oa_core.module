@@ -597,29 +597,55 @@ function oa_core_views_pre_build(&$view) {
 
 /**
  * Implements hook_preprocess_views_view_fields().
- * Perform field-level replacement/processing here
+ *
+ * Perform field-level replacement/processing here.
  */
 function oa_core_preprocess_views_view_fields(&$vars) {
   $vars['index'] = $vars['view']->row_index;
   $vars['display'] = $vars['view']->current_display;
+  $vars['count'] = count($vars['view']->result);
   foreach ($vars['fields'] as $id => $field) {
     $vars[$id] = $field->content;
     switch ($id) {
       case 'timestamp':
         $vars[$id . '_raw'] = $field->raw;
         break;
+
+      // Views for these fields are: oa_comment_topics, oa_comment_media.
       case 'field_user_picture':
-        // check for missing user image in a view
+      case 'picture':
+        // Check for a missing user image in the view.
         if (!strip_tags($field->content, '<img>')) {
-          $image_style = 'oa_small_thumbnail';
-          if (isset($field->handler->options['settings']['image_style'])) {
-            $image_style = $field->handler->options['settings']['image_style'];
-          }
-          $vars[$id] = oa_users_picture(NULL, $image_style);
+          // Add the user placeholder image.
+          $vars[$id] = oa_core_get_user_picture_for_views_fields($field);
         }
         break;
     }
   }
+}
+
+/**
+ * Helper function to find the correct image style depending on the field.
+ *
+ * @todo: Figure out why we have two different User:picture fields being used.
+ *
+ * @param object $field
+ *   The field being rendered in the view.
+ *
+ * @return string
+ */
+function oa_core_get_user_picture_for_views_fields($field) {
+  // Set a default image style.
+  $image_style = 'oa_small_thumbnail';
+  // Allow the image style setting to overwrite the default.
+  if (isset($field->handler->options['settings']['image_style'])) {
+    $image_style = $field->handler->options['settings']['image_style'];
+  }
+  if (isset($field->handler->options['image_style'])) {
+    $image_style = $field->handler->options['image_style'];
+  }
+  // Add the user placeholder image.
+  return oa_users_picture(NULL, $image_style);
 }
 
 /**
