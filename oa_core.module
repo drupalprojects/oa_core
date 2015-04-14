@@ -649,6 +649,14 @@ function oa_core_get_user_picture_for_views_fields($field) {
 }
 
 /**
+ * Return a user's profile image.
+ */
+function oa_users_picture($account = NULL, $image_style = 'oa_small_thumbnail', $url = FALSE) {
+  $pictures = module_invoke_all('oa_users_picture', $account, $image_style, $url);
+  return $pictures ? reset($pictures) : NULL;
+}
+
+/**
  * Replace "group" term in OG with "space"
  */
 function oa_core_replace_group(&$field, $context) {
