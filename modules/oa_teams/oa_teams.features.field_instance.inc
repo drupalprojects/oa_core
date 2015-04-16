@@ -106,7 +106,7 @@ function oa_teams_field_default_field_instances() {
       'module' => 'select2widget',
       'settings' => array(
         'select2widgetajax' => array(
-          'match_operator' => 'STARTS_WITH',
+          'match_operator' => 'CONTAINS',
           'min_char' => 1,
           'view_mode' => 'select2widget_labels',
           'width' => '',
