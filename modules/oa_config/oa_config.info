@@ -33,3 +33,4 @@ features[variable][] = og_context_negotiation_group_context
 features[variable][] = og_context_providers_weight_group_context
 features[variable][] = pathauto_reduce_ascii
 features[variable][] = preprocess_css
+features[variable][] = select2_delay

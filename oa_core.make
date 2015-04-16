@@ -28,7 +28,6 @@ projects[ctools][patch][1901106] = https://www.drupal.org/files/issues/ctools-vi
 projects[ctools][patch][2023705] = http://drupal.org/files/2023705-ctools-autosubmit-2_0.patch
 projects[ctools][patch][2423839] = https://www.drupal.org/files/issues/2423839-ctools-node_tag-2.patch
 projects[ctools][patch][2448989] = https://www.drupal.org/files/issues/2448989-ctools-frome_field_children-1.patch
-projects[ctools][patch][2433923] = https://www.drupal.org/files/issues/ctools-comment_pager_id-2433923-8.patch
 
 ; Entity API
 ; Override panopoly_core.make: 1.6
@@ -277,6 +276,7 @@ projects[select2widget][patch][2405941] = https://www.drupal.org/files/issues/24
 projects[select2widget][patch][2411707] = https://www.drupal.org/files/issues/2411707-select2-suggestions-2.patch
 projects[select2widget][patch][2414409] = https://www.drupal.org/files/issues/2414409-select2widget-menu_access-2.patch
 projects[select2widget][patch][2468545] = https://www.drupal.org/files/issues/2468545-select2widget-labels-1.patch
+projects[select2widget][patch][2472697] = https://www.drupal.org/files/issues/support_for_quitemillis-2472697-2.patch
 
 libraries[select2][download][type] = "get"
 libraries[select2][download][url] = "https://github.com/ivaynberg/select2/archive/3.5.2.tar.gz"
