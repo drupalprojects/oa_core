@@ -769,6 +769,13 @@ function oa_core_views_default_views() {
   $handler->display->display_options['fields']['name']['label'] = '';
   $handler->display->display_options['fields']['name']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['name']['link_to_user'] = FALSE;
+  /* Field: User: Display Name */
+  $handler->display->display_options['fields']['field_user_display_name']['id'] = 'field_user_display_name';
+  $handler->display->display_options['fields']['field_user_display_name']['table'] = 'field_data_field_user_display_name';
+  $handler->display->display_options['fields']['field_user_display_name']['field'] = 'field_user_display_name';
+  $handler->display->display_options['fields']['field_user_display_name']['label'] = '';
+  $handler->display->display_options['fields']['field_user_display_name']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_user_display_name']['element_label_colon'] = FALSE;
   /* Sort criterion: User: Name */
   $handler->display->display_options['sorts']['name']['id'] = 'name';
   $handler->display->display_options['sorts']['name']['table'] = 'users';
@@ -819,6 +826,7 @@ function oa_core_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'entityreference_style';
   $handler->display->display_options['style_options']['search_fields'] = array(
     'name' => 'name',
+    'field_user_display_name' => 'field_user_display_name',
   );
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
