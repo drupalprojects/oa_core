@@ -7,7 +7,7 @@ core = 7.x
 ; ************** PANOPOLY OVERRIDES **************
 
 ; Views
-; Override panopoly_core.make: 3.8
+; Override panopoly_core.make: 3.10
 projects[views][version] = 3.10
 projects[views][subdir] = contrib
 ; patches from Panopoly
@@ -68,12 +68,11 @@ projects[field_group][subdir] = contrib
 ;projects[field_group][patch][1278618] = http://drupal.org/files/issues/field_group-panels-integration-1278618-58.patch
 
 ; Features
-; Override panopoly_core.make: 2.3
-projects[features][version] = 2.3
+; Override panopoly_core.make: 2.5
+projects[features][version] = 2.5
 projects[features][subdir] = contrib
 ; additional patches for OA
 projects[features][patch][2378343] = http://drupal.org/files/issues/features_improve_features-2378343-1.patch
-projects[features][patch][2419479] = https://www.drupal.org/files/issues/2419479-features-foreignkey-1.patch
 
 ; File Entity
 ; Override panopoly_widgets.make: 20f3070
