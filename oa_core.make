@@ -17,6 +17,7 @@ projects[views][patch][1979926] = http://drupal.org/files/1979926-views-reset_fe
 projects[views][patch][1735096] = https://www.drupal.org/files/issues/1735096-views-multiple-instance-exposed-form-15.patch
 projects[views][patch][2411922] = https://www.drupal.org/files/issues/2411922-views-group_name-3.patch
 projects[views][patch][2018737] = https://www.drupal.org/files/issues/views-asset-diff-2018737-37.patch
+projects[views][patch][2473389] = https://www.drupal.org/files/issues/2473389-views-exta-args-3.patch
 
 ; CTools
 ; Override panopoly_core.make: 1.7
