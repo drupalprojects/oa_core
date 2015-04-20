@@ -27,7 +27,6 @@ projects[ctools][subdir] = contrib
 projects[ctools][patch][1910608] = https://www.drupal.org/files/issues/views_content-ajax-1910608-29.patch
 projects[ctools][patch][1901106] = https://www.drupal.org/files/issues/ctools-views_content-exposed_form_override-1901106-27.patch
 projects[ctools][patch][2023705] = http://drupal.org/files/2023705-ctools-autosubmit-2_0.patch
-projects[ctools][patch][2423839] = https://www.drupal.org/files/issues/2423839-ctools-node_tag-2.patch
 projects[ctools][patch][2448989] = https://www.drupal.org/files/issues/2448989-ctools-frome_field_children-1.patch
 projects[ctools][patch][2422123] = https://www.drupal.org/files/issues/ctools-fix_entity_view_hooks_invoked_twice-2422123-15.patch
 
