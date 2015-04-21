@@ -91,7 +91,7 @@ function oa_core_add_member_form_validate($form, &$form_state) {
     form_set_error('name', t('You have entered an invalid user name.'));
   }
   elseif (og_get_membership('node', $space->nid, 'user', $account->uid)) {
-    form_set_error('name', t('User %name is already subscribed to @type.', array('@type' => drupal_strtolower(node_type_get_name($space->type)), '%name' => format_username($account))));
+    form_set_error('name', t('User %name is already a member of that @type.', array('@type' => drupal_strtolower(node_type_get_name($space->type)), '%name' => format_username($account))));
   }
 }
 

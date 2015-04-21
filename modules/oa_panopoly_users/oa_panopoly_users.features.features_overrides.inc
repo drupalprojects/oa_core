@@ -39,7 +39,7 @@ function oa_panopoly_users_features_override_default_overrides() {
         'show_sections' => 0,
         'tabs' => array(
           'Favorite' => 'Favorite',
-          'Subscribed' => 'Subscribed',
+          'Memberships' => 'Memberships',
           'All' => 0,
         ),
         'link_class' => 'btn',

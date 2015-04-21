@@ -50,7 +50,7 @@ function oa_panopoly_users_panelizer_defaults_override_alter(&$data) {
             'show_sections' => 0,
             'tabs' => array(
               'Favorite' => 'Favorite',
-              'Subscribed' => 'Subscribed',
+              'Memberships' => 'Memberships',
               'All' => 0,
             ),
             'link_class' => 'btn',

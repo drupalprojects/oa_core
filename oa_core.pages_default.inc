@@ -101,7 +101,7 @@ function oa_core_default_page_manager_pages() {
       'tabs' => array(
         'Favorite' => 'Favorite',
         'Archived' => 'Archived',
-        'Subscribed' => 'Subscribed',
+        'Memberships' => 'Memberships',
         'All' => 'All',
       ),
       'link_class' => 'btn',
@@ -221,7 +221,7 @@ function oa_core_default_page_manager_pages() {
       'show_description' => 1,
       'tabs' => array(
         'Favorite' => 'Favorite',
-        'Subscribed' => 'Subscribed',
+        'Memberships' => 'Memberships',
         'All' => 'All',
       ),
       'link_class' => 'btn',
@@ -351,7 +351,7 @@ function oa_core_default_page_manager_pages() {
     $pane->configuration = array(
       'tabs' => array(
         'Favorite' => 'Favorite',
-        'Subscribed' => 'Subscribed',
+        'Memberships' => 'Memberships',
         'All' => 'All',
       ),
       'image_size' => 'square',
@@ -930,7 +930,7 @@ function oa_core_default_page_manager_pages() {
     $pane->configuration = array(
       'tabs' => array(
         'Favorite' => 'Favorite',
-        'Subscribed' => 'Subscribed',
+        'Memberships' => 'Memberships',
         'All' => 'All',
       ),
       'image_size' => 'square',

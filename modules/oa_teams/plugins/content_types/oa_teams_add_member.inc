@@ -96,7 +96,7 @@ function oa_teams_add_team_member_form_validate($form, &$form_state) {
     $user_list = array();
     foreach ($users as $user) {
       if ($user['target_id'] == $account->uid) {
-        form_set_error('name', t('User %name is already subscribed to group.', array('%name' => format_username($account))));
+        form_set_error('name', t('User %name is already a member of that group.', array('%name' => format_username($account))));
         break;
       }
     }
