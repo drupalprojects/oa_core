@@ -1,4 +1,5 @@
 /* Adds icons to space menu item links. */
+/* This is temporary until the space menu widget is updated */
 .oa-space-menu li a:before {
   font-family: FontAwesome;
   position: relative;
@@ -13,7 +14,13 @@
 .oa-space-menu li.menu-link-discussion a:before {
   content: '\f086';
 }
+.oa-space-menu li.menu-link-discussions a:before {
+  content: '\f086';
+}
 .oa-space-menu li.menu-link-files a:before {
+  content: '\f07c';
+}
+.oa-space-menu li.menu-link-library a:before {
   content: '\f07c';
 }
 .oa-space-menu li.menu-link-news a:before {
