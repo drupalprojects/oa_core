@@ -613,12 +613,13 @@ function oa_sections_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'taxonomy_term-section_type-field_oa_section_layout'
+  // Exported field_instance:
+  // 'taxonomy_term-section_type-field_oa_section_layout'
   $field_instances['taxonomy_term-section_type-field_oa_section_layout'] = array(
     'bundle' => 'section_type',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Chose the default layout for this section',
+    'description' => 'Choose the default layout for this section',
     'display' => array(
       'default' => array(
         'label' => 'above',
@@ -652,7 +653,8 @@ function oa_sections_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'taxonomy_term-section_type-field_oa_section_type_menu'
+  // Exported field_instance:
+  // 'taxonomy_term-section_type-field_oa_section_type_menu'
   $field_instances['taxonomy_term-section_type-field_oa_section_type_menu'] = array(
     'bundle' => 'section_type',
     'default_value' => array(
@@ -698,7 +700,7 @@ function oa_sections_field_default_field_instances() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
-  t('Chose the default layout for this section');
+  t('Choose the default layout for this section');
   t('Determines order of Section in lists.  Higher value moves the section later in the list.  Lower value moves section earlier in the list.');
   t('Enter the optional bootstrap icon class name (e.g. icon-calendar)');
   t('Groups');
