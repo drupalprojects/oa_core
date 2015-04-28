@@ -50,10 +50,6 @@ projects[date_facets][download][revision] = 9037608
 projects[diff][version] = 3.2
 projects[diff][subdir] = contrib
 
-; Features Override
-projects[features_override][version] = 2.0-rc2
-projects[features_override][subdir] = contrib
-
 ; Features Template
 projects[features_template][version] = 1.0-beta2
 projects[features_template][subdir] = contrib
@@ -90,11 +86,6 @@ projects[htmlmail][patch][1692966] = https://www.drupal.org/files/1692966-htmlma
 ; Job Scheduler
 projects[job_scheduler][version] = 2.0-alpha3
 projects[job_scheduler][subdir] = contrib
-
-; Jquery Update
-projects[jquery_update][version] = 2.4
-projects[jquery_update][subdir] = contrib
-projects[jquery_update][patch][2123973] = http://drupal.org/files/issues/jquery_update-jquery_effects_missing-7.x-2.4-2123973-17.patch
 
 ; Mail System
 projects[mailsystem][version] = 2.34
