@@ -10,6 +10,10 @@
  */
 function oa_core_install() {
   oa_core_create_default_terms();
+  // disable comments on Groups by default
+  variable_set('comment_oa_group', 0);
+  // disable comments on Spaces by default
+  variable_set('comment_oa_space', 0);
 }
 
 /**
