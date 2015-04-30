@@ -257,9 +257,32 @@ function oa_core_update_7226() {
 }
 
 /**
+ * Helper function to remove groups using default permissions that still have entries in og_role table
+ */
+function _oa_core_remove_orphaned_groups() {
+  $query = db_select('og_role', 'og');
+  $query->join('field_data_og_roles_permissions', 'f', "og.gid = f.entity_id AND f.entity_type = 'node'");
+  $query->fields('og', array('gid'))
+    ->condition('f.og_roles_permissions_value', 0);
+  $gids = $query->execute()->fetchCol();
+  if (!empty($gids)) {
+    db_delete('og_role')
+      ->condition('gid', $gids, 'IN')
+      ->execute();
+  }
+}
+
+/**
  * Fix accidentatly given roles.
  */
 function oa_core_update_7227() {
+  // NOTE: The original version of this update did not do this first function call,
+  // resulting in lost user roles.  This was fixed when update 7232 was added
+  // to help users who might not have run 7227 yet.
+  _oa_core_remove_orphaned_groups();
+
+  // Now we can remove user roles that are associated with groups using overridden permissions
+  // but having rid values from the default permissions.
   db_query("DELETE FROM {og_users_roles} where gid in (SELECT gid from {og_role} where gid > 0) and rid in (SELECT rid from {og_role} where gid = 0)");
 }
 
@@ -313,3 +336,15 @@ function oa_core_update_7231() {
     module_enable(array('oa_media'));
   }
 }
+
+/**
+ * Remove orphaned records in og_role table.
+ */
+function oa_core_update_7232() {
+  // See update_7227.  7227 originally didn't remove orphaned records, causing
+  // some roles to be removed by mistake.  7227 has now been updated, but we
+  // still need to remove orphaned records for sites that have already run the
+  // old version of update 7227.
+  _oa_core_remove_orphaned_groups();
+}
+
