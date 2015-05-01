@@ -56,6 +56,9 @@ function oa_core_og_group_ref_process($element, &$form_state, &$complete_form) {
       '#field' => $field,
       '#field_parents' => array(),
     ) + $element;
+    if (!empty($element['#multiple'])) {
+      $element['#field']['cardinality'] = FIELD_CARDINALITY_UNLIMITED;
+    }
     $element['#settings']['select2widgetajax']['width'] = '300px';
     $element['#settings']['select2widgetajax']['min_char'] = 0;
     $form_state['field'][$element['#field_name']][$element['#language']]['field'] = $field;
