@@ -417,6 +417,17 @@ function oa_core_default_page_manager_pages() {
         ),
         'not' => FALSE,
       ),
+      3 => array(
+        'name' => 'node_type',
+        'settings' => array(
+          'type' => array(
+            'oa_space' => 'oa_space',
+            'oa_section' => 'oa_section',
+          ),
+        ),
+        'context' => 'argument_entity_id:node_1',
+        'not' => FALSE,
+      ),
     ),
     'logic' => 'and',
     'type' => 'none',
