@@ -158,7 +158,7 @@ projects[panels_customerror][version] = 1.0
 projects[panels_customerror][subdir] = contrib
 
 ; Paragraphs
-projects[paragraphs][version] = 1.0-beta5
+projects[paragraphs][version] = 1.0-beta6
 projects[paragraphs][subdir] = contrib
 projects[paragraphs][patch][2399883] = https://www.drupal.org/files/issues/2394313-paragraphs-node_clone-9.patch
 projects[paragraphs][patch][2458801] = https://www.drupal.org/files/issues/paragraphs-instructions_setting-2458801-9.patch
