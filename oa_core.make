@@ -20,7 +20,7 @@ libraries[chosen][directory_name] = "chosen"
 libraries[chosen][destination] = "libraries"
 
 ; Colorizer
-projects[colorizer][version] = 1.5
+projects[colorizer][version] = 1.6
 projects[colorizer][subdir] = contrib
 
 ; Conditional Fields
