@@ -11,10 +11,7 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
 
   function init(&$view, &$options) {
     parent::init($view, $options);
-    $result = oa_core_process_exposed_group_input($this);
-    if ($result === FALSE) {
-      $this->fail_build = TRUE;
-    }
+    $this->fail_build = oa_core_process_exposed_group_input($this);
   }
 
   function query() {
