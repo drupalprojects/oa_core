@@ -113,7 +113,7 @@ function oa_core_select2widget_entity_validate_field(&$element, &$form_state, $f
  * Turn the current values to labels for select2 init/default value.
  */
 function _oa_core_select2widget_process_entity_labels($value) {
-  $target_entities = explode(',', $value);
+  $target_entities = is_array($value) ? $value : explode(',', $value);
   $entity_labels = array();
   foreach ($target_entities as &$target_entity) {
     if (is_numeric($target_entity)) {
