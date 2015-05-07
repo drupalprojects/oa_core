@@ -6,48 +6,22 @@
  */
 
 class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete extends views_handler_filter_entityreference_autocomplete {
+
+  private $fail_build = FALSE;
+
   function init(&$view, &$options) {
     parent::init($view, $options);
-    $exposed = $this->view->get_exposed_input();
-    $options_exposed = array_filter($this->options['expose']);
-    $id = !empty($options_exposed['identifier']) ? $options_exposed['identifier'] : 'og_group_ref';
-    if (empty($this->options['expose']['oa_core_no_auto'])) {
-      if (isset($exposed[$id]) && (empty($exposed[$id]) || $exposed[$id] == OA_SPACE_CURRENT)) {
-        if ($group = oa_core_get_space_context()) {
-          $exposed[$id] = $group;
-        }
-        else {
-          unset($exposed[$id]);
-        }
-      }
+    $result = oa_core_process_exposed_group_input($this);
+    if ($result === FALSE) {
+      $this->fail_build = TRUE;
     }
-    // Pane doesn't allow unrelated exposed input, so bring it back.
-    if (!empty($_GET[$id . '_mine'])) {
-      $exposed[$id . '_mine'] = 1;
-    }
+  }
 
-    // Form API considers a Value of 0 to be CHECKED!!!!!
-    // So if the value is zero, we set it to FALSE so it is properly UnChecked.
-    if (isset($exposed[$id . '_mine']) && empty($exposed[$id . '_mine'])) {
-      $exposed[$id . '_mine'] = FALSE;
+  function query() {
+    parent::query();
+    if (!empty($this->fail_build)) {
+      $this->view->build_info['fail'] = TRUE;
     }
-
-    global $user;
-    if (!empty($exposed[$id . '_mine'])) {
-      $groups = oa_core_get_groups_by_user($user, 'node');
-      if ($groups && ($gids = array_intersect_key($groups, $this->get_value_options()))) {
-        $exposed[$id] = $gids;
-        $this->options['expose']['multiple'] = TRUE;
-      }
-      else {
-        // If restricting to My Spaces but the user has no spaces, fail the build
-        $this->fail_build = TRUE;
-      }
-    } // If was multiple from mine setting, clear it out.
-    elseif (empty($this->options['expose']['multiple']) && isset($exposed[$id]) && is_array($exposed[$id])) {
-      unset($exposed[$id]);
-    }
-    $this->view->set_exposed_input($exposed);
   }
 
   function value_form(&$form, &$form_state) {

@@ -1667,3 +1667,60 @@ function oa_core_oa_related_allowed_default() {
   return array(OA_SECTION_TYPE, OA_SPACE_TYPE);
 }
 
+/**
+ * Helper function for Views handlers to process the exposed input
+ * @param $filter views_handler_filter_in_operator object
+ * @return bool TRUE if successful, FALSE if errors
+ *
+ * This function processed the exposed filter for og_group_ref.
+ * It converts OA_SPACE_CURRENT to the current space context
+ * It also supports the "My Spaces" checkbox to restrict to user's groups
+ * All logic can be bypassed by setting options['expose']['oa_core_no_auto']
+ */
+function oa_core_process_exposed_group_input($filter) {
+  $options_exposed = !empty($filter->options['expose']) ? array_filter($filter->options['expose']) : array();
+  if (empty($options_exposed['oa_core_no_auto'])) {
+    $exposed = $filter->view->get_exposed_input();
+    $id = !empty($options_exposed['identifier']) ? $options_exposed['identifier'] : 'og_group_ref';
+
+    // Replace current space value if filter is empty or OA_SPACE_CURRENT.
+    if (isset($exposed[$id]) && (empty($exposed[$id]) || $exposed[$id] == OA_SPACE_CURRENT)) {
+      if ($group = oa_core_get_space_context()) {
+        $exposed[$id] = $group;
+      }
+      else {
+        unset($exposed[$id]);
+      }
+    }
+
+    // Pane doesn't allow unrelated exposed input, so bring it back.
+    if (!empty($_GET[$id . '_mine'])) {
+      $exposed[$id . '_mine'] = 1;
+    }
+
+    // Form API considers a Value of 0 to be CHECKED!!!!!
+    // So if the value is zero, we set it to FALSE so it is properly UnChecked.
+    if (isset($exposed[$id . '_mine']) && empty($exposed[$id . '_mine'])) {
+      $exposed[$id . '_mine'] = FALSE;
+    }
+
+    // If "My Spaces" is checked, restrict to user's groups
+    global $user;
+    if (!empty($exposed[$id . '_mine'])) {
+      $groups = oa_core_get_groups_by_user($user, 'node');
+      if ($groups && ($gids = array_intersect_key($groups, $filter->get_value_options()))) {
+        $exposed[$id] = $gids;
+        $filter->options['expose']['multiple'] = TRUE;
+      }
+      else {
+        // If restricting to My Spaces but the user has no spaces, fail the build
+        return FALSE;
+      }
+    } // If was multiple from mine setting, clear it out.
+    elseif (empty($options_exposed['multiple']) && isset($exposed[$id]) && is_array($exposed[$id])) {
+      unset($exposed[$id]);
+    }
+    $filter->view->set_exposed_input($exposed);
+  }
+  return TRUE;
+}
