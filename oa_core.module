@@ -549,6 +549,126 @@ function oa_core_form_node_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
+ * Implements hook_form_alter().
+ */
+function oa_core_form_node_delete_confirm_alter(&$form, $form_state) {
+  $form['#submit'][] = 'oa_core_node_delete_redirect';
+  /**
+   * Organic group itself has some functionality for how to handle content on
+   * group deletion.
+   *
+   * By default, it'll delete the og_membership table entries for that group.
+   *
+   * If variable og_use_queue is configured to true:
+   * * It'll delete the membership via a queue job.
+   * * It'll delete the content of the group if $entity->og_orphans['delete'] is
+   *   TRUE or variable og_orphans_delete is set to true
+   * * It'll move the content of the group if $entity->og_orphans['move'] is set
+   * to  an array containing group_type and gid of the group to move to.
+   *
+   * Use og_use_queue and og_orphans_delete are configurable via the OG UI.
+   *
+   * All it's deletion logic can be bypassed via setting:
+   * $entity->skip_og_membership_delete_by_group = TRUE
+   */
+  if (variable_get('og_use_queue', FALSE) && ($orphans = oa_core_get_orphans('node', $form['#node']->nid))) {
+    $form['oa_core_orphans'] = array(
+      '#title' => t('Orphan Content'),
+      '#description' => t('How to handle orphan content (content that is a member of this group but no others)'),
+      '#type' => 'radios',
+      '#options' => array(
+        'nothing' => t('Orphan (remove membership but otherwise leave content alone)'),
+        'delete' => t('Delete'),
+        'move' => t('Move'),
+      ),
+      '#default_value' => 'nothing',
+    );
+    $form['oa_core_orphans_og_group_ref'] = array(
+      '#type' => 'og_group_ref',
+      '#title' => t('Space'),
+      '#default_value' => array(),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="oa_core_orphans"]' => array('value' => 'move'),
+        ),
+      ),
+    );
+    $form['#validate'][] = 'oa_core_form_node_delete_confirm_validate';
+  }
+}
+
+/**
+ * Validate the function and set a variable for checking later to set og_orphan
+ */
+function oa_core_form_node_delete_confirm_validate($form, &$form_state) {
+  $node = $form['#node'];
+  if ($form_state['values']['oa_core_orphans'] == 'move') {
+    $gid = $form_state['values']['oa_core_orphans_og_group_ref'];
+    if (empty($gid) || !is_numeric($gid) || !($group = node_load($gid))) {
+      form_set_error('oa_core_orphans', t('Please select a space to move the content to.'));
+    }
+    elseif ($gid === $node->nid) {
+      form_set_error('oa_core_orphans', t('Please select a space that is not the current space to move the content to.'));
+    }
+    elseif (!node_access('update', $group)) {
+      form_set_error('oa_core_orphans', t('Please choice a group where have more access to.'));
+    }
+    else {
+      oa_core_store_orphan_settings($node, array('og_orphans' => array('move' => array('group_type' => 'node', 'gid' => $gid))));
+    }
+  }
+  else {
+    // Set whether should be left alone or deleted.
+    oa_core_store_orphan_settings($node, array('og_orphans' => array('delete' => $form_state['values']['oa_core_orphans'] == 'delete')));
+  }
+}
+
+/**
+ * Since there is no way to directly send anything to node_delete, store info.
+ *
+ * @param $node
+ *   A node that will be deleted.
+ * @param $settings
+ *   Settings for that node being deleted.
+ */
+function oa_core_store_orphan_settings($node, $settings = NULL) {
+  $data = &drupal_static(__FUNCTION__, array());
+  if ($settings) {
+    $data[$node->nid] = $settings + (isset($data[$node->nid]) ? $data[$node->nid] : array());
+  }
+  return isset($data[$node->nid]) ? $data[$node->nid] : array();
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function oa_core_node_delete($node) {
+  if ($settings = oa_core_store_orphan_settings($node)) {
+    foreach($settings as $key => $value) {
+      $node->{$key} = $value;
+    }
+  }
+  _oa_core_node_delete($node);
+}
+
+/**
+ * Find if any orphans.
+ */
+function oa_core_get_orphans($group_type, $gid, $max = 1) {
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'og_membership')
+    ->propertyCondition('group_type', $group_type, '=')
+    ->propertyCondition('gid', $gid, '=')
+    ->propertyCondition('entity_type', 'user', '!=')
+    ->propertyOrderBy('id')
+    ->range(0, $max)
+    ->execute();
+  return !empty($result['og_membership']) ? og_membership_load_multiple(array_keys($result['og_membership'])) : array();
+}
+
+
+/**
  * Implements hook_node_prepare().
  *
  * Default the GId to current GID
@@ -1534,13 +1654,6 @@ function oa_core_form_taxonomy_form_term_alter(&$form, &$form_state, $form_id) {
   if ($form['#vocabulary']->machine_name == 'space_type') {
     _oa_core_setup_taxonomy_space_type($form);
   }
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function oa_core_form_node_delete_confirm_alter(&$form, $form_state, $form_id) {
-  $form['#submit'][] = 'oa_core_node_delete_redirect';
 }
 
 /**
