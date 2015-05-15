@@ -56,7 +56,6 @@ class oa_core_og_group_ref_views_handler_filter_entityreference_autocomplete ext
       '#convert_empty_to_current' => TRUE,
       '#oa_core_select2_set_value' => TRUE,
     ) + $form['value'];
-    $form['value']['#settings']['select2widgetajax']['width'] = '400px';
     $form['value']['#settings']['select2widgetajax']['min_char'] = 0;
     $form_state['field'][$form['value']['#field_name']][$form['value']['#language']]['field'] = $field;
   }
