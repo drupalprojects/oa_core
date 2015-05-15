@@ -530,20 +530,22 @@ function oa_core_form_node_form_alter(&$form, &$form_state, $form_id) {
   // this is a workaround for og not defaulting based on subgroups,
   // only user direct groups.
   // handling this for both normal users and admin users
-  if (!empty($form['#node']->{OA_SPACE_FIELD}[LANGUAGE_NONE][0]['target_id'])
-    && isset($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default'])
-    && empty($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'])
-    && ($group = node_load($form['#node']->{OA_SPACE_FIELD}[LANGUAGE_NONE][0]['target_id']))
-    && (!isset($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin'])
-      || ($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin']['#default_value'] == $group->title . ' (' . $group->nid . ')'
-      // This will return both user groups and subspaces, is cached.
-      && in_array($group->nid, oa_core_get_groups_by_user(NULL, 'node'))))
-    ) {
-    $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'] = $group->title . ' (' . $group->nid . ')';
-    $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#init'][$group->nid] = $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'];
-    if (isset($form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin'])) {
-      $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin']['#default_value'] = '';
-      $form[OA_SPACE_FIELD][LANGUAGE_NONE][0]['admin']['#init'] = array();
+  foreach (array(OA_SPACE_FIELD, OA_PARENT_SPACE) as $field_name) {
+    if (!empty($form['#node']->{$field_name}[LANGUAGE_NONE][0]['target_id'])
+      && isset($form[$field_name][LANGUAGE_NONE][0]['default'])
+      && empty($form[$field_name][LANGUAGE_NONE][0]['default']['#default_value'])
+      && ($group = node_load($form['#node']->{$field_name}[LANGUAGE_NONE][0]['target_id']))
+      && (!isset($form[$field_name][LANGUAGE_NONE][0]['admin'])
+        || ($form[$field_name][LANGUAGE_NONE][0]['admin']['#default_value'] == $group->title . ' (' . $group->nid . ')'
+        // This will return both user groups and subspaces, is cached.
+        && in_array($group->nid, oa_core_get_groups_by_user(NULL, 'node'))))
+      ) {
+      $form[$field_name][LANGUAGE_NONE][0]['default']['#default_value'] = $group->title . ' (' . $group->nid . ')';
+      $form[$field_name][LANGUAGE_NONE][0]['default']['#init'][$group->nid] = $form[$field_name][LANGUAGE_NONE][0]['default']['#default_value'];
+      if (isset($form[$field_name][LANGUAGE_NONE][0]['admin'])) {
+        $form[$field_name][LANGUAGE_NONE][0]['admin']['#default_value'] = '';
+        $form[$field_name][LANGUAGE_NONE][0]['admin']['#init'] = array();
+      }
     }
   }
 }
