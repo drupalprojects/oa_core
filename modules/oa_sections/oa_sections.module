@@ -224,7 +224,6 @@ function oa_sections_node_prepare($node) {
       $section = taxonomy_term_load($section_tid);
       $values = field_get_items('taxonomy_term', $section, 'field_oa_section_type_menu');
       if (!empty($values[0]['value'])) {
-        dsm($values[0]['value']);
         if ($values[0]['value'] == OA_SECTION_TYPE_MENU_VISIBLE) {
           $node->default_menu_hidden = FALSE;
         }
