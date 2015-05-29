@@ -1968,7 +1968,7 @@ function _oa_core_panels_sort(&$data) {
         $regions[$pane->panel][$pid] = $pane->position;
       }
       // Sort each region by position
-      $data[$key]->display->panels = array();
+      $data[$key]->conf['display']->panels = array();
       foreach ($regions as $region => $panels) {
         asort($panels);
         $data[$key]->conf['display']->panels[$region] = array_keys($panels);
