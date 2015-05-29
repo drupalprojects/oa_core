@@ -1843,3 +1843,166 @@ function oa_core_process_exposed_group_input($filter) {
   }
   return TRUE;
 }
+
+/**
+ * Implements hook_panelizer_defaults_override_alter().
+ */
+function oa_core_panelizer_defaults_override_alter(&$data) {
+  // Add any custom widgets coming from Atrium plugins
+  // Change layout from radix_phelan to selby_flipped
+  _oa_core_change_panel_layout($data, 'user:user:default', 'selby_flipped', 'contentheader', array('column2' => 'sidebar'));
+  $info = module_invoke_all('oa_core_add_panes');
+  foreach ($info as $panelizer => $panes) {
+    if (isset($data[$panelizer]->display)) {
+      foreach ($panes as $uuid => $pane) {
+        $pid = 'new-' . $uuid;
+        if (empty($pane)) {
+          if (isset($data[$panelizer]->display->content[$pid])) {
+            unset($data[$panelizer]->display->content[$pid]);
+          }
+        }
+        else {
+          $pane = $pane + array(
+            'shown' => TRUE,
+            'access' => array(),
+            'configuration' => array(),
+            'cache' => array(),
+            'style' => array(
+              'settings' => NULL,
+            ),
+            'css' => array(),
+            'extras' => array(),
+            'position' => 9,
+            'locks' => array(),
+            'uuid' => $uuid,
+            'pid' => $pid,
+          );
+          if (isset($data[$panelizer])) {
+            $data[$panelizer]->display->content[$pid] = (object) $pane;
+          }
+        }
+      }
+    }
+  }
+  _oa_core_panelizer_sort($data);
+}
+
+/**
+ * Implements hook_default_page_manager_handlers_alter().
+ * $data['node_edit_panel_context']->conf['display']->content
+ */
+function oa_core_default_page_manager_handlers_alter(&$data) {
+  $info = module_invoke_all('oa_core_add_panes');
+  foreach ($info as $panelizer => $panes) {
+    if (isset($data[$panelizer]->conf['display'])) {
+      foreach ($panes as $uuid => $pane) {
+        $pid = 'new-' . $uuid;
+        if (empty($pane)) {
+          if (isset($data[$panelizer]->conf['display']->content[$pid])) {
+            unset($data[$panelizer]->conf['display']->content[$pid]);
+          }
+        }
+        else {
+          $pane = $pane + array(
+            'shown' => TRUE,
+            'access' => array(),
+            'configuration' => array(),
+            'cache' => array(),
+            'style' => array(
+              'settings' => NULL,
+            ),
+            'css' => array(),
+            'extras' => array(),
+            'position' => 9,
+            'locks' => array(),
+            'uuid' => $uuid,
+            'pid' => $pid,
+          );
+          if (isset($data[$panelizer])) {
+            $data[$panelizer]->conf['display']->content[$pid] = (object) $pane;
+          }
+        }
+      }
+    }
+  }
+  _oa_core_panels_sort($data);
+}
+
+/**
+ * Helper function to put panes in correct order using the position property
+ * For Panelizer objects
+ * @param $data
+ */
+function _oa_core_panelizer_sort(&$data) {
+  foreach ($data as $key => $panel) {
+    $regions = array();
+    // Group panes by region
+    if (isset($panel->display)) {
+      foreach ($panel->display->content as $pid => $pane) {
+        $regions[$pane->panel][$pid] = $pane->position;
+      }
+      // Sort each region by position
+      $data[$key]->display->panels = array();
+      foreach ($regions as $region => $panels) {
+        asort($panels);
+        $data[$key]->display->panels[$region] = array_keys($panels);
+        foreach ($data[$key]->display->panels[$region] as $index => $pid) {
+          $data[$key]->display->content[$pid]->position = $index;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Helper function to put panes in correct order using the position property
+ * For Page Manager/Panels objects
+ * @param $data
+ */
+function _oa_core_panels_sort(&$data) {
+  foreach ($data as $key => $panel) {
+    $regions = array();
+    // Group panes by region
+    if (isset($panel->conf['display'])) {
+      foreach ($panel->conf['display']->content as $pid => $pane) {
+        $regions[$pane->panel][$pid] = $pane->position;
+      }
+      // Sort each region by position
+      $data[$key]->display->panels = array();
+      foreach ($regions as $region => $panels) {
+        asort($panels);
+        $data[$key]->conf['display']->panels[$region] = array_keys($panels);
+      }
+    }
+  }
+}
+
+/**
+ * Helper function to change the layout of a panel
+ * @param $data
+ * @param $key string specifying index into $data
+ * @param $new_layout string new layout machine name
+ * @param $default_region string default region name to assign existing panes
+ * @param array $region_map array mapping of old regions to new regions
+ */
+function _oa_core_change_panel_layout(&$data, $key, $new_layout, $default_region, $region_map = array()) {
+  if (!empty($data[$key])) {
+    $data[$key]->display->layout = $new_layout;
+    foreach ($data[$key]->display->panels as $region => $panels) {
+      $new_region = isset($region_map[$region]) ? $region_map[$region] : $default_region;
+      $data[$key]->display->panels[$new_region] = $panels;
+      unset($data[$key]->display->panels[$region]);
+    }
+    foreach ($data[$key]->display->content as $pid => $pane) {
+      $new_region = isset($region_map[$pane->panel]) ? $region_map[$pane->panel] : $default_region;
+      $data[$key]->display->content[$pid]->panel = $new_region;
+    }
+    if (!empty($data[$key]->display->panel_settings['style_settings'])) {
+      foreach ($data[$key]->display->panel_settings['style_settings'] as $region => $settings) {
+        $new_region = isset($region_map[$region]) ? $region_map[$region] : $default_region;
+        $data[$key]->display->panel_settings['style_settings'][$new_region] = $settings;
+        unset($data[$key]->display->panel_settings['style_settings'][$region]);
+      }
+    }
+  }
+}
