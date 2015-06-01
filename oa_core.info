@@ -15,6 +15,7 @@ dependencies[] = number
 dependencies[] = oa_buttons
 dependencies[] = oa_section_context
 dependencies[] = oa_sections
+dependencies[] = oa_subspaces
 dependencies[] = oa_teams
 dependencies[] = og
 dependencies[] = og_access
