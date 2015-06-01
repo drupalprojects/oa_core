@@ -1972,6 +1972,9 @@ function _oa_core_panels_sort(&$data) {
       foreach ($regions as $region => $panels) {
         asort($panels);
         $data[$key]->conf['display']->panels[$region] = array_keys($panels);
+        foreach ($data[$key]->conf['display']->panels[$region] as $index => $pid) {
+          $data[$key]->conf['display']->content[$pid]->position = $index;
+        }
       }
     }
   }
