@@ -47,6 +47,15 @@ function oa_users_user_is_current_user($account) {
 }
 
 /**
+ * Implements hook_ctools_plugin_directory
+ */
+function oa_users_ctools_plugin_directory($owner, $plugin_type) {
+  if ($owner == 'ctools' && $plugin_type == 'content_types') {
+    return 'plugins/content_types';
+  }
+}
+
+/**
  * Page callback for user/%user/settings.
  *
  * Provide a settings form, and hooks for modules to add their own settings.
@@ -228,3 +237,23 @@ function oa_users_oa_core_add_panes() {
   return $info;
 }
 
+
+/**
+ * Implements hook_theme()
+ */
+function oa_users_theme() {
+  return array(
+    'oa_users_submitted' => array(
+      'template'  => 'oa-users-submitted',
+      'arguments' => array(
+        'userlink'  => '',
+        'date' => '',
+        'picture' => '',
+        'label'  => '',
+        'onlabel'  => '',
+        'bylabel'  => '',
+      ),
+      'path' => drupal_get_path('module', 'oa_users') . '/templates',
+    ),
+  );
+}
