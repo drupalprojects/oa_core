@@ -16,6 +16,8 @@ $plugin = array(
   'defaults' => array(
     'align' => 0,
     'label' => TRUE,
+    'date' => 0,
+    'picture' => FALSE,
   ),
 );
 
@@ -36,12 +38,12 @@ function oa_user_submitted_render($subtype, $conf, $args, $context = NULL) {
   $user = user_load($node->uid);
 
   $vars['userlink'] = l(format_username($user), 'user/' . $user->uid);
-  $vars['picture'] = oa_users_picture($user);
+  $vars['picture'] = empty($conf['picture']) ? oa_users_picture($user) : '';
   $vars['align'] = !empty($conf['align']) ? 'right' : 'left';
   $date = !empty($conf['date']) ? $node->changed : $node->created;
   $vars['label'] = !empty($conf['label']) ? (!empty($conf['date']) ? t('Updated') : t('Posted')) : '';
   $vars['bylabel'] = !empty($conf['label']) ? ' ' . t('by') . ' ' : '';
-  $vars['date'] = oa_date_format_date($date);
+  $vars['date'] = oa_date_format_date($date) . ' - ' . format_date($date, 'custom', 'G:ia');
 
   $block->content = theme('oa_users_submitted', $vars);
   return $block;
@@ -77,6 +79,12 @@ function oa_user_submitted_form($form, &$form_state) {
     '#title' => t('Show text labels'),
     '#type' => 'checkbox',
     '#default_value' => $conf['label'],
+  );
+
+  $form['picture'] = array(
+    '#title' => t('Hide user picture'),
+    '#type' => 'checkbox',
+    '#default_value' => $conf['picture'],
   );
 
   return $form;
