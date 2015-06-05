@@ -3,31 +3,31 @@
     <div class="user-badge">
       <?php if (!empty($picture)):?>
         <?php print $picture; ?>
-      <?endif; ?>
+      <?php endif; ?>
       <?php if (!empty($userlink)):?>
         <span><?php print $userlink; ?></span>
-      <?endif; ?>
+      <?php endif; ?>
     </div>
-  <?endif; ?>
+  <?php endif; ?>
   <div class="oa-description">
     <?php if (!empty($label)):?>
       <?php print $label; ?>
-    <?endif; ?>
+    <?php endif; ?>
     <?php if (!empty($date)):?>
       <?php print $date; ?>
-    <?endif; ?>
+    <?php endif; ?>
     <?php if (($align == 'right') && (!empty($bylabel))):?>
       <?php print $bylabel; ?>
-    <?endif; ?>
+    <?php endif; ?>
   </div>
   <?php if ($align == 'right'):?>
     <div class="user-badge">
       <?php if (!empty($userlink)):?>
         <span><?php print $userlink; ?></span>
-      <?endif; ?>
+      <?php endif; ?>
       <?php if (!empty($picture)):?>
         <?php print $picture; ?>
-      <?endif; ?>
+      <?php endif; ?>
     </div>
-  <?endif; ?>
+  <?php endif; ?>
 </div>
