@@ -153,10 +153,10 @@ function oa_core_oa_section_ref_process($element, &$form_state, &$complete_form)
   );
   $element['#options'][-1] = t(' - Current Section - ');
   if (empty($element['#required'])) {
-    $element['#options'][0] = t(' - None - ');
+    $element['#options'][0] = t(' - Any - ');
   }
   if (!isset($element['#default_value'])) {
-    $element['#default_value'] = -1;
+    $element['#default_value'] = !empty($element['#multiple']) ? array(-1) : -1;
   }
   $element += element_info('select');
 
@@ -215,9 +215,18 @@ function oa_core_oa_section_ref_process($element, &$form_state, &$complete_form)
   }
 
   // Make sure if ajax with change group, invalid sections are forgotten.
-  if (!empty($element['#value']) && $element['#value'] > 0 && empty($element['#options'][$element['#value']])) {
-    $element['#value'] = -1;
+  $values = is_array($element['#value']) ? $element['#value'] : array($element['#value']);
+  foreach ($values as $key => $value) {
+    if (empty($element['#options'][$value])) {
+      unset($element['#value'][$key]);
+    }
   }
+  if (empty($element['#value'])) {
+    $element['#value'] = !empty($element['#multiple']) ? array(-1) : -1;
+  }
+
+  // Allow standard select processing (allows use of #multiple)
+  $element = form_process_select($element);
 
   return $element;
 }
