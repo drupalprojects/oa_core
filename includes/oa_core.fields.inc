@@ -218,11 +218,14 @@ function oa_core_oa_section_ref_process($element, &$form_state, &$complete_form)
   $values = is_array($element['#value']) ? $element['#value'] : array($element['#value']);
   foreach ($values as $key => $value) {
     if (empty($element['#options'][$value])) {
-      unset($element['#value'][$key]);
+      unset($values[$key]);
     }
   }
-  if (empty($element['#value'])) {
+  if (empty($values)) {
     $element['#value'] = !empty($element['#multiple']) ? array(-1) : -1;
+  }
+  else {
+    $element['#value'] = !empty($element['#multiple']) ? $values : reset($values);
   }
 
   // Allow standard select processing (allows use of #multiple)
