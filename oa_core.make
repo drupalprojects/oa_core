@@ -178,15 +178,16 @@ projects[reference_option_limit][patch][1986532] = https://www.drupal.org/files/
 projects[reference_option_limit][patch][1986526] = http://drupal.org/files/1986526_reference_option_limit_12.patch
 
 ; Select 2 Widget
-projects[select2widget][version] = 2.5
+; projects[select2widget][version] = 2.7
 projects[select2widget][subdir] = contrib
-projects[select2widget][patch][2404143] = https://www.drupal.org/files/issues/2404143-select2widget-addclass-1.patch
+projects[select2widget][version] = 2.x-dev
+projects[select2widget][subdir] = contrib
+projects[select2widget][download][type] = git
+projects[select2widget][download][branch] = 7.x-2.x
+projects[select2widget][download][revision] = eb87c27
 projects[select2widget][patch][2404175] = https://www.drupal.org/files/issues/2404175-select2widget-og_complex-2.patch
-projects[select2widget][patch][2405941] = https://www.drupal.org/files/issues/2405941-select2widget-ajaxreplace-1.patch
-projects[select2widget][patch][2411707] = https://www.drupal.org/files/issues/2411707-select2-suggestions-2.patch
-projects[select2widget][patch][2414409] = https://www.drupal.org/files/issues/2414409-select2widget-menu_access-2.patch
-projects[select2widget][patch][2468545] = https://www.drupal.org/files/issues/2468545-select2widget-labels-1.patch
-projects[select2widget][patch][2472697] = https://www.drupal.org/files/issues/support_for_quitemillis-2472697-2.patch
+projects[select2widget][patch][2503787] = https://www.drupal.org/files/issues/select2widget_add_support_for_og_vocab-2503787-1.patch
+projects[select2widget][patch][2503789] = https://www.drupal.org/files/issues/select2widget_error_from_placeholder-2503789-1.patch
 
 libraries[select2][download][type] = "get"
 libraries[select2][download][url] = "https://github.com/ivaynberg/select2/archive/3.5.2.tar.gz"
