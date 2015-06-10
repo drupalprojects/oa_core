@@ -150,8 +150,10 @@ projects[og_variables][subdir] = contrib
 projects[og_vocab][version] = 1.2
 projects[og_vocab][subdir] = contrib
 ; patch to support subgroups
-projects[og_vocab][patch][2039009] = http://drupal.org/files/issues/2039009-allow-shared-vocabularies-13.patch
-projects[og_vocab][patch][2399883] = https://www.drupal.org/files/issues/2399883-og_vocab-menuitem-2.patch
+projects[og_vocab][patch][2039009] = https://www.drupal.org/files/issues/2039009-og_vocab-share-21.patch
+projects[og_vocab][patch][2399883] = https://www.drupal.org/files/issues/2399883-og_vocab-menuitem-4.patch
+projects[og_vocab][patch][2503991] = https://www.drupal.org/files/issues/og_vocab_support_custom_widget_settings-2503991-1.patch
+projects[og_vocab][patch][2503997] = https://www.drupal.org/files/issues/og_vocab_add_support_for_select2widget-2503997-1.patch
 
 ; Panels Custom Error
 projects[panels_customerror][version] = 1.0
