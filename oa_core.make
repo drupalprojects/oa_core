@@ -153,6 +153,7 @@ projects[og_vocab][subdir] = contrib
 projects[og_vocab][patch][2039009] = https://www.drupal.org/files/issues/2039009-og_vocab-share-21.patch
 projects[og_vocab][patch][2399883] = https://www.drupal.org/files/issues/2399883-og_vocab-menuitem-4.patch
 projects[og_vocab][patch][2503991] = https://www.drupal.org/files/issues/og_vocab_support_custom_widget_settings-2503991-1.patch
+projects[og_vocab][patch][2242387] = https://www.drupal.org/files/issues/og_vocab_override_widget_settings-2242387-2.patch
 projects[og_vocab][patch][2503997] = https://www.drupal.org/files/issues/og_vocab_add_support_for_select2widget-2503997-1.patch
 
 ; Panels Custom Error
@@ -188,7 +189,7 @@ projects[select2widget][download][type] = git
 projects[select2widget][download][branch] = 7.x-2.x
 projects[select2widget][download][revision] = eb87c27
 projects[select2widget][patch][2404175] = https://www.drupal.org/files/issues/2404175-select2widget-og_complex-2.patch
-projects[select2widget][patch][2503787] = https://www.drupal.org/files/issues/select2widget_add_support_for_og_vocab-2503787-1.patch
+projects[select2widget][patch][2503787] = https://www.drupal.org/files/issues/select2widget_add_support_for_og_vocab-2503787-4.patch
 projects[select2widget][patch][2503789] = https://www.drupal.org/files/issues/select2widget_error_from_placeholder-2503789-1.patch
 
 libraries[select2][download][type] = "get"
