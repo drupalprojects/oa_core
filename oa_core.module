@@ -1518,8 +1518,29 @@ function oa_core_oa_core_space_type_options($term, $vocab_name) {
  * Alters a node edit form to hide comment settings.
  */
 function _oa_core_hide_comment_settings(&$form) {
-  if (isset($form['comment_settings']) && (empty($form['#node']->type) || variable_get('comment_' . $form['#node']->type, COMMENT_NODE_OPEN) == COMMENT_NODE_HIDDEN)) {
+  $node = $form['#node'];
+  if (isset($form['comment_settings'])
+    && (empty($node->type) || variable_get('comment_' . $node->type, COMMENT_NODE_OPEN) == COMMENT_NODE_HIDDEN)
+    && (empty($node->nid)
+      || ($node->comment == COMMENT_NODE_HIDDEN)
+      || ($node->comment == COMMENT_NODE_CLOSED && empty($node->comment_count))
+    )) {
     $form['comment_settings']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_panelizer_pre_render_alter().
+ */
+function oa_core_panelizer_pre_render_alter(&$panelizer, $display, $entity) {
+  // Hide comments when set to be hidden.
+  // @see https://www.drupal.org/node/2505395
+  if (isset($entity->comment) && $entity->comment == COMMENT_NODE_HIDDEN) {
+    foreach ($panelizer->display->content as $key => $display) {
+      if ($display->type == 'node_comment_wrapper') {
+        unset($panelizer->display->content[$key]);
+      }
+    }
   }
 }
 
