@@ -160,10 +160,16 @@ function oa_core_oa_section_ref_process($element, &$form_state, &$complete_form)
   }
   $element += element_info('select');
 
-  if (!empty($element['#og_group_ref'])) {
-    $group_ref = !is_array($element['#og_group_ref']) ? array($element['#og_group_ref']) : $element['#og_group_ref'];
-    $group_ref_key = implode('--', $group_ref);
-    $value = drupal_array_get_nested_value($form_state['input'], $group_ref);
+  $group_ref_key = NULL;
+  if (isset($element['#og_group_ref'])) {
+    if (!empty($element['#og_group_ref'])) {
+      $group_ref = !is_array($element['#og_group_ref']) ? array($element['#og_group_ref']) : $element['#og_group_ref'];
+      $group_ref_key = implode('--', $group_ref);
+      $value = drupal_array_get_nested_value($form_state['input'], $group_ref);
+    }
+    else {
+      $value = -1;
+    }
     // Gid == 0 is no group.
     $gid = isset($value) && ($value === 0 || $value != -1) ? $value : oa_core_get_space_context();
     // Add options based on current selected group.
@@ -172,22 +178,25 @@ function oa_core_oa_section_ref_process($element, &$form_state, &$complete_form)
         $element['#options'][$nid] = check_plain($title);
       }
     }
+
     // Since IDs change with ajax (to be unique), need a static id for wrappers.
     $element['#ajax_id'] = isset($form_state['oa_section_ref_replace'][$group_ref_key]['id']) ?
       $form_state['oa_section_ref_replace'][$group_ref_key]['id'] : $element['#id'];
-
-    // Add wrapper to replace via ajax.
     $element['#prefix'] = '<div id="' . $element['#ajax_id'] . '-replace">';
     $element['#suffix'] = '</div>';
-    // Find the group element and add ajax processing to it.
-    $group_element = &_oa_core_oa_section_ref_process_find_element($complete_form, $group_ref);
-    $group_element['#ajax'] = array(
-      'callback' => 'oa_core_oa_section_ref_replace',
-      'wrapper' => $element['#ajax_id'] . '-replace',
-      'method' => 'replace',
-      'effect' => 'fade',
-      'event' => 'change',
-    );
+
+    if (!empty($group_ref_key)) {
+      // Add wrapper to replace via ajax.
+      // Find the group element and add ajax processing to it.
+      $group_element = &_oa_core_oa_section_ref_process_find_element($complete_form, $group_ref);
+      $group_element['#ajax'] = array(
+        'callback' => 'oa_core_oa_section_ref_replace',
+        'wrapper' => $element['#ajax_id'] . '-replace',
+        'method' => 'replace',
+        'effect' => 'fade',
+        'event' => 'change',
+      );
+    }
     if (arg(0) == 'panels' && strpos($_GET['q'], 'ajax')) {
       $group_element['#ajax']['path'] = 'system/panopoly-magic';
     }
