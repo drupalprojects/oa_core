@@ -2030,3 +2030,12 @@ function _oa_core_change_panel_layout(&$data, $key, $new_layout, $default_region
     }
   }
 }
+
+/**
+ * Implements hook_field_display_alter().
+ */
+function oa_core_field_display_alter(&$display, $context) {
+  if ($display['type'] == 'og_vocab') {
+    $display['label'] = 'hidden';
+  }
+}
