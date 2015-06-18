@@ -1773,7 +1773,17 @@ function oa_core_views_query_alter(&$view, &$query) {
             || $condition['field'] === $column . ".gid"
             || substr($condition['field'], -strlen($column)-2) === "__{$column}")) {
           // Move the condition to our new where group.
-          $query->add_where($group, $condition['field'], $condition['value'], $condition['operator']);
+          // Also need to modify the condition to only match the og_membership.gid field
+          // if the "other_spaces" field is empty, or has a delta of zero
+          // This prevents duplicate entries when the node is visible in multiple
+          // other spaces and is faster than making the query distinct.
+          $sub_condition = db_or()
+            ->condition("{$alias}.delta", NULL, 'IS NULL')
+            ->condition("{$alias}.delta", 0);
+          $new_condition = db_and()
+            ->condition($condition['field'], $condition['value'], $condition['operator'])
+            ->condition($sub_condition);
+          $query->add_where($group, $new_condition);
           $extra_groups[] = $condition['value'];
           unset($query->where[1]['conditions'][$key]);
           break;
