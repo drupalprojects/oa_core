@@ -1723,20 +1723,39 @@ function oa_core_view_query_modify_condition(&$query, $columns, $ids) {
   }
   // Loop over all conditions in all 'where groups'.
   foreach (array_keys($query->where) as $where_group) {
-    foreach ($query->where[$where_group]['conditions'] as $key => $condition) {
+    foreach ($query->where[$where_group]['conditions'] as $key => &$condition) {
       // If it matches the column or an alias.
       foreach ($columns as $column) {
-        if ($condition['field'] === $column ||
-          (is_string($condition['field']) && substr($condition['field'], -strlen($column)-2) === "__{$column}")) {
-          $value = $query->where[$where_group]['conditions'][$key]['value'];
-          if (!is_array($value)) {
-            $value = array($value);
-            $query->where[$where_group]['conditions'][$key]['operator'] = 'IN';
-          }
-          $query->where[$where_group]['conditions'][$key]['value'] = array_merge($value, $ids);
-        }
+        oa_core_view_query_modify_condition_object($condition, $column, $ids);
       }
     }
+    // free referenced object
+    unset($condition);
+  }
+}
+
+function oa_core_view_query_modify_condition_object(&$condition, $column, $ids) {
+  if (is_object($condition['field']) && is_a($condition['field'], 'DatabaseCondition')) {
+    $conditions = $condition['field']->conditions();
+    // cannot modify conditions directly in a DatabaseCondition object
+    // so we need to create a new one.
+    $new_subquery = new DatabaseCondition($conditions['#conjunction']);
+    foreach ($conditions as $key => $inner_condition) {
+      if (is_numeric($key)) {
+       oa_core_view_query_modify_condition_object($inner_condition, $column, $ids);
+        $new_subquery->condition($inner_condition['field'], $inner_condition['value'], $inner_condition['operator']);
+      }
+    }
+    $condition['field'] = $new_subquery;
+  }
+  elseif ($condition['field'] === $column ||
+    (is_string($condition['field']) && substr($condition['field'], -strlen($column)-2) === "__{$column}")) {
+    $value = $condition['value'];
+    if (!is_array($value)) {
+      $value = array($value);
+      $condition['operator'] = 'IN';
+    }
+    $condition['value'] = array_merge($value, $ids);
   }
 }
 
