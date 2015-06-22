@@ -217,6 +217,7 @@ function oa_core_get_groups_by_user_access($account = NULL, $include_archived = 
 /**
  * Returns the current space id context
  * @param  boolean $from_session only use the context stored in $SESSION
+ *   set this to TRUE if calling from a access hook to avoid infinite loops
  * @return int Space ID
  */
 function oa_core_get_space_context($from_session = FALSE) {
@@ -224,9 +225,13 @@ function oa_core_get_space_context($from_session = FALSE) {
     // don't run this during the installer
     return 0;
   }
-  if ($from_session && defined('OG_SESSION_CONTEXT_ID') && isset($_SESSION[OG_SESSION_CONTEXT_ID])) {
-    return $_SESSION[OG_SESSION_CONTEXT_ID];
+  if ($from_session) {
+    if (defined('OG_SESSION_CONTEXT_ID') && isset($_SESSION[OG_SESSION_CONTEXT_ID])) {
+      return $_SESSION[OG_SESSION_CONTEXT_ID];
+    }
+    return 0;
   }
+
   $context = og_context('node');
   if (!empty($context['gid'])) {
     return $context['gid'];

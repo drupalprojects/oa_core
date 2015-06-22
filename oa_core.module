@@ -166,8 +166,8 @@ function oa_core_menu() {
     'title' => 'Create Space',
     'page callback' => 'oa_core_create_space_page_callback',
     'page arguments' => array(OA_SPACE_TYPE, 3),
-    'access callback' => 'node_access',
-    'access arguments' => array('create', OA_SPACE_TYPE),
+    'access callback' => 'oa_core_create_space_access',
+    'access arguments' => array(3),
     'type' => MENU_CALLBACK,
   );
 
@@ -318,6 +318,16 @@ function oa_core_create_space_page_callback($type, $space_tid) {
   }
 
   return MENU_NOT_FOUND;
+}
+
+/**
+ * Menu access callback for creating space types
+ * @param $tid
+ */
+function oa_core_create_space_access($tid) {
+  $gid = oa_core_get_space_context(TRUE);
+  $tids = oa_core_get_allowed_space_terms($gid);
+  return !isset($tids) || empty($tids) || isset($tids[$tid]);
 }
 
 /**
@@ -1459,23 +1469,48 @@ function oa_core_get_allowed_space_types($field) {
   $gid = oa_core_get_space_context();
   // If no gid, may be using this as a filter or such.
   // @see oa_subspaces_form_node_form_alter().
-  if (!$gid || !module_exists('oa_subspaces') || user_access('administer group') || user_access('create oa_space content') || og_user_access('node', $gid, 'use any oa button space_type') || og_user_access('node', $gid, 'administer group')) {
+  if (!$gid || !module_exists('oa_subspaces') || user_access('administer group') || user_access('create oa_space content') || og_user_access('node', $gid, 'use any oa button space_type')) {
     return taxonomy_allowed_values($field);
   }
   if ($gid) {
     foreach ($field['settings']['allowed_values'] as $tree) {
-      if ($vocabulary = oa_core_taxonomy_vocabulary($tree['vocabulary'])) {
-        if ($terms = taxonomy_get_tree($vocabulary->vid, $tree['parent'])) {
-          foreach ($terms as $term) {
-            if (og_user_access('node', $gid, _oa_buttons_perm_name($tree['vocabulary'], $term->tid))) {
-              $options[$term->tid] = str_repeat('-', $term->depth) . $term->name;
-            }
+      $options = $options + oa_core_get_allowed_space_terms($gid, $tree['vocabulary']);
+    }
+  }
+  return $options;
+}
+
+/**
+ * Helper function to return list of space blueprint term ids allowed to be created.
+ * @param int $gid (optional)
+ * @return array of tids ($tid => $term->name).  If NULL, all tids are allowed.
+ */
+function oa_core_get_allowed_space_terms($gid = NULL, $vocab_name = 'space_type') {
+  global $user;
+
+  $gid = isset($gid) ? $gid : oa_core_get_space_context();
+  $tids = array();
+
+  // When checking OG Permission, don't let Admin Group override this since all
+  // Space admins typically have Admin Group but we want to limit types of subspaces
+  // to be created.
+  if (!$gid || !module_exists('oa_subspaces')
+    || user_access('administer group') || user_access('create oa_space content')
+    || og_user_access('node', $gid, 'use any oa button space_type', NULL, FALSE, TRUE)) {
+    return NULL;
+  }
+  if ($gid && $user->uid) {
+    if ($vocabulary = oa_core_taxonomy_vocabulary($vocab_name)) {
+      if ($terms = taxonomy_get_tree($vocabulary->vid)) {
+        foreach ($terms as $term) {
+          if (oa_core_get_taxonomy_term_access($term->tid, $gid, $vocab_name)) {
+            $tids[$term->tid] = str_repeat('-', $term->depth) . $term->name;
           }
         }
       }
     }
   }
-  return $options;
+  return $tids;
 }
 
 /**
@@ -1763,6 +1798,15 @@ function oa_core_view_query_modify_condition_object(&$condition, $column, $ids) 
  * Implements hook_views_query_alter().
  */
 function oa_core_views_query_alter(&$view, &$query) {
+  // only show space types allowed to create.
+  if ($view->name == 'oa_core_space_types') {
+    $tids = oa_core_get_allowed_space_terms();
+    if (isset($tids)) {
+      $tids = array_keys($tids);
+      $query->add_where(1, 'taxonomy_term_data.tid', $tids, 'IN');
+    }
+  }
+
   // We only modify views that have 'og_group_ref_target_id' as an exposed
   // filter and only when that filter has a value. We are adding support for
   // the 'Visible in other Spaces' (oa_other_spaces_ref) field.
