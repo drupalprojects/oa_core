@@ -1575,10 +1575,12 @@ function _oa_core_hide_comment_settings(&$form) {
 function oa_core_panelizer_pre_render_alter(&$panelizer, $display, $entity) {
   // Hide comments when set to be hidden.
   // @see https://www.drupal.org/node/2505395
-  if (isset($entity->comment) && $entity->comment == COMMENT_NODE_HIDDEN) {
-    foreach ($panelizer->display->content as $key => $display) {
-      if ($display->type == 'node_comment_wrapper') {
-        unset($panelizer->display->content[$key]);
+  if (module_exists('comment')) {
+    if (isset($entity->comment) && $entity->comment == COMMENT_NODE_HIDDEN) {
+      foreach ($panelizer->display->content as $key => $display) {
+        if ($display->type == 'node_comment_wrapper') {
+          unset($panelizer->display->content[$key]);
+        }
       }
     }
   }
