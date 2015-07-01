@@ -2119,3 +2119,29 @@ function oa_core_field_display_alter(&$display, $context) {
     $display['label'] = 'hidden';
   }
 }
+
+/**
+ * Determine if an exposed filter form should be collapsed
+ * Called from views-exposed-form.tpl.php in oa_radix
+ * Needs to determine if arguments are passed to change the filter that
+ * should cause the filter to remain expanded
+ * @param $form
+ * @return bool
+ */
+function oa_core_collapse_filter($form) {
+  // The views template used to use (count($_GET) < 2) to determine if filter
+  // is auto-collapsed.  But this causes filter to remain open when any other
+  // GET arguments are passed, such as Tours.
+  // So we need to actually compare passed arguments with form fields
+  $result = TRUE;
+  if (!empty($_GET)) {
+    foreach ($_GET as $key => $value) {
+      if (isset($form[$key]['#type'])) {
+        // Passing a valid form field, so keep filter expanded
+        $result = FALSE;
+        break;
+      }
+    }
+  }
+  return $result;
+}
