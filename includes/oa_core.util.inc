@@ -1155,7 +1155,7 @@ function oa_core_get_last_word($string) {
  * Return the name of a user
  */
 function oa_core_realname($user) {
-  return !empty($user->realname) ? $user->realname : $user->name;
+  return isset($user) ? (!empty($user->realname) ? $user->realname : $user->name) : '';
 }
 
 /**
