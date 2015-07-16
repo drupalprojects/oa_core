@@ -457,14 +457,14 @@ function oa_core_visibility_data($node) {
   if ($node->type == OA_SPACE_TYPE || $node->type == OA_GROUP_TYPE) {
     $visibility = field_get_items('node', $node, 'group_access');
     $data['public'] = empty($visibility[0]['value']);
-    if (!$data['public'] && ($nids = og_subgroups_parents_load('node', $node->nid))) {
-      if ($groups = array_filter(oa_core_get_titles($nids, 'oa_group', 'title', array('link'), TRUE, 0))) {
+    if (!$data['public'] && ($ids = og_subgroups_parents_load('node', $node->nid)) && !empty($ids['node'])) {
+      if ($groups = array_filter(oa_core_get_titles($ids['node'], 'oa_group', 'title', array('link'), TRUE, 0))) {
         $data['accessors']['group'] = array(
-          'links' => _oa_core_build_visibility_links('node', $node, 'oa_parent_space', OA_GROUP_TYPE),
+          'links' => $groups['links'],
           'label' => t('Groups'),
         );
       }
-      if ($spaces = array_filter(oa_core_get_titles($nids, 'oa_space', 'title', array('link'), TRUE, 0))) {
+      if ($spaces = array_filter(oa_core_get_titles($ids['node'], 'oa_space', 'title', array('link'), TRUE, 0))) {
         $data['accessors']['space'] = array(
           'links' => $spaces['links'],
           'label' => t('Spaces'),
