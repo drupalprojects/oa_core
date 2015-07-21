@@ -61,10 +61,8 @@ function oa_config_strongarm() {
       'pages' => '',
     ),
     'theme' => array(
-      'visibility' => '1',
-      'themes' => array(
-        'oa_radix' => 'oa_radix',
-      ),
+      'visibility' => '0',
+      'themes' => array(),
     ),
     'files' => array(
       'types' => array(
