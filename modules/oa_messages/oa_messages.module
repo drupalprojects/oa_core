@@ -230,8 +230,14 @@ function oa_messages_entity_insert($entity, $type) {
 
   $types = oa_core_list_content_types(TRUE);
   if ($type == 'node' && array_key_exists($entity->type, $types)) {
-    $message = oa_messages_create('oa_create', $entity, $type, '', NULL, $entity->uid);
+    // Cannot create message right now because new $entity has not been saved yet.
+    // So node_access('view') will return false and security token will not be added.
+    drupal_register_shutdown_function('oa_messages_shutdown_send_message', 'oa_create', $entity, $type);
   }
+}
+
+function oa_messages_shutdown_send_message($message_type, $entity, $type) {
+  oa_messages_create($message_type, $entity, $type, '', NULL, $entity->uid);
 }
 
 /**
