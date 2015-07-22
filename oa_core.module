@@ -46,6 +46,10 @@ define('OA_ACCESS_REALM', 'oa_access');
  */
 define('OA_UNPUBLISHED_REALM', 'oa_unpublished');
 /**
+ * The access realm of public spaces.
+ */
+define('OA_PUBLIC_REALM', 'oa_public');
+/**
  * The access realm of unpublished content.
  */
 define('OA_SPACE_CURRENT', 'CURRENT');
