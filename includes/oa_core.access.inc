@@ -46,6 +46,23 @@ function oa_core_section_access($row, $spaces, $account) {
 }
 
 /**
+ * Implements hook_og_subgroups_is_parent_private_alter().
+ * Handle special Atrium case where a private Group Parent does not make a public
+ * space private.  Only having a private SPACE Parent makes a public space private.
+ * @param $result
+ * @param $entity_type
+ * @param $entity
+ */
+function oa_core_og_subgroups_is_parent_private_alter(&$result, $entity_type, $entity) {
+  if ($result && ($entity_type == 'node')) {
+    if ($entity->type == OA_GROUP_TYPE) {
+      // A Private parent GROUP does not make the child space private
+      $result = FALSE;
+    }
+  }
+}
+
+/**
  * Implements hook_node_grants().
  * Define node access grant realm for Open Atrium sections
  */
