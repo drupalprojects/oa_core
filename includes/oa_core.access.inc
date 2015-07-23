@@ -52,7 +52,7 @@ function oa_core_section_access($row, $spaces, $account) {
 function oa_core_node_grants($account, $op) {
   $cache = &drupal_static('oa_core_node_grants', array());
 
-  if ($op != 'view') {
+  if ($op != 'view' || !$account->uid) {
     return array();
   }
 
@@ -60,121 +60,61 @@ function oa_core_node_grants($account, $op) {
     return $cache[$account->uid];
   }
 
-  $nids = oa_core_get_public_grants();
-  if (!empty($nids)) {
-    $grants[OA_PUBLIC_REALM] = $nids;
+  // Handle unpublished content permissions
+  if (user_access('view own unpublished content') && $account->uid) {
+    $grants[OA_UNPUBLISHED_REALM] = array($account->uid);
   }
 
-  if ($account->uid) {
-    // Handle unpublished content permissions
-    if (user_access('view own unpublished content') && $account->uid) {
-      $grants[OA_UNPUBLISHED_REALM] = array($account->uid);
+  // Combine the spaces the user is part of with public spaces.
+  $member_spaces = oa_core_get_groups_by_user($account, 'node');
+  $spaces = array_merge($member_spaces, oa_core_get_public_spaces(array(OA_SPACE_TYPE => OA_SPACE_TYPE), NULL,  FALSE, FALSE));
+  if (!empty($spaces)) {
+    $query = db_select('node', 'n');
+
+    // Join the og table to filter by spaces.
+    $query->join('og_membership', 'og', "n.nid = og.etid AND og.entity_type = 'node' AND og.field_name = '" . OA_SPACE_FIELD . "'");
+    $query->condition('og.gid', $spaces, 'IN');
+
+    // we join with the Groups, Teams, Users fields
+    $query->fields('n', array('nid'));
+    $query->condition('n.type', OA_SECTION_TYPE);
+
+    // Create an or condition that finds if section is allowed.
+    $db_or = db_or();
+
+    // Allow author of section.
+    $db_or->condition('n.uid', $account->uid , '=');
+
+    // If user is specified in user ref column.
+    $query->leftJoin('field_data_field_oa_user_ref', 'u', "n.nid = u.entity_id AND u.entity_type = 'node'");
+    $db_or->condition('u.field_oa_user_ref_target_id', $account->uid , '=');
+
+
+    // If one of the groups are included.
+    if ($member_spaces) {
+      $query->leftJoin('field_data_field_oa_group_ref', 'o', "n.nid = o.entity_id AND o.entity_type = 'node'");
+      $db_or->condition('o.field_oa_group_ref_target_id', $member_spaces , 'IN');
     }
 
-    // Combine the spaces the user is part of with public spaces.
-    $member_spaces = oa_core_get_groups_by_user($account, 'node');
-    $spaces = array_merge($member_spaces, oa_core_get_public_spaces(array(OA_SPACE_TYPE => OA_SPACE_TYPE), NULL, FALSE, FALSE));
-    if (!empty($spaces)) {
-      $query = db_select('node', 'n');
+    // If one of the teams are included.
+    $query->leftJoin('field_data_field_oa_team_ref', 't', "n.nid = t.entity_id AND t.entity_type = 'node'");
+    $query->leftJoin('node', 'tn', "tn.nid = t.field_oa_team_ref_target_id");
+    // Add creater of team.
+    $db_or->condition('tn.uid', $account->uid , '=');
+    $query->leftJoin('field_data_field_oa_team_users', 'tu', "t.field_oa_team_ref_target_id = tu.entity_id AND tu.entity_type = 'node' AND tu.deleted=0");
+    // If user is part of team.
+    $db_or->condition('tu.field_oa_team_users_target_id', $account->uid , '=');
 
-      // Join the og table to filter by spaces.
-      $query->join('og_membership', 'og', "n.nid = og.etid AND og.entity_type = 'node' AND og.field_name = '" . OA_SPACE_FIELD . "'");
-      $query->condition('og.gid', $spaces, 'IN');
+    // Add or to query.
+    $query->condition($db_or);
 
-      // we join with the Groups, Teams, Users fields
-      $query->fields('n', array('nid'));
-      $query->condition('n.type', OA_SECTION_TYPE);
 
-      // Create an or condition that finds if section is allowed.
-      $db_or = db_or();
-
-      // Allow author of section.
-      $db_or->condition('n.uid', $account->uid, '=');
-
-      // If user is specified in user ref column.
-      $query->leftJoin('field_data_field_oa_user_ref', 'u', "n.nid = u.entity_id AND u.entity_type = 'node'");
-      $db_or->condition('u.field_oa_user_ref_target_id', $account->uid, '=');
-
-      // If one of the groups are included.
-      if ($member_spaces) {
-        $query->leftJoin('field_data_field_oa_group_ref', 'o', "n.nid = o.entity_id AND o.entity_type = 'node'");
-        $db_or->condition('o.field_oa_group_ref_target_id', $member_spaces, 'IN');
-      }
-
-      // If one of the teams are included.
-      $query->leftJoin('field_data_field_oa_team_ref', 't', "n.nid = t.entity_id AND t.entity_type = 'node'");
-      $query->leftJoin('node', 'tn', "tn.nid = t.field_oa_team_ref_target_id");
-      // Add creater of team.
-      $db_or->condition('tn.uid', $account->uid, '=');
-      $query->leftJoin('field_data_field_oa_team_users', 'tu', "t.field_oa_team_ref_target_id = tu.entity_id AND tu.entity_type = 'node' AND tu.deleted=0");
-      // If user is part of team.
-      $db_or->condition('tu.field_oa_team_users_target_id', $account->uid, '=');
-
-      // Add or to query.
-      $query->condition($db_or);
-
-      // Set grants to nids, which should be only valid ones.
-      $grants[OA_ACCESS_REALM] = $query->execute()->fetchCol(0);
-    }
+    // Set grants to nids, which should be only valid ones.
+    $grants[OA_ACCESS_REALM] = $query->execute()->fetchCol(0);
   }
 
   $cache[$account->uid] = !empty($grants) ? $grants : array();
   return $cache[$account->uid];
-}
-
-/**
- * Return a list of OG grants for spaces that are public but have parents.
- * Only check Parents that are Spaces.  Private Group parents are ok.
- * og_subgroups blocks access to a public space that has a private group parent.
- * @param int $nid optional node id to test
- */
-function oa_core_get_public_grants($nid = 0) {
-  $cache = &drupal_static('oa_core_get_public_grants', array());
-
-  if (isset($cache[$nid])) {
-    return $cache[$nid];
-  }
-
-  $nids = array();
-
-  $query = db_select('node', 'n');
-  $query->join('field_data_group_access', 'g', "n.nid = g.entity_id AND g.entity_type = 'node'");
-  // Only check nodes that have og_access requirements
-  $query->join('node_access', 'a', "n.nid = a.nid AND a.realm = 'og_access:node' AND a.grant_view = 1");
-  $query->join('og_membership', 'og', "og.etid = n.nid AND og.entity_type = 'node'");
-  $query->join('node', 'pn', 'og.gid = pn.nid');
-  $query->join('field_data_group_access', 'pg', "pn.nid = pg.entity_id AND pg.entity_type = 'node'");
-  $query->fields('n', array('nid', 'type'));
-  $query->fields('pn', array('type'));
-  $query->fields('pg', array('group_access_value'));
-  $query
-    ->condition('n.type', OA_SPACE_TYPE)     // Node is a Space
-    ->condition('g.group_access_value', 0)   // Space is Public
-    ->condition('n.status', NODE_PUBLISHED); // Space is Published
-  if (!empty($nid)) {
-    $query->condition('n.nid', $nid);
-  }
-  $result = $query->execute()->fetchAll();
-
-  foreach ($result as $row) {
-    if (($row->pn_type == OA_GROUP_TYPE) && ($row->group_access_value == 1) AND empty($nids[$row->nid])) {
-      // Node has a private parent Group, so add it to list of contenders
-      // unless it's already added False from a private space.
-      $nids[$row->nid] = TRUE;
-    }
-    else if (($row->pn_type == OA_SPACE_TYPE) && ($row->group_access_value == 0) AND empty($nids[$row->nid])) {
-      // Node doesn't have any Group parents and has a public Space parent, so add to list.
-      // unless it's already added False from a private space.
-      $nids[$row->nid] = TRUE;
-    }
-    else if (($row->pn_type == OA_SPACE_TYPE) && ($row->group_access_value == 1)) {
-      // Node has a private parent Space, so remove it from contenders
-      $nids[$row->nid] = FALSE;
-    }
-  }
-
-  $cache[$nid] = !empty($nids) ? array_keys(array_filter($nids)) : array();
-  return $cache[$nid];
 }
 
 /**
@@ -211,31 +151,19 @@ function oa_core_node_access_records($node) {
       }
     }
   }
-  if (!empty($sids)) {
-    foreach ($sids as $sid) {
-      $grants[] = array(
-        'realm' => OA_ACCESS_REALM,
-        'gid' => $sid,
-        'grant_view' => 1,
-        'grant_update' => 0,
-        'grant_delete' => 0,
-        // Priority 1 means lesser grants for this node will be ignored.
-        'priority' => 1,
-      );
-    }
+  if (empty($sids)) {
+    return array();
   }
 
-  // Add a grant if this node has private Group parents but no private Space parents.
-  $nids = oa_core_get_public_grants($node->nid);
-  if (!empty($nids)) {
+  foreach ($sids as $sid) {
     $grants[] = array(
-      'realm' => OA_PUBLIC_REALM,
-      'gid' => $node->nid,
+      'realm' => OA_ACCESS_REALM,
+      'gid' => $sid,
       'grant_view' => 1,
       'grant_update' => 0,
       'grant_delete' => 0,
       // Priority 1 means lesser grants for this node will be ignored.
-      'priority' => 0,
+      'priority' => 1,
     );
   }
 
