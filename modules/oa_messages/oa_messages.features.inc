@@ -34,7 +34,7 @@ function oa_messages_default_message_type() {
         {
           "value" : "[[message:field-oa-message-space]] [message:field-oa-node-ref:title]",
           "format" : "plain_text",
-          "safe_value" : "\\u003Cp\\u003E[[message:field-oa-message-space]] @{message:user:name} replied to [message:field-oa-node-ref:title]\\u003C\\/p\\u003E\\n"
+          "safe_value" : "\\u003Cp\\u003E[[message:field-oa-message-space]] [message:field-oa-node-ref:title]\\u003C\\/p\\u003E\\n"
         },
         {
           "value" : "[message:timestamp:oa_date]\\u003Cbr \\/\\u003E\\u003Ch3\\u003E@{message:user:name} replied to \\u003Ca href=\\u0022[message:field-oa-comment-ref:url]\\u0022\\u003E[message:field-oa-node-ref:title]\\u003C\\/a\\u003E\\u003C\\/h3\\u003E\\r\\n[message:field-oa-message-text:value] [message:field-oa-comment-ref:comment-body:value]\\r\\n\\u003Ca href=\\u0022[message:field-oa-node-ref:url]\\u0022\\u003EClick here\\u003C\\/a\\u003E to see the discussion.",
@@ -75,7 +75,7 @@ function oa_messages_default_message_type() {
         {
           "value" : "[[message:field-oa-message-space]] [message:field-oa-node-ref:title]",
           "format" : "plain_text",
-          "safe_value" : "\\u003Cp\\u003E[[message:field-oa-message-space]] @{message:user:name} created [message:field-oa-node-ref:title]\\u003C\\/p\\u003E\\n"
+          "safe_value" : "\\u003Cp\\u003E[[message:field-oa-message-space]] [message:field-oa-node-ref:title]\\u003C\\/p\\u003E\\n"
         },
         {
           "value" : "[message:timestamp:oa_date]\\u003Cbr \\/\\u003E\\u003Ch3\\u003E@{message:user:name} created \\u003Ca href=\\u0022[message:field-oa-node-ref:url]\\u0022\\u003E[message:field-oa-node-ref:title]\\u003C\\/a\\u003E\\u003C\\/h3\\u003E\\r\\n\\u003Cp\\u003E[message:field-oa-message-text:value]\\u0026nbsp;[message:field-oa-node-ref:body]\\u003C\\/p\\u003E",
@@ -116,7 +116,7 @@ function oa_messages_default_message_type() {
         {
           "value" : "[[message:field-oa-message-space]] [message:field-deleted-title]",
           "format" : "plain_text",
-          "safe_value" : "\\u003Cp\\u003E[[message:field-oa-message-space]] @{message:user:name} deleted: [message:field-deleted-title]\\u003C\\/p\\u003E\\n"
+          "safe_value" : "\\u003Cp\\u003E[[message:field-oa-message-space]] [message:field-deleted-title]\\u003C\\/p\\u003E\\n"
         },
         {
           "value" : "[message:timestamp:oa_date]\\u003Cbr \\\\\\u003E@{message:user:name} deleted [message:field-deleted-title]",
@@ -188,7 +188,7 @@ function oa_messages_default_message_type() {
         {
           "value" : "[[message:field-oa-message-space]] [message:field-oa-node-ref:title]",
           "format" : "plain_text",
-          "safe_value" : "\\u003Cp\\u003E[[message:field-oa-message-space]] @{message:user:name} updated [message:field-oa-node-ref:title]\\u003C\\/p\\u003E\\n"
+          "safe_value" : "\\u003Cp\\u003E[[message:field-oa-message-space]] [message:field-oa-node-ref:title]\\u003C\\/p\\u003E\\n"
         },
         {
           "value" : "[message:timestamp:oa_date]\\u003Cbr \\/\\u003E\\u003Ch3\\u003E@{message:user:name} updated \\u003Ca href=\\u0022[message:field-oa-node-ref:url]\\u0022\\u003E[message:field-oa-node-ref:title]\\u003C\\/a\\u003E\\u003C\\/h3\\u003E\\r\\n\\u003Cp\\u003E[message:field-oa-message-text:value]\\u0026nbsp;[message:field-oa-node-ref:oa-log]\\u003C\\/p\\u003E\\u003Cp\\u003E!{message:field-oa-node-ref:oa-diff}\\u003C\\/p\\u003E",
