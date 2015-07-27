@@ -38,6 +38,13 @@ class OaEmail extends MessageNotifierEmail {
     // Allow for overriding the 'from' of the message.
     $from = isset($options['from']) ? $options['from'] : NULL;
 
+    $mimemail_name = variable_get('mimemail_name', t('Atrium'));
+    $from = array(
+      'name' => oa_core_realname($account) . ' (' . $mimemail_name . ')',
+      'mail' => is_array($from) ? $from['mail'] : $from,
+    );
+
+
     // Pass the message entity along to hook_drupal_mail().
     $output['message_entity'] = $message;
     if (!empty($message->email_attachments)) {
