@@ -38,9 +38,10 @@ class OaEmail extends MessageNotifierEmail {
     // Allow for overriding the 'from' of the message.
     $from = isset($options['from']) ? $options['from'] : NULL;
 
+    $from_account = !empty($message->user->uid) ? user_load($message->user->uid) : $account;
     $mimemail_name = variable_get('mimemail_name', t('Atrium'));
     $from = array(
-      'name' => oa_core_realname($account) . ' (' . $mimemail_name . ')',
+      'name' => oa_core_realname($from_account) . ' (' . $mimemail_name . ')',
       'mail' => is_array($from) ? $from['mail'] : $from,
     );
 
