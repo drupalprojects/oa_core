@@ -35,13 +35,13 @@
       <h2 class="subject"><?php print $subject; ?></h2>
     <?php endif; ?>
     <table class="mail-table">
-        <?php if ($recipient_details): ?>
+        <?php if ($sender_details): ?>
       <tr>
         <td></td>
         <td class="user-badge">
-          <a href="<?php print url('user/' . $recipient->uid); ?>">
-            <?php print $recipient_details['realname']; ?>
-            <?php print $recipient_details['picture']; ?>
+          <a href="<?php print url('user/' . $user->uid); ?>">
+            <?php print $sender_details['realname']; ?>
+            <?php print $sender_details['picture']; ?>
           </a>
         </td>
       </tr>

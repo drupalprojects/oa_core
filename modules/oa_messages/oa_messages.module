@@ -518,9 +518,10 @@ function oa_messages_field_default_field_instances_alter(&$data) {
  * Implements hook_preprocess_mimemail_message().
  */
 function oa_messages_preprocess_mimemail_message(&$variables) {
-  $variables['message'] = !empty($variables['params']['message_entity']) ? $variables['params']['message_entity'] : array();
-  $variables['recipient_details'] = (!empty($variables['recipient']) && is_object($variables['recipient']))
-    ? oa_users_build_user_details($variables['recipient'])
+  // NOTE: mimemail does not pass 'params' in the $variables like HTMLMail does,
+  // so don't depend on it.
+  $variables['sender_details'] = (!empty($variables['user']) && is_object($variables['user']))
+    ? oa_users_build_user_details($variables['user'])
     : array();
 
   // Add in our custom css.
