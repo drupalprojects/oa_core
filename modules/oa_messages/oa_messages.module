@@ -527,6 +527,11 @@ function oa_messages_preprocess_mimemail_message(&$variables) {
   // Add in our custom css.
   $css = @file_get_contents(drupal_get_path('module', 'oa_messages') . '/css/oa-messages-mail.css');
 
+  $seperator = variable_get('mailcomment_reply_text', t('((( Reply ABOVE this LINE to POST a COMMENT )))'));
+  $seperator .= "<br />\n<br />\n";
+  $variables['seperator'] = $seperator;
+  $variables['body'] = str_replace($seperator, '', $variables['body']);
+
   // Below is copied.
   // @see template_preprocess_mimemail_message().
 

@@ -31,6 +31,9 @@
     <?php endif; ?>
   </head>
   <body id="mimemail-body" <?php if ($module && $key): print 'class="'. $module .'-'. $key .'"'; endif; ?>>
+    <?php if ($seperator): ?>
+      <?php print $seperator; ?>
+    <?php endif; ?>
     <?php if ($css): ?>
       <h2 class="subject"><?php print $subject; ?></h2>
     <?php endif; ?>
