@@ -405,9 +405,14 @@ function oa_messages_oa_messages_create_alter(&$wrapper, $context) {
  * Implements hook_theme()
  */
 function oa_messages_theme() {
+  $path = drupal_get_path('module', 'oa_messages') . '/templates';
   return array(
     'oa_team_update' => array(
       'variables' => array('old_users' => array(), 'new_users' => array()),
+    ),
+    'oa_messages_body' => array(
+      'template'  => 'oa-messages-body',
+      'path' => $path,
     ),
   );
 }
@@ -418,7 +423,6 @@ function oa_messages_theme() {
 function oa_messages_theme_registry_alter(&$theme_reg) {
   $theme_reg['htmlmail']['path'] = drupal_get_path('module', 'oa_messages') . '/templates';
   $theme_reg['htmlmail']['theme path'] = $theme_reg['htmlmail']['path'];
-  $theme_reg['mimemail_message']['path'] = drupal_get_path('module', 'oa_messages') . '/templates';
 }
 
 /**
@@ -488,6 +492,8 @@ function oa_messages_ctools_plugin_directory($owner, $plugin_type) {
 
 /**
  * Implements hook_preprocess_htmlemail().
+ *
+ * HTMLMail is DEPRECATED.  Use MimeMail instead.
  */
 function oa_messages_preprocess_htmlmail(&$vars) {
   // Get the message entity, and user the message is related to.
@@ -515,25 +521,58 @@ function oa_messages_field_default_field_instances_alter(&$data) {
 }
 
 /**
+ * Implements hook_mail_alter().
+ */
+function oa_messages_mail_alter(&$message) {
+  if ($message['module'] != 'message_notify') {
+    return;
+  }
+
+  $message_entity = $message['params']['message_entity'];
+  $user = oa_users_build_user_details($message_entity->user);
+  $message['username'] = $user['realname'];
+  $message['picture'] = $user['picture'];
+
+  $node = isset($message_entity->field_oa_node_ref) ?
+    node_load($message_entity->field_oa_node_ref['und'][0]['target_id']) : NULL;
+
+  if (!$node) {
+    return;
+  }
+
+  // Set the heading and footer for the later mail template theme.
+  if (empty($message['title']) && !empty($message['body'][0])) {
+    // Extract any existing H3 from the message text as the title.
+    $body = $message['body'][0];
+    if (preg_match('/<h3>(.+?)<\/h3>/', $body, $matches, PREG_OFFSET_CAPTURE)) {
+      $message['title'] = $matches[1][0];
+      $message['body'][0] = drupal_substr($body, 0, $matches[0][1]) . drupal_substr($body, $matches[0][1] + strlen($matches[0][0]));
+    }
+  }
+
+  // Add a link to original content in the email footer.
+  if (empty($message['footer'])) {
+    $message['footer'] = l(t('View original' . ' ' . node_type_get_name($node)), 'node/' . $node->nid);
+  }
+}
+
+/**
  * Implements hook_preprocess_mimemail_message().
  */
 function oa_messages_preprocess_mimemail_message(&$variables) {
-  // NOTE: mimemail does not pass 'params' in the $variables like HTMLMail does,
-  // so don't depend on it.
-  $variables['sender_details'] = (!empty($variables['user']) && is_object($variables['user']))
-    ? oa_users_build_user_details($variables['user'])
-    : array();
+  $message = !empty($vars['message']['params']['message_entity']) ? $vars['message']['params']['message_entity'] : array();
+  $vars['message'] = $message;
+  $variables['timestamp'] = !empty($message['timestamp']) ? oa_date_format_date($message['timestamp']) : '';
+
+  // Allow the body of the HTML to be changed for specific message types
+  $variables['body'] = theme(array('oa_messages_body__' . $variables['key']), $variables);
 
   // Add in our custom css.
   $css = @file_get_contents(drupal_get_path('module', 'oa_messages') . '/css/oa-messages-mail.css');
 
-  $seperator = variable_get('mailcomment_reply_text', t('((( Reply ABOVE this LINE to POST a COMMENT )))'));
-  $seperator .= "<br />\n<br />\n";
-  $variables['seperator'] = $seperator;
-  $variables['body'] = str_replace($seperator, '', $variables['body']);
-
-  // Below is copied.
+  // Below is copied from
   // @see template_preprocess_mimemail_message().
+  // to process the css we just added.
 
   // Regexp to match comment blocks.
   $comment = '/\*[^*]*\*+(?:[^/*][^*]*\*+)*/';
