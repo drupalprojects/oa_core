@@ -22,8 +22,8 @@
  */
 ?>
 
-<?php if (!empty($message['seperator'])): ?>
-  <?php print $message['seperator']; ?>
+<?php if (!empty($message['separator'])): ?>
+  <?php print $message['separator']; ?>
 <?php endif; ?>
 <h2 class="subject"><?php print $subject; ?></h2>
 <div class="mail-table">

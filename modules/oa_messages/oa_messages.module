@@ -560,9 +560,9 @@ function oa_messages_mail_alter(&$message) {
  * Implements hook_preprocess_mimemail_message().
  */
 function oa_messages_preprocess_mimemail_message(&$variables) {
-  $message = !empty($vars['message']['params']['message_entity']) ? $vars['message']['params']['message_entity'] : array();
+  $message = !empty($variables['message']['params']['message_entity']) ? $variables['message']['params']['message_entity'] : array();
   $vars['message'] = $message;
-  $variables['timestamp'] = !empty($message['timestamp']) ? oa_date_format_date($message['timestamp']) : '';
+  $variables['timestamp'] = !empty($message->timestamp) ? oa_date_format_date($message->timestamp) : '';
 
   // Allow the body of the HTML to be changed for specific message types
   $variables['body'] = theme(array('oa_messages_body__' . $variables['key']), $variables);
