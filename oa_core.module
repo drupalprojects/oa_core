@@ -198,7 +198,30 @@ function oa_core_menu() {
     'access arguments' => array(2, 3, 4, 5),
     'type' => MENU_CALLBACK,
   );
+  $items['external-user/%ctools_js/%node'] = array(
+    'title' => t('Add New User'),
+    'page callback' => 'oa_core_register_external_user_modal',
+    'page arguments' => array(1, 2),
+    'access callback' => TRUE,
+    'file' => 'plugins/content_types/oa_core_add_external_user.inc',
+    'file path' => drupal_get_path('module', 'oa_core'),
+    'type' => MENU_CALLBACK,
+  );
   return $items;
+}
+
+/**
+ * Implements hook_forms().
+ */
+function oa_core_forms($form_id, $args) {
+  $forms = array();
+  if ($form_id == 'oa_core_register_external_user_form') {
+    module_load_include('inc', 'user', 'user.admin');
+    $forms['oa_core_register_external_user_form'] = array(
+      'callback' => 'user_register_form',
+    );
+  }
+  return $forms;
 }
 
 /**
