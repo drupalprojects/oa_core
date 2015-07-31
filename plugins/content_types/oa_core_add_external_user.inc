@@ -42,6 +42,15 @@ function oa_core_add_external_user_render($subtype, $conf, $args, $context = NUL
   return $block;
 }
 
+/**
+ * This is what the widget will render. It's just a button that triggers a modal that contains the modified user
+ * registration form to add a new user.
+ *
+ * @param $form
+ * @param $form_state
+ * @param $group
+ * @return mixed
+ */
 function oa_core_add_external_user_button($form, &$form_state, $group) {
 
   $form['url'] = array(
@@ -61,6 +70,13 @@ function oa_core_add_external_user_button($form, &$form_state, $group) {
   return $form;
 }
 
+/**
+ * This is the page callback for "external-user/%ctools_js/%node".
+ *
+ * @param bool|FALSE $js
+ * @param $group
+ * @return array|mixed
+ */
 function oa_core_register_external_user_modal($js = FALSE, $group) {
 
   // This is kind of hacky but there really isn't a good way to get the underlying page url.
@@ -81,14 +97,18 @@ function oa_core_register_external_user_modal($js = FALSE, $group) {
       'ajax' => TRUE,
       'title' => t('You are adding an external user.'),
     );
+    // Build the form for the modal.
     $output = ctools_modal_form_wrapper('oa_core_register_external_user_form', $form_state);
+    // If we don't find the form or it has already been submitted.
     if (empty($output) || $form_state['executed']) {
       $output = array();
+      // Give the user something so they know the modal will close and the page will reload.
+      // @todo: This would be better if we just added a loader.
       $output[] = ctools_modal_command_display('', '<h2>Processing...</h2>');
       $output[] = ctools_modal_command_loading();
       $output[] = ctools_ajax_command_redirect($url);
-      unset($_SESSION['register_external_user_page_path']);
     }
+    // Render the output and exit.
     print ajax_render($output);
     drupal_exit();
   }
@@ -101,12 +121,13 @@ function oa_core_register_external_user_modal($js = FALSE, $group) {
  * Implements hook_form_FORM_ID_alter().
  */
 function oa_core_form_oa_core_register_external_user_form_alter(&$form, &$form_state) {
-  // Add our own submit handler.
+  // Add another submit handler to add the user to the space, team, or group.
   $form['#submit'][] = "oa_core_register_external_user_form_submit";
 }
 
 /**
- * Submit handler for adding member
+ * Submit handler for adding member.
+ *
  * @param  $form
  * @param  $form_state
  * @return mixed
@@ -115,11 +136,14 @@ function oa_core_register_external_user_form_submit($form, &$form_state) {
 
   if ($account = $form['#user']) {
     $args = menu_get_item();
+    // Get the group page the widget is being triggered on.
     list(, $group) = $args['page_arguments'];
+    // This is an oa_space or oa_group type.
     if ($group->type == OA_SPACE_TYPE || $group->type == OA_GROUP_TYPE) {
       // Add the member to the space.
       oa_core_add_member_api('node', $group->nid, $account->uid);
     }
+    // This is an oa_team type.
     else if ($group->type == OA_TEAM_TYPE) {
       // Load the space the team belongs to.
       $space_nid = oa_core_get_group_from_node($group);
@@ -130,11 +154,13 @@ function oa_core_register_external_user_form_submit($form, &$form_state) {
       // A message gets set for the space. We need to add one for the team as well. Use the 'Display name' so we match
       // the message added when adding a user to a space.
       $wrapper = entity_metadata_wrapper('user', $account);
+      // Get the 'Display Name' instead of using the actual name.
       $name = $wrapper->field_user_display_name->value();
       drupal_set_message(t('@name has been added to the team @team.', array('@name' => $name, '@team' => $group->title)));
     }
   }
   else {
+    // Something went wrong with creating the user.
     drupal_set_message(t('There was an error creating the user. Please contact your group administrator.'), 'error');
   }
 }
