@@ -56,3 +56,12 @@ function oa_variables_entity_delete($entity, $type) {
     variable_cache_clear();
   }
 }
+
+/**
+ * Implements hook_entity_update().
+ */
+function oa_variables_entity_update($entity, $type) {
+  if ($type == 'taxonomy_vocabulary') {
+    variable_cache_clear();
+  }
+}
