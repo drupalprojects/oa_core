@@ -232,12 +232,61 @@ function oa_messages_entity_insert($entity, $type) {
   if ($type == 'node' && array_key_exists($entity->type, $types)) {
     // Cannot create message right now because new $entity has not been saved yet.
     // So node_access('view') will return false and security token will not be added.
-    drupal_register_shutdown_function('oa_messages_shutdown_send_message', 'oa_create', $entity, $type);
+    oa_messages_delayed_messages(array(
+      'message_type' => 'oa_create',
+      'entity' => $entity,
+      'entity_type' => $type,
+      'uid' => $entity->uid,
+    ));
   }
 }
 
-function oa_messages_shutdown_send_message($message_type, $entity, $type) {
-  oa_messages_create($message_type, $entity, $type, '', NULL, $entity->uid);
+/**
+ * Store messages that need to be sent later in page load.
+ */
+function &oa_messages_delayed_messages($message = NULL) {
+  $messages = &drupal_static(__FUNCTION__, array());
+  $shutdown_registered = &drupal_static(__FUNCTION__ . '_registered', false);
+  if (!$shutdown_registered) {
+    drupal_register_shutdown_function('oa_messages_shutdown_send_messages');
+    $shutdown_registered = TRUE;
+  }
+  if ($message) {
+    $message += array(
+      'entity' => NULL,
+      'entity_type' => 'node',
+      'text' => '',
+      'args' => NULL,
+      'uid' => NULL,
+      'send' => TRUE,
+    );
+    $messages[] = $message;
+  }
+  return $messages;
+}
+
+/**
+ * Send any messages that have not gotten sent.
+ */
+function oa_messages_shutdown_send_messages() {
+  $messages = &drupal_static('oa_messages_delayed_messages', array());
+  if ($messages) {
+    foreach ($messages as $message) {
+      oa_messages_create($message['message_type'], $message['entity'], $message['entity_type'], $message['text'], $message['args'], $message['uid'], $message['send']);
+    }
+    $messages = array();
+  }
+}
+
+/**
+ * Implements hook_exit().
+ */
+function oa_messages_exit($destination = NULL) {
+  // While could just have the messages sent to register, this is run first
+  // and allows the message sending to produce messages that the user will see
+  // next page load, unlike shut down functions that operate after the session
+  // is commited.
+  oa_messages_shutdown_send_messages();
 }
 
 /**
