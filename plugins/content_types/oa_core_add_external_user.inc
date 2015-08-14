@@ -24,7 +24,7 @@ function oa_core_add_external_user_render($subtype, $conf, $args, $context = NUL
     || !(($nid = oa_core_get_group_from_node($context->data))
       && ($group = node_load(oa_core_get_group_from_node($nid))))
     || !node_access('view', $group)
-    || !og_user_access('node', $group->nid, 'add external users')) {
+    || !og_user_access('node', $group->nid, 'add external user')) {
     return;
   }
 
