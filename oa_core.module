@@ -211,6 +211,19 @@ function oa_core_menu() {
 }
 
 /**
+ * Implements hook_og_permission().
+ */
+function oa_core_og_permission() {
+  return array(
+    'add external user' => array(
+      'title' => t('Add External User'),
+      'description' => t('Allows a member to add users to the site and a space, group, or team simultaneously.'),
+      'default role' => array(OG_ADMINISTRATOR_ROLE),
+    ),
+  );
+}
+
+/**
  * Implements hook_forms().
  */
 function oa_core_forms($form_id, $args) {

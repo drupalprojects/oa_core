@@ -186,11 +186,6 @@ function oa_access_og_permission() {
       'description' => t('Allows users to configure which Teams have which permissions.'),
       'default role' => array(OG_ADMINISTRATOR_ROLE),
     ),
-    'add external user' => array(
-      'title' => t('Add External User'),
-      'description' => t('Allows a member to add users to the site and a space, group, or team simultaneously.'),
-      'default role' => array(OG_ADMINISTRATOR_ROLE),
-    ),
   );
 }
 
