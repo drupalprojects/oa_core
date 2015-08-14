@@ -167,7 +167,9 @@ function oa_users_external_user_form($form, &$form_state) {
     '#type' => 'textarea',
     '#title' => t('Personal welcome message'),
     '#default_value' => '',
-    '#description' => t('This welcome message will appear at the top of the e-mail notification sent to the new user.')
+    '#description' => t('This welcome message will appear at the top of the e-mail notification sent to the new user.'),
+    // TODO: Implement this field in the future and then set access back to TRUE
+    '#access' => FALSE,
   );
 
   $form['account']['status'] = array(
