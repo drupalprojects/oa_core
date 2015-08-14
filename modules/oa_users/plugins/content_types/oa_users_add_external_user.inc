@@ -194,6 +194,7 @@ function oa_users_external_user_form($form, &$form_state) {
 }
 
 function oa_users_pre_user_register_submit($form, &$form_state) {
+  $form_state['values']['field_user_display_name'][LANGUAGE_NONE][0]['value'] = $form_state['values']['name'];
   $form_state['values']['administer_users'] = TRUE;
   $form_state['values']['pass'] = user_password();
 }
