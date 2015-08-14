@@ -18,12 +18,6 @@ function oa_core_theme() {
       ),
       'path' => $path,
     ),
-    'oa_core_register_external_user_form' => array(
-      'render element' => 'form',
-      'template' => 'oa-core-register-external-user',
-      'preprocess functions' => array('oa_core_preprocess_oa_core_register_external_user_form'),
-      'path' => $path,
-    ),
     'oa_core_summary' => array(
       'template'  => 'oa-core-summary',
       'path' => $path,
@@ -47,13 +41,4 @@ function oa_core_theme() {
       'path' => $path,
     ),
   );
-}
-
-function oa_core_preprocess_oa_core_register_external_user_form(&$vars) {
-  $form = $vars['form'];
-  $vars['name'] = drupal_render($form['account']['name']);
-  $vars['mail'] = drupal_render($form['account']['mail']);
-  $vars['pass'] = drupal_render($form['account']['pass']);
-  $vars['roles'] = drupal_render($form['account']['roles']);
-  $vars['notify'] = drupal_render($form['account']['notify']);
 }

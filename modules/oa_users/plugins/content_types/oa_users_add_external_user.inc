@@ -10,7 +10,7 @@ $plugin = array(
   'description' => t('Allows new users to be added to the site and then as members to the space.'),
   'single' => TRUE,
   'category' => t('OA Admin'),
-  'render callback' => 'oa_core_add_external_user_render',
+  'render callback' => 'oa_users_add_external_user_render',
   'required context' => new ctools_context_required(t('Node'), 'node'),
 );
 
@@ -18,7 +18,7 @@ $plugin = array(
 /**
  * Render callback for the add external user plugin.
  */
-function oa_core_add_external_user_render($subtype, $conf, $args, $context = NULL) {
+function oa_users_add_external_user_render($subtype, $conf, $args, $context = NULL) {
 
   if (empty($context->data->nid)
     || !(($nid = oa_core_get_group_from_node($context->data))
@@ -32,7 +32,7 @@ function oa_core_add_external_user_render($subtype, $conf, $args, $context = NUL
   ctools_modal_add_js();
 
   // A simple form with a button.
-  $form = drupal_get_form('oa_core_add_external_user_button', $context->data);
+  $form = drupal_get_form('oa_users_add_external_user_button', $context->data);
   $output = drupal_render($form);
 
   $block = new stdClass();
@@ -51,33 +51,38 @@ function oa_core_add_external_user_render($subtype, $conf, $args, $context = NUL
  * @param $group
  * @return mixed
  */
-function oa_core_add_external_user_button($form, &$form_state, $group) {
+function oa_users_add_external_user_button($form, &$form_state, $group) {
 
   $form['url'] = array(
     '#type' => 'hidden',
     // The name of the class is the #id of $form['ajax_button'] with a "-url" suffix.
-    '#attributes' => array('class' => array('oa-core-add-external-user-button-url')),
-    '#value' => url('external-user/nojs/' . $group->nid),
+    '#attributes' => array('class' => array('oa-users-add-external-url')),
+    '#value' => url('oa_users/add/nojs/' . $group->nid),
   );
 
   $form['ajax_button'] = array(
     '#type' => 'button',
     '#value' => t('Add User'),
     '#attributes' => array('class' => array('ctools-use-modal btn-primary')),
-    '#id' => 'oa-core-add-external-user-button',
+    '#id' => 'oa-users-add-external',
   );
 
   return $form;
 }
 
 /**
- * This is the page callback for "external-user/%ctools_js/%node".
+ * This is the page callback for "oa_users/add/%ctools_js/%node".
  *
  * @param bool|FALSE $js
  * @param $group
  * @return array|mixed
  */
-function oa_core_register_external_user_modal($js = FALSE, $group) {
+function oa_users_register_external_user_modal($js = FALSE, $group = NULL) {
+  $group = !empty($group) ? $group : node_load(oa_core_get_space_context());
+
+  if (empty($group) && !node_access('view', $group) || !og_user_access('node', $group->nid, 'add external user')) {
+    return;
+  }
 
   // This is kind of hacky but there really isn't a good way to get the underlying page url.
   if ($group->type == OA_SPACE_TYPE) {
@@ -95,10 +100,11 @@ function oa_core_register_external_user_modal($js = FALSE, $group) {
     ctools_modal_add_js();
     $form_state = array(
       'ajax' => TRUE,
-      'title' => t('You are adding an external user.'),
+      'title' => t('Add external user to ' . $group->title),
     );
+    $form_state['#group'] = $group;
     // Build the form for the modal.
-    $output = ctools_modal_form_wrapper('oa_core_register_external_user_form', $form_state);
+    $output = ctools_modal_form_wrapper('oa_users_external_user_form', $form_state);
     // If we don't find the form or it has already been submitted.
     if (empty($output) || $form_state['executed']) {
       $output = array();
@@ -113,16 +119,81 @@ function oa_core_register_external_user_modal($js = FALSE, $group) {
     drupal_exit();
   }
   else {
-    return drupal_get_form('oa_core_add_external_user_ajax_form');
+    return drupal_get_form('oa_users_external_user_form');
   }
 }
 
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function oa_core_form_oa_core_register_external_user_form_alter(&$form, &$form_state) {
-  // Add another submit handler to add the user to the space, team, or group.
-  $form['#submit'][] = "oa_core_register_external_user_form_submit";
+function oa_users_external_user_form($form, &$form_state) {
+  $form['#user'] = drupal_anonymous_user();
+  $form['#user_category'] = 'register';
+
+  $form['#group'] = $form_state['#group'];
+  $form['#validate'][] = 'user_account_form_validate';
+  $form['#submit'][] = 'oa_users_pre_user_register_submit';
+  $form['#submit'][] = 'user_register_submit';
+  $form['#submit'][] = 'oa_users_external_user_form_submit';
+
+  // Account information.
+  $form['account'] = array(
+    '#type'   => 'container',
+    '#weight' => -10,
+  );
+
+  $form['account']['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Username'),
+    '#maxlength' => USERNAME_MAX_LENGTH,
+    '#description' => t('Spaces are allowed; punctuation is not allowed except for periods, hyphens, apostrophes, and underscores.'),
+    '#required' => TRUE,
+    '#attributes' => array('class' => array('username')),
+    '#default_value' => '',
+    '#weight' => -10,
+  );
+
+  $form['account']['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('E-mail address'),
+    '#maxlength' => EMAIL_MAX_LENGTH,
+    '#description' => t('A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+    '#required' => TRUE,
+    '#default_value' => '',
+  );
+
+  // The personal welcome message will be added to the top of the mail.
+  //        * updated by ajax call back (we shouldn't show tokens to users)
+  //        * or in a second step of the form
+  //        Both approaches have ramifications for the use of the form in ajaxy popups.
+  $form['welcome_message_body'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Personal welcome message'),
+    '#default_value' => '',
+    '#description' => t('This welcome message will appear at the top of the e-mail notification sent to the new user.')
+  );
+
+  $form['account']['status'] = array(
+    '#type' => 'radios',
+    '#title' => t('Status'),
+    '#default_value' => 1,
+    '#options' => array(t('Blocked'), t('Active')),
+    '#access' => FALSE,
+  );
+
+  $form['account']['notify'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Notify user of new account'),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add'),
+    '#weight' => 20,
+  );
+  return $form;
+}
+
+function oa_users_pre_user_register_submit($form, &$form_state) {
+  $form_state['values']['administer_users'] = TRUE;
+  $form_state['values']['pass'] = user_password();
 }
 
 /**
@@ -132,12 +203,10 @@ function oa_core_form_oa_core_register_external_user_form_alter(&$form, &$form_s
  * @param  $form_state
  * @return mixed
  */
-function oa_core_register_external_user_form_submit($form, &$form_state) {
+function oa_users_external_user_form_submit($form, &$form_state) {
 
-  if ($account = $form['#user']) {
-    $args = menu_get_item();
-    // Get the group page the widget is being triggered on.
-    list(, $group) = $args['page_arguments'];
+  if (($account = $form['#user']) && ($group = $form['#group'])) {
+
     // This is an oa_space or oa_group type.
     if ($group->type == OA_SPACE_TYPE || $group->type == OA_GROUP_TYPE) {
       // Add the member to the space.
