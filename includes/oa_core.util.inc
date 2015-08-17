@@ -1154,10 +1154,10 @@ function oa_core_realname($user) {
 /**
  * Convert known entities in to a simple array of title and picture.
  */
-function oa_core_entity_build_display($entity, $id, $space) {
+function oa_core_entity_build_display($entity, $id, $space, $subpage = '') {
   if (!empty($entity->nid)) {
     if (node_access('view', $entity)) {
-      $display['title'] = l($entity->title, 'node/' . $entity->nid);
+      $display['title'] = l($entity->title, 'node/' . $entity->nid . $subpage);
     }
     else {
       $display['title'] = t('A @type', array('@type' => array('@type' => node_type_get_name($entity->type))));
@@ -1167,7 +1167,7 @@ function oa_core_entity_build_display($entity, $id, $space) {
     $display['options'] = array();
   }
   else {
-    $display['title'] = l(format_username($entity), 'user/' . $entity->uid);
+    $display['title'] = l(format_username($entity), 'user/' . $entity->uid . $subpage);
     $display['uid'] = $entity->uid;
     $display['picture'] = oa_users_picture($entity);
     $display['options'] = array(
