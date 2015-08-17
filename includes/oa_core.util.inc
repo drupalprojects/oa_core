@@ -226,6 +226,7 @@ function oa_core_get_space_context($from_session = FALSE) {
 
   $context = og_context('node');
   if (!empty($context['gid'])) {
+    og_session_context_set_context($context['gid']);
     return $context['gid'];
   }
   else {
