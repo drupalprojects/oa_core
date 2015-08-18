@@ -613,9 +613,12 @@ function oa_messages_preprocess_mimemail_message(&$variables) {
   $vars['message'] = $message;
   $variables['timestamp'] = !empty($message->timestamp) ? format_date($message->timestamp, 'long') : '';
 
-  // Strip any blank paragraph from beginning.  WYSIWYG adds this sometimes.
-  $pattern = '<p>&nbsp;</p>';
-  $variables['body'] = str_replace($pattern, '', $variables['body']);
+  // Sometimes WYSIWYG adds an extra \n<p>&nbsp; to the beginning
+  $body = &$variables['body'];
+  $pattern = '\n<p>&nbsp;';
+  if (strpos($body, $pattern) == 0) {
+    $body = substr($body, strlen($pattern)-1);
+  }
 
   // Allow the body of the HTML to be changed for specific message types
   $variables['body'] = trim(theme(array('oa_messages_body__' . $variables['key']), $variables));
