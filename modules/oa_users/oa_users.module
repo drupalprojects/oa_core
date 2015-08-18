@@ -124,6 +124,10 @@ function oa_users_build_user_details($user, $image_style = 'oa_small_thumbnail')
  * Implements hook_oa_users_picture().
  */
 function oa_users_oa_users_picture($account = NULL, $image_style = 'oa_small_thumbnail', $url = FALSE) {
+  if (isset($account) && !isset($account->field_user_picture)) {
+    // Ensure full user is loaded if needed.
+    $account = user_load($account->uid);
+  }
   if (isset($account) && !empty($account->field_user_picture)) {
     $picture = $account->field_user_picture[LANGUAGE_NONE][0];
     $image = array(
