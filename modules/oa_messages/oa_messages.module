@@ -614,7 +614,13 @@ function oa_messages_preprocess_mimemail_message(&$variables) {
   $variables['timestamp'] = !empty($message->timestamp) ? format_date($message->timestamp, 'long') : '';
 
   // Allow the body of the HTML to be changed for specific message types
-  $variables['body'] = theme(array('oa_messages_body__' . $variables['key']), $variables);
+  $body = trim(theme(array('oa_messages_body__' . $variables['key']), $variables));
+  // Strip any blank paragraph from beginning.  WYSIWYG adds this sometimes.
+  $pattern = '<p>&nbsp;</p>';
+  if (strpos($body, $pattern) === 0) {
+    $body = substr($body, strlen($pattern));
+  }
+  $variables['body'] = $body;
 
   // Add in our custom css.
   $css = @file_get_contents(drupal_get_path('module', 'oa_messages') . '/css/oa-messages-mail.css');
