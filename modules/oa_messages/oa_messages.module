@@ -611,7 +611,7 @@ function oa_messages_mail_alter(&$message) {
 function oa_messages_preprocess_mimemail_message(&$variables) {
   $message = !empty($variables['message']['params']['message_entity']) ? $variables['message']['params']['message_entity'] : array();
   $vars['message'] = $message;
-  $variables['timestamp'] = !empty($message->timestamp) ? oa_date_format_date($message->timestamp) : '';
+  $variables['timestamp'] = !empty($message->timestamp) ? format_date($message->timestamp, 'long') : '';
 
   // Allow the body of the HTML to be changed for specific message types
   $variables['body'] = theme(array('oa_messages_body__' . $variables['key']), $variables);
