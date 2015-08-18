@@ -42,7 +42,7 @@ h2.subject {
 }
 
 .body{
-  padding: 10px;
+  padding: 0 10px;
   font-size: 14px;
   line-height: 20px;
   color: #333;
