@@ -615,10 +615,7 @@ function oa_messages_preprocess_mimemail_message(&$variables) {
 
   // Sometimes WYSIWYG adds an extra \n<p>&nbsp; to the beginning
   $body = &$variables['body'];
-  $pattern = '\n<p>&nbsp;';
-  if (strpos($body, $pattern) == 0) {
-    $body = substr($body, strlen($pattern)-1);
-  }
+  $body = str_replace('\n<p>&nbsp;', '', $body);
 
   // Allow the body of the HTML to be changed for specific message types
   $variables['body'] = trim(theme(array('oa_messages_body__' . $variables['key']), $variables));
