@@ -114,11 +114,8 @@ projects[message_subscribe][subdir] = contrib
 projects[message_subscribe][patch][2094129] = http://drupal.org/files/message_subscribe_empty_array_2094129_1.patch
 
 ; MimeMail
-projects[mimemail][version] = 1.x-dev
+projects[mimemail][version] = 1.0-beta4
 projects[mimemail][subdir] = contrib
-projects[mimemail][download][type] = git
-projects[mimemail][download][branch] = 7.x-1.x
-projects[mimemail][download][revision] = e742766
 projects[mimemail][patch][1568680] = https://www.drupal.org/files/issues/mimemail-1568680-message-var-for-theming.patch
 
 ; OA Responsive Regions
