@@ -583,11 +583,14 @@ function oa_messages_mail_alter(&$message) {
   $message['picture'] = $user['picture'];
 
   $node = isset($message_entity->field_oa_node_ref) ?
-    node_load($message_entity->field_oa_node_ref['und'][0]['target_id']) : NULL;
+    node_load($message_entity->field_oa_node_ref[LANGUAGE_NONE][0]['target_id']) : NULL;
 
   if (!$node) {
     return;
   }
+
+  $comment = isset($message_entity->field_oa_comment_ref) ?
+    comment_load($message_entity->field_oa_comment_ref[LANGUAGE_NONE][0]['target_id']) : NULL;
 
   // Set the heading and footer for the later mail template theme.
   if (empty($message['title']) && !empty($message['body'][0])) {
@@ -596,6 +599,15 @@ function oa_messages_mail_alter(&$message) {
     if (preg_match('/<h3>(.+?)<\/h3>/', $body, $matches, PREG_OFFSET_CAPTURE)) {
       $message['title'] = $matches[1][0];
       $message['body'][0] = drupal_substr($body, 0, $matches[0][1]) . drupal_substr($body, $matches[0][1] + strlen($matches[0][0]));
+
+      // Append any related content fields
+      $entity = !empty($comment) ? $comment : $node;
+      $entity_type = !empty($comment) ? 'comment' : 'node';
+      if (!empty($entity->field_oa_related)) {
+        $paragraphs = field_view_field($entity_type, $entity, 'field_oa_related');
+        $paragraphs['#label_display'] = 'hidden';
+        $message['body'][] = drupal_render($paragraphs);
+      }
     }
   }
 
