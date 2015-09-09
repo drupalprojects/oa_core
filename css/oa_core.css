@@ -11,6 +11,10 @@
   padding: 6px 12px;
 }
 
+.pane-node-links {
+  clear: both;
+}
+
 .widget-preview iframe {
   max-width: 100%;
 }
