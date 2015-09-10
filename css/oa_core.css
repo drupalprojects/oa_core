@@ -32,6 +32,11 @@
   font-style: italic;
 }
 
+.select2-drop {
+  /* need drop-down menu to be above any popup dialogs like views */
+  z-index: 10002;
+}
+
 #modal-content .widget-preview-title {
   /* move Add button to left so wide tables doesnt scroll */
   left: 10px;
