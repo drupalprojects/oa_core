@@ -54,13 +54,9 @@ projects[diff][subdir] = contrib
 projects[features_template][version] = 1.0-beta2
 projects[features_template][subdir] = contrib
 
-; Feeds - latest dev needed by date_ical v3.1
-projects[feeds][version] = 2.x-dev
+; Feeds
+projects[feeds][version] = 2.0-beta1
 projects[feeds][subdir] = contrib
-projects[feeds][download][type] = git
-projects[feeds][download][branch] = 7.x-2.x
-projects[feeds][download][revision] = a8468a
-projects[feeds][patch][2223853] = http://drupal.org/files/issues/2223853-fix_installing_taxonomy_module-7_0.patch
 projects[feeds][patch][2127787] = https://www.drupal.org/files/issues/2127787-feeds-feed_nid-3.patch
 
 ; SimplePie library used by Feeds
