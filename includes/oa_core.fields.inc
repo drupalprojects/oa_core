@@ -71,7 +71,7 @@ function oa_core_og_group_ref_process($element, &$form_state, &$complete_form) {
     if (empty($element['#required'])) {
       $element['#options'][0] = t(' - Any - ');
     }
-    if (($groups = oa_core_get_groups_by_user($user, 'node')) && ($titles = oa_core_get_titles($groups, '', 'title', array('title')))) {
+    if (($groups = oa_core_get_groups_by_user($user, 'node')) && ($titles = oa_core_get_titles($groups, '', 'title', array('title'), TRUE, 100))) {
       $element['#options'] += $titles['titles'];
     }
   }
