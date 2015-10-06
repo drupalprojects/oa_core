@@ -1332,7 +1332,8 @@ function oa_core_create_term($vocab_name, $name, $params, $update = TRUE) {
       if (empty($field_info['field_oa_section_layout'])) {
         $revert['oa_core'] = array('field_base', 'field_instance');
       }
-      if (empty($field_info['field_oa_icon_class'])) {
+      if (empty($field_info['field_oa_icon_class']) ||
+          empty($field_info['field_unique_id'])) {
         $revert['oa_sections'] = array('field_base', 'field_instance');
       }
       if (!empty($revert)) {
@@ -1344,11 +1345,15 @@ function oa_core_create_term($vocab_name, $name, $params, $update = TRUE) {
       $node_options = $params['node_options'];
       $layout = $params['layout'];
       $icon = !empty($params['icon']) ? $params['icon'] : '';
+      $unique_id = !empty($params['unique_id']) ? $params['unique_id'] : uniqid();
 
       if ($term && $update) {
         // Update existing term.
         if (isset($term->field_oa_icon_class)) {
           $term->field_oa_icon_class[LANGUAGE_NONE][0]['value'] = $icon;
+        }
+        if (isset($term->field_unique_id)) {
+          $term->field_unique_id[LANGUAGE_NONE][0]['value'] = $unique_id;
         }
         $term->field_oa_section_layout[LANGUAGE_NONE][0]['value'] = $layout;
         $term->field_oa_node_types[LANGUAGE_NONE] = array();
@@ -1363,6 +1368,11 @@ function oa_core_create_term($vocab_name, $name, $params, $update = TRUE) {
           'field_oa_icon_class' => array(
             LANGUAGE_NONE => array(
               array('value' => $icon),
+            ),
+          ),
+          'field_unique_id' => array(
+            LANGUAGE_NONE => array(
+              array('value' => $unique_id),
             ),
           ),
           'field_oa_section_layout' => array(

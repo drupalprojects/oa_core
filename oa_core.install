@@ -41,6 +41,7 @@ function oa_core_create_default_terms() {
     'description' => 'This is the default section layout with the Recent Activity stream in the main region.',
     'node_options' => array(),
     'layout' => 'node:oa_section:default',
+    'unique_id' => 'default',
   );
   oa_core_create_term('section_type', 'Default', $params);
 }
@@ -380,3 +381,9 @@ function oa_core_update_7233() {
   }
 }
 
+/**
+ * Update the Default section term with unique id
+ */
+function oa_core_update_7234() {
+  oa_core_create_default_terms();
+}
