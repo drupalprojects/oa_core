@@ -270,14 +270,6 @@ function oa_sections_form_oa_section_node_form_alter(&$form, &$form_state, $form
 function oa_sections_form_taxonomy_form_term_alter(&$form, &$form_state, $form_id) {
   if ($form['#vocabulary']->machine_name  == 'section_type') {
     _oa_core_setup_taxonomy_space_type($form, 'oa_section');
-    if (isset($form['field_unique_id'])) {
-      // Hide the unique_id and assign a default if it's empty
-      $language = $form['field_unique_id']['#language'];
-      $form['field_unique_id']['#access'] = FALSE;
-      if (empty($form['field_unique_id'][$language][0]['value']['#default_value'])) {
-        $form['field_unique_id'][$language][0]['value']['#default_value'] = uniqid();
-      }
-    }
   }
 }
 
