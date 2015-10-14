@@ -160,10 +160,11 @@ projects[realname][version] = 1.2
 projects[realname][subdir] = contrib
 
 ; Reference Option Limit
-projects[reference_option_limit][version] = 1.5
+projects[reference_option_limit][version] = 1.x-dev
 projects[reference_option_limit][subdir] = contrib
 projects[reference_option_limit][download][type] = git
-projects[reference_option_limit][download][branch] = 7.x-1.5
+projects[reference_option_limit][download][branch] = 7.x-1.x
+projects[reference_option_limit][download][revision] = 0ea5303
 projects[reference_option_limit][patch][1986532] = https://www.drupal.org/files/issues/1986532-reference_option_limit-og-7.patch
 projects[reference_option_limit][patch][1986526] = http://drupal.org/files/1986526_reference_option_limit_12.patch
 
