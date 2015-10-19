@@ -42,6 +42,7 @@ projects[date_facets][subdir] = contrib
 projects[date_facets][download][type] = git
 projects[date_facets][download][branch] = 7.x-1.x
 projects[date_facets][download][revision] = 9037608
+projects[date_facets][patch][2430581] = https://www.drupal.org/files/issues/date_facets_no_labels-2430581-1.patch
 
 ; Diff
 projects[diff][version] = 3.2
