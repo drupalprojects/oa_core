@@ -150,7 +150,7 @@ projects[panels_customerror][version] = 1.0
 projects[panels_customerror][subdir] = contrib
 
 ; Paragraphs
-projects[paragraphs][version] = 1.0-rc3
+projects[paragraphs][version] = 1.0-rc4
 projects[paragraphs][subdir] = contrib
 projects[paragraphs][patch][2458801] = https://www.drupal.org/files/issues/paragraphs-instructions_setting-2458801-9.patch
 projects[paragraphs][patch][2481627] = https://www.drupal.org/files/issues/paragraphs-modal_targets_wrong_id-2481627-3.patch
