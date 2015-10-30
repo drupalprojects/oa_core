@@ -537,9 +537,8 @@ function oa_core_form_node_form_alter(&$form, &$form_state, $form_id) {
   if (isset($form['panelizer'])) {
     $form['panelizer']['page_manager']['name']['#title'] = t('Select Layout');
   }
-  // this is a workaround for og not defaulting based on subgroups,
-  // only user direct groups.
-  // handling this for both normal users and admin users
+  // This is a workaround for og not defaulting based on subgroups, only user direct groups.
+  // Handling this for both normal users and admin users.
   $fields = array(OA_SPACE_FIELD);
   if (empty($form['#node']->clone_from_original_nid)) {
     $fields[] = OA_PARENT_SPACE;
