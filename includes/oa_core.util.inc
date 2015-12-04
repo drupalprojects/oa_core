@@ -1741,3 +1741,18 @@ function oa_core_get_banner_default() {
   }
   return NULL;
 }
+
+/**
+ * Helper function to return/add classes to the body tag
+ * @param array $styles
+ */
+function oa_core_body_classes($new_classes = array()) {
+  static $classes = array();
+  if (!empty($new_classes)) {
+    if (!is_array($new_classes)) {
+      $new_classes = array($new_classes);
+    }
+    $classes = array_merge($classes, $new_classes);
+  }
+  return $classes;
+}
