@@ -355,11 +355,6 @@ function oa_core_preprocess_html(&$vars) {
   if (!empty($classes)) {
     $vars['classes_array'] = empty($vars['classes_array']) ? $classes : array_merge($vars['classes_array'], $classes);
   }
-  if (module_exists('navbar')) {
-    $path = drupal_get_path('module', 'navbar');
-    drupal_add_js($path . "/js/debounce.js", array('group' => JS_LIBRARY));
-    drupal_add_js($path . "/js/displace.js", array('group' => JS_LIBRARY));
-  }
 }
 
 /**
