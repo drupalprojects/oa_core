@@ -12,15 +12,6 @@ $plugin = array(
   'render callback' => 'oa_buttons_add_space_content_render',
 );
 
-
-/**
- * Provides the form for the widget.
- */
-function oa_buttons_add_space_content_settings_form($form, &$form_state) {
-  return $form;
-}
-
-
 /**
  * Renders the widget.
  */
@@ -42,6 +33,7 @@ function oa_buttons_add_space_content_render($subtype, $conf, $args, $context) {
     $content = $cache->data;
   }
   else {
+    $caption = isset($conf['caption']) ? $conf['caption'] : t('Create Content');
     $buttons = oa_buttons_get_command_buttons($node);
     if (count($buttons)) {
       drupal_alter('oa_space_buttons', $buttons);
@@ -56,7 +48,9 @@ function oa_buttons_add_space_content_render($subtype, $conf, $args, $context) {
       $item_list = array();
       $classes = array(
         'use_dropdowns' => TRUE,
-        'dropdown_label' => t('Create Content'),
+        'dropdown_label' => $caption,
+        'icon_class' => !empty($conf['icon']) ? $conf['icon'] : '',
+        'show_caret' => isset($conf['caret']) ? $conf['caret'] : TRUE,
         'item_class' => array(
           'oa-button',
         ),
@@ -79,4 +73,40 @@ function oa_buttons_add_space_content_render($subtype, $conf, $args, $context) {
   return $block;
 }
 
+/**
+ * Provides the form for the widget.
+ */
+function oa_buttons_add_space_content_settings_form($form, &$form_state) {
+  $conf = $form_state['conf'];
 
+  $form['caption'] = array(
+    '#title' => t('Button caption'),
+    '#type' => 'textfield',
+    '#default_value' => (!empty($conf['caption'])) ? $conf['caption'] : t('Create Content'),
+  );
+  $form['icon'] = array(
+    '#title' => t('Icon class'),
+    '#type' => 'textfield',
+    '#default_value' => (!empty($conf['icon'])) ? $conf['icon'] : '',
+  );
+  $form['caret'] = array(
+    '#title' => t('Show caret'),
+    '#type' => 'checkbox',
+    '#default_value' => (isset($conf['caret'])) ? $conf['caret'] : TRUE,
+  );
+
+  return $form;
+}
+
+/**
+ * Saves changes to the widget.
+ */
+function oa_buttons_add_space_content_settings_form_submit($form, &$form_state) {
+  foreach (array_keys($form_state['values']) as $key) {
+    if (isset($form_state['values'][$key])) {
+      $form_state['conf'][$key] = $form_state['values'][$key];
+    }
+  }
+
+  cache_clear_all('oa_section_buttons', 'cache_oa_section_buttons', TRUE);
+}
