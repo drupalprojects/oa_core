@@ -96,3 +96,7 @@
 .pane-node-field-oa-media .field-item {
   margin-bottom: 5px;
 }
+
+.panels-dnd .oa-layout-fluid {
+  float: left;
+}
