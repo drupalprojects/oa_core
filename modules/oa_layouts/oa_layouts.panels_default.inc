@@ -109,7 +109,7 @@ function oa_layouts_default_panels_mini() {
   $mini->disabled = FALSE; /* Edit this to true to make a default mini disabled initially */
   $mini->api_version = 1;
   $mini->name = 'oa_footer_panel';
-  $mini->category = 'Page Elements';
+  $mini->category = 'OA Admin';
   $mini->admin_title = 'Open Atrium Footer';
   $mini->admin_description = '';
   $mini->requiredcontexts = array();
@@ -171,6 +171,76 @@ function oa_layouts_default_panels_mini() {
   $pane->uuid = '39727060-3c1c-4478-ac3f-fa1a0800ad6f';
   $display->content['new-39727060-3c1c-4478-ac3f-fa1a0800ad6f'] = $pane;
   $display->panels['footer'][0] = 'new-39727060-3c1c-4478-ac3f-fa1a0800ad6f';
+  $pane = new stdClass();
+  $pane->pid = 'new-72760632-9072-426f-815b-fb8adf04be05';
+  $pane->panel = 'footer';
+  $pane->type = 'fieldable_panels_pane';
+  $pane->subtype = 'fpid:2';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'view_mode' => 'full',
+    'fieldable_panels_pane' => (object) array(
+      'bundle' => 'image',
+      'language' => 'und',
+      'is_new' => TRUE,
+      'title' => '',
+      'link' => 0,
+      'path' => '',
+      'reusable' => 0,
+      'admin_title' => '',
+      'admin_description' => '',
+      'category' => 'Reusable Content',
+      'vid' => 5,
+      'current_vid' => '',
+      'revision' => 1,
+      'fpid' => 2,
+      'field_basic_image_caption' => array(
+        'und' => array(),
+      ),
+      'field_basic_image_image' => array(
+        'und' => array(
+          0 => array(
+            'fid' => 85,
+            'display' => 1,
+            'description' => '',
+            'upload_button' => 'Upload',
+            'remove_button' => 'Remove',
+            'upload' => '',
+            'width' => 160,
+            'height' => 50,
+            'alt' => '',
+            'title' => '',
+            'manualcrop_selections' => array(
+              'panopoly_image_full' => '',
+            ),
+            'manualcrop_style' => 'Crop',
+          ),
+        ),
+      ),
+      'log' => '',
+      'created' => 1429648238,
+      'timestamp' => 1429648238,
+      'changed' => 1429648238,
+      'uuid' => '',
+      'uid' => 1,
+      'vuuid' => '',
+    ),
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array(
+    'css_id' => '',
+    'css_class' => 'pull-right',
+  );
+  $pane->extras = array();
+  $pane->position = 1;
+  $pane->locks = array();
+  $pane->uuid = '72760632-9072-426f-815b-fb8adf04be05';
+  $display->content['new-72760632-9072-426f-815b-fb8adf04be05'] = $pane;
+  $display->panels['footer'][1] = 'new-72760632-9072-426f-815b-fb8adf04be05';
   $display->hide_title = PANELS_TITLE_NONE;
   $display->title_pane = '0';
   $mini->display = $display;
@@ -180,7 +250,7 @@ function oa_layouts_default_panels_mini() {
   $mini->disabled = FALSE; /* Edit this to true to make a default mini disabled initially */
   $mini->api_version = 1;
   $mini->name = 'oa_toolbar_panel';
-  $mini->category = 'Page Elements';
+  $mini->category = 'OA Admin';
   $mini->admin_title = 'Open Atrium Toolbar';
   $mini->admin_description = '';
   $mini->requiredcontexts = array();
@@ -209,15 +279,25 @@ function oa_layouts_default_panels_mini() {
   $display->content = array();
   $display->panels = array();
   $pane = new stdClass();
-  $pane->pid = 'new-3bd6fb98-8bec-48c8-9777-cf8850617d9f';
+  $pane->pid = 'new-44a20294-d288-4dba-ad6a-824b7e3ec27c';
   $pane->panel = 'footer';
-  $pane->type = 'block';
-  $pane->subtype = 'oa_toolbar-oa_toolbar_menu_button';
+  $pane->type = 'oa_drupal_admin';
+  $pane->subtype = 'oa_drupal_admin';
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
+    'return' => 'Finish',
+    'cancel' => 'Cancel',
     'override_title' => 0,
     'override_title_text' => '',
+    'override_title_heading' => 'h2',
+    'caption' => '',
+    'icon' => 'fa fa-drupal',
+    'show_caret' => 0,
+    'form_build_id' => 'form-iwd6UEeVPVJBWRhcVmjKnUEx0Qcsam7EWuIvbawkkbs',
+    'form_token' => 'FIknbG0azQOE2TXs9epUWxcbtzI5OG5G6EIyNxpTjtk',
+    'form_id' => 'oa_toolbar_oa_drupal_admin_form',
+    'op' => 'Finish',
   );
   $pane->cache = array();
   $pane->style = array(
@@ -230,9 +310,9 @@ function oa_layouts_default_panels_mini() {
   $pane->extras = array();
   $pane->position = 0;
   $pane->locks = array();
-  $pane->uuid = '3bd6fb98-8bec-48c8-9777-cf8850617d9f';
-  $display->content['new-3bd6fb98-8bec-48c8-9777-cf8850617d9f'] = $pane;
-  $display->panels['footer'][0] = 'new-3bd6fb98-8bec-48c8-9777-cf8850617d9f';
+  $pane->uuid = '44a20294-d288-4dba-ad6a-824b7e3ec27c';
+  $display->content['new-44a20294-d288-4dba-ad6a-824b7e3ec27c'] = $pane;
+  $display->panels['footer'][0] = 'new-44a20294-d288-4dba-ad6a-824b7e3ec27c';
   $pane = new stdClass();
   $pane->pid = 'new-2b828bf5-01a6-4805-a95d-6c64c67317ef';
   $pane->panel = 'footer';
@@ -368,6 +448,16 @@ function oa_layouts_default_panels_mini() {
   $pane->configuration = array(
     'override_title' => 0,
     'override_title_text' => '',
+    'return' => 'Finish',
+    'cancel' => 'Cancel',
+    'override_title_heading' => 'h2',
+    'caption' => '',
+    'icon' => 'fa fa-plus',
+    'form_build_id' => 'form-j0i0TgrT1OI4R8AfvQnELo6aYt-rKmHWbWhETs1bZYw',
+    'form_token' => 'vvA_w42MkE6IIBaQYnxndGEAiybLlDALPjegdIiSlfc',
+    'form_id' => 'oa_buttons_add_space_content_settings_form',
+    'op' => 'Finish',
+    'caret' => 0,
   );
   $pane->cache = array();
   $pane->style = array(
