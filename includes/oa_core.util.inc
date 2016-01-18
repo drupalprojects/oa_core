@@ -1547,7 +1547,7 @@ function oa_user_access_nids($group_type, $nids, $string, $account = NULL, $skip
 
   // Group manager has all privileges (if variable is TRUE).
   if ($all_lookup && !empty($account->uid) && variable_get('og_group_manager_full_access', TRUE)) {
-    $authored = db_query('SELECT nid FROM {node} WHERE nid in :nids AND uid = :uid', array('nids' => $all_lookup, ':uid' => $account->uid))->fetchCol();
+    $authored = db_query('SELECT nid FROM {node} WHERE nid in (:nids) AND uid = :uid', array(':nids' => $all_lookup, ':uid' => $account->uid))->fetchCol();
     foreach ($authored as $nid) {
       foreach ($strings as $string) {
         $access[$account->uid][$string][$nid] = TRUE;
