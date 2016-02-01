@@ -33,7 +33,7 @@ function oa_buttons_add_space_content_render($subtype, $conf, $args, $context) {
     $content = $cache->data;
   }
   else {
-    $caption = isset($conf['caption']) ? $conf['caption'] : t('Create Content');
+    $caption = isset($conf['caption']) ? check_plain($conf['caption']) : t('Create Content');
     $buttons = oa_buttons_get_command_buttons($node);
     if (count($buttons)) {
       drupal_alter('oa_space_buttons', $buttons);
@@ -46,18 +46,19 @@ function oa_buttons_add_space_content_render($subtype, $conf, $args, $context) {
       }
       $entities = command_buttons_machine_name_load(array_keys($command_buttons));
       $item_list = array();
+      $btn_class = !empty($conf['btn_class']) ? check_plain($conf['btn_class']) : 'btn btn-inverse';
       $classes = array(
         'use_dropdowns' => TRUE,
         'dropdown_label' => $caption,
-        'icon_class' => !empty($conf['icon']) ? $conf['icon'] : '',
+        'direction' => !empty($conf['direction']) ? check_plain($conf['direction']) : '',
+        'icon_class' => !empty($conf['icon']) ? check_plain($conf['icon']) : '',
         'show_caret' => isset($conf['caret']) ? $conf['caret'] : TRUE,
         'item_class' => array(
           'oa-button',
         ),
         'wrapper_class' => array(
           'oa-buttons',
-          'btn',
-          'btn-inverse',
+          $btn_class,
         ),
       );
 
@@ -82,12 +83,27 @@ function oa_buttons_add_space_content_settings_form($form, &$form_state) {
   $form['caption'] = array(
     '#title' => t('Button caption'),
     '#type' => 'textfield',
-    '#default_value' => (!empty($conf['caption'])) ? $conf['caption'] : t('Create Content'),
+    '#default_value' => (isset($conf['caption'])) ? $conf['caption'] : t('Create Content'),
   );
   $form['icon'] = array(
     '#title' => t('Icon class'),
     '#type' => 'textfield',
     '#default_value' => (!empty($conf['icon'])) ? $conf['icon'] : '',
+  );
+  $form['btn_class'] = array(
+    '#title' => t('Button class'),
+    '#type' => 'textfield',
+    '#default_value' => (!empty($conf['btn_class'])) ? $conf['btn_class'] : 'btn btn-inverse',
+  );
+  $form['direction'] = array(
+    '#type' => 'select',
+    '#title' => t('Direction'),
+    '#options' => array(
+      '' => t('Drop down'),
+      'dropup' => t('Drop up'),
+    ),
+    '#default_value' => (isset($conf['direction'])) ? $conf['direction'] : '',
+    '#description' => t('Controls whether menu expands downwards or upwards.  Default is drop down.'),
   );
   $form['caret'] = array(
     '#title' => t('Show caret'),
