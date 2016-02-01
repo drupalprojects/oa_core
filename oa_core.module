@@ -352,6 +352,9 @@ function oa_core_menu_alter(&$items) {
  */
 function oa_core_preprocess_html(&$vars) {
   $classes = oa_core_body_classes();
+  if (!empty($GLOBALS['oa_hide_page_title'])) {
+    $classes[] = 'oa-no-page-title';
+  }
   if (!empty($classes)) {
     $vars['classes_array'] = empty($vars['classes_array']) ? $classes : array_merge($vars['classes_array'], $classes);
   }

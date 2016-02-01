@@ -18,6 +18,8 @@ $plugin = array(
     'label' => TRUE,
     'date' => 0,
     'picture' => FALSE,
+    'image_style' => 'oa_medium_thumbnail',
+    'node_title' => FALSE,
   ),
 );
 
@@ -37,8 +39,16 @@ function oa_user_submitted_render($subtype, $conf, $args, $context = NULL) {
 
   $user = user_load($node->uid);
 
+  $vars['show_title'] = !empty($conf['node_title']) ? $conf['node_title'] : FALSE;
+  $vars['title'] = $vars['show_title'] ? theme('head_title') : '';
+  if ($vars['show_title']) {
+    // Used in the oa_pane_title to supress the page title
+    $GLOBALS['oa_hide_page_title'] = TRUE;
+  }
+
+  $image_style = !empty($conf['image_style']) ? $conf['image_style'] : 'oa_medium_thumbnail';
   $vars['userlink'] = l(format_username($user), 'user/' . $user->uid);
-  $vars['picture'] = empty($conf['picture']) ? oa_users_picture($user) : '';
+  $vars['picture'] = empty($conf['picture']) ? oa_users_picture($user, $image_style) : '';
   $vars['align'] = !empty($conf['align']) ? 'right' : 'left';
   $date = !empty($conf['date']) ? $node->changed : $node->created;
   $vars['label'] = !empty($conf['label']) ? (!empty($conf['date']) ? t('Updated') : t('Posted')) : '';
@@ -54,6 +64,12 @@ function oa_user_submitted_render($subtype, $conf, $args, $context = NULL) {
  */
 function oa_user_submitted_form($form, &$form_state) {
   $conf = $form_state['conf'];
+
+  $form['node_title'] = array(
+    '#title' => t('Show node title'),
+    '#type' => 'checkbox',
+    '#default_value' => !empty($conf['node_title']) ? $conf['node_title'] : FALSE,
+  );
 
   $form['align'] = array(
     '#type' => 'select',
@@ -85,6 +101,12 @@ function oa_user_submitted_form($form, &$form_state) {
     '#title' => t('Hide user picture'),
     '#type' => 'checkbox',
     '#default_value' => $conf['picture'],
+  );
+
+  $form['image_style'] = array(
+    '#title' => t('Picture image style'),
+    '#type' => 'textfield',
+    '#default_value' => !empty($conf['image_style']) ? $conf['image_style'] : 'oa_medium_thumbnail',
   );
 
   return $form;
