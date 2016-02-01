@@ -8,15 +8,15 @@
  * $accessors - user's who have access
  */
 ?>
-<ul id="oa_visibility_toolbar">
-  <li class="dropdown btn-group">
+<ul class="oa_visibility_toolbar">
+  <li class="dropdown <?php print isset($direction) ? $direction : ''; ?> btn-group">
     <a class="dropdown-toggle btn <?php print $oa_toolbar_btn_class; ?>"
       id="visibility-dropdown" data-toggle="dropdown" href="#"
       title="<?php print $title; ?>">
       <?php if ($public): ?>
-        <i class="icon-unlock"></i><span><?php print t('This content is Public');?></span>
+        <i class="icon-unlock"></i><span><?php print t('This page is Public');?></span>
       <?php else: ?>
-        <i class="icon-lock"></i><span><?php print t('This content is Private');?></span>
+        <i class="icon-lock"></i><span><?php print t('This page is Private');?></span>
       <?php endif; ?>
     </a>
     <ul class="dropdown-menu" role="menu" aria-labelledby="visibility-dropdown">

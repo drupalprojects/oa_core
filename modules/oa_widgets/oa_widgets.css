@@ -1,15 +1,15 @@
-#oa_visibility_toolbar {
+.oa_visibility_toolbar {
   margin: 0;
   margin-top: 10px;
 }
-#contextual-tabs #oa_visibility_toolbar {
+#contextual-tabs .oa_visibility_toolbar {
   margin-top: 0px;
   padding: 0;
 }
-.pull-right #oa_visibility_toolbar {
+.pull-right .oa_visibility_toolbar {
   margin-right: 5px;
 }
-.pull-left #oa_visibility_toolbar {
+.pull-left .oa_visibility_toolbar {
   margin-left: 5px;
 }
 .oa-visibility-private {
