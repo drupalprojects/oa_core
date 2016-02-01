@@ -1439,6 +1439,7 @@ function oa_core_replace_tags($str, $tags) {
  * but includes consistent options for removing tags needed by OA2
  */
 function oa_core_trim_text($value, $more_link = '', $max_length = NULL) {
+  $trimmed = FALSE;
   // Remove and replace some HTML tags
   $value = oa_core_replace_tags($value, array(
     'h1' => 'h4',
@@ -1468,15 +1469,21 @@ function oa_core_trim_text($value, $more_link = '', $max_length = NULL) {
     // Remove scraps of HTML entities from the end of a strings
     $value = rtrim(preg_replace('/(?:<(?!.+>)|&(?!.+;)).*$/us', '', $value));
 
+    $trimmed = TRUE;
+  }
+  // add any needed closing tags.
+  $value = _filter_htmlcorrector($value);
+
+  if ($trimmed) {
     if (!empty($more_link)) {
-      $value .= ' <span class="more-link">' .
-        '(' . l(t('more…'), $more_link) . ')' . '</span> ';
+      $value .= '<span class="more-link">' .
+        l(t('more…'), $more_link) . '</span>';
     }
     else {
       $value .= '…';
     }
+
   }
-  $value = _filter_htmlcorrector($value);
 
   return $value;
 }
