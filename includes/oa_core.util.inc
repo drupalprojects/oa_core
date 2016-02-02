@@ -1468,6 +1468,7 @@ function oa_core_trim_text($value, $more_link = '', $max_length = NULL) {
 
     // Remove scraps of HTML entities from the end of a strings
     $value = rtrim(preg_replace('/(?:<(?!.+>)|&(?!.+;)).*$/us', '', $value));
+    $value .= '…';
 
     $trimmed = TRUE;
   }
@@ -1479,10 +1480,6 @@ function oa_core_trim_text($value, $more_link = '', $max_length = NULL) {
       $value .= '<span class="more-link">' .
         l(t('more…'), $more_link) . '</span>';
     }
-    else {
-      $value .= '…';
-    }
-
   }
 
   return $value;

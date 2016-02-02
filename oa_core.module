@@ -1634,10 +1634,15 @@ function _oa_core_setup_node_space_type(&$form, $type = 'space_type', $field_nam
   $form['panelizer']['#access'] = TRUE;
 
   $options = oa_core_get_space_type_options($type);
+  // Need to change array to string key for javascript
+  $js_options = array();
+  foreach ($options as $tid => $item) {
+    $js_options['tid' . $tid] = $item;
+  }
 
   $form['#attached']['js'][] = array(
     'data' => array(
-      'oaCoreSpaceTypeOptions' => $options,
+      'oaCoreSpaceTypeOptions' => $js_options,
       'oaCoreSpaceTypeSelector' => $selector,
       'oaCoreSpaceType' => $space_type,
     ),
