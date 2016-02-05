@@ -46,11 +46,12 @@ function oa_core_space_config_render($subtype, $conf, $args, $context = NULL) {
 
   $block = new stdClass();
   $block->title = '';
-  $output = "<div class='dropdown-toggle $btn_class $direction' data-toggle='dropdown'><i class='$icon'></i></div>";
+  $output = "<div class='dropdown'><div class='dropdown-toggle $btn_class $direction' data-toggle='dropdown'><i class='$icon'></i></div>";
   $output .= theme('links', array(
     'links' => $items,
     'attributes' => array('class' => array('dropdown-menu')),
   ));
+  $output .= '</div>';
   $block->content = $output;
 
   return $block;
