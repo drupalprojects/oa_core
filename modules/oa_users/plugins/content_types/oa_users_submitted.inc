@@ -20,6 +20,7 @@ $plugin = array(
     'picture' => FALSE,
     'image_style' => 'oa_medium_thumbnail',
     'node_title' => FALSE,
+    'hide_author' => FALSE,
   ),
 );
 
@@ -50,6 +51,7 @@ function oa_user_submitted_render($subtype, $conf, $args, $context = NULL) {
   $vars['userlink'] = l(format_username($user), 'user/' . $user->uid);
   $vars['picture'] = empty($conf['picture']) ? oa_users_picture($user, $image_style) : '';
   $vars['align'] = !empty($conf['align']) ? 'right' : 'left';
+  $vars['show_author'] = !empty($conf['hide_author']) ? FALSE : TRUE;
   $date = !empty($conf['date']) ? $node->changed : $node->created;
   $vars['label'] = !empty($conf['label']) ? (!empty($conf['date']) ? t('Updated') : t('Posted')) : '';
   $vars['bylabel'] = !empty($conf['label']) ? ' ' . t('by') . ' ' : '';
@@ -69,6 +71,12 @@ function oa_user_submitted_form($form, &$form_state) {
     '#title' => t('Show node title'),
     '#type' => 'checkbox',
     '#default_value' => !empty($conf['node_title']) ? $conf['node_title'] : FALSE,
+  );
+
+  $form['hide_author'] = array(
+    '#title' => t('Hide post author and date'),
+    '#type' => 'checkbox',
+    '#default_value' => !empty($conf['hide_author']) ? $conf['hide_author'] : FALSE,
   );
 
   $form['align'] = array(

@@ -1,4 +1,5 @@
 <?php if ($show_title): ?><h1 class="title" id="page-title"><?php print $title; ?></h1><?php endif; ?>
+<?php if ($show_author): ?>
 <div class="oa-users-submitted align-<?php print $align;?>">
   <?php if ($align == 'left'):?>
     <div class="user-badge">
@@ -32,3 +33,4 @@
     </div>
   <?php endif; ?>
 </div>
+<?php endif; ?>
