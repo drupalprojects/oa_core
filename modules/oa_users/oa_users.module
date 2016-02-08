@@ -268,6 +268,7 @@ function oa_users_oa_core_add_panes() {
  * Implements hook_theme()
  */
 function oa_users_theme() {
+  $path = drupal_get_path('module', 'oa_users') . '/templates';
   return array(
     'oa_users_submitted' => array(
       'template'  => 'oa-users-submitted',
@@ -279,7 +280,11 @@ function oa_users_theme() {
         'onlabel'  => '',
         'bylabel'  => '',
       ),
-      'path' => drupal_get_path('module', 'oa_users') . '/templates',
+      'path' => $path,
+    ),
+    'oa_members_toolbar' => array(
+      'template'  => 'oa-members-toolbar',
+      'path' => $path,
     ),
   );
 }
