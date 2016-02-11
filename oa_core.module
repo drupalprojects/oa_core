@@ -1445,6 +1445,7 @@ function oa_core_tokens($type, $tokens, array $data = array(), array $options = 
     $space = field_get_items('node', $node, OA_SPACE_FIELD);
     $section_id = !empty($section[0]['target_id']) ? $section[0]['target_id'] : 0;
     $space_id = !empty($space[0]['target_id']) ? $space[0]['target_id'] : 0;
+    $default_path_alias = variable_get('oa_default_path_alias', 'content');
     if ($section_id && node_load($section_id)) {
       $path = drupal_get_path_alias('node/' . $section_id);
       if (module_exists('pathauto') && preg_match('#^node/(\d+)#', $path)) {
@@ -1464,12 +1465,12 @@ function oa_core_tokens($type, $tokens, array $data = array(), array $options = 
       if (!empty($path)) {
         $replacements[$original] = $path;
         if ($node->type != OA_SECTION_TYPE) {
-          $replacements[$original] .= '/content';
+          $replacements[$original] .= "/{$default_path_alias}";
         }
       }
     }
     else {
-      $replacements[$original] = 'content';
+      $replacements[$original] = $default_path_alias;
     }
   }
   return $replacements;
