@@ -31,7 +31,6 @@ features[panelizer_defaults][] = node:oa_space:default:featured
 features[panelizer_defaults][] = node:oa_space:space_description
 features[panels_mini][] = default_section_sidebar
 features[panels_mini][] = oa_footer_panel
-features[panels_mini][] = oa_toolbar_panel
 features[panels_mini][] = section_sidebar_top
 features[panels_renderer_pipeline][] = ipe_node_access
 features[variable][] = panelizer_defaults_node_oa_group
