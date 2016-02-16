@@ -1849,3 +1849,26 @@ function oa_core_batch_set(&$batch) {
     batch_set($batch);
   }
 }
+
+/**
+ * Helper to combine multiple calls in OA to features_template_revert() to
+ * just a single call.
+ */
+function oa_core_features_template_revert() {
+  if (!variable_get('oa_core_template_revert', FALSE)) {
+    variable_set('oa_core_template_revert', TRUE);
+    drupal_register_shutdown_function('oa_core_revert_template', 'oa_core_template_revert');
+  }
+}
+
+/**
+ * This is called when all modules, using oa_core_features_template_revert(),
+ * have registered for a template revert.
+ *
+ * @param string $variable
+ *   Variable name to delete.
+ */
+function oa_core_revert_template($variable) {
+  features_template_revert();
+  variable_delete($variable);
+}
