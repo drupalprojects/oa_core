@@ -33,6 +33,8 @@ function oa_users_oa_members_toolbar_render($subtype, $conf, $args, $context = N
     $vars['title'] = t('Space Members');
     $vars['member_url'] = url('node/' . $space_id . '/members');
     $vars['space_title'] = $space->title;
+    $admins = array();
+    $members = array();
 
     if (!empty($conf['show_members'])) {
       $users = oa_core_get_users_for_space($space->nid);
