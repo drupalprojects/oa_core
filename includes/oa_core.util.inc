@@ -319,7 +319,7 @@ function oa_core_get_parents_with_titles($nid, $bundle = OA_SPACE_TYPE, $status 
  *   The NID of the Space or Group to check.
  * @param string|NULL $bundle
  *   (optional) The node type (default: OA_SPACE_TYPE). If NULL is passed, it
- *   will include all node types.
+ *   will include all node types.  Can also be an array of types.
  * @param int|NULL $status
  *   (optional) If specified, the node status (ex. NODE_PUBLISHED or
  *   NODE_NOT_PUBLISHED) to look for. If not specified, it return
@@ -343,7 +343,7 @@ function oa_core_get_parents($nid, $bundle = OA_SPACE_TYPE, $status = NULL, $inc
  *   The NID of the Space or Group to check.
  * @param string|NULL $bundle
  *   (optional) The node type (default: OA_SPACE_TYPE). If NULL is passed, it
- *   will include all node types.
+ *   will include all node types.  Can also be an array of types.
  * @param int|NULL $status
  *   (optional) If specified, the node status (ex. NODE_PUBLISHED or
  *   NODE_NOT_PUBLISHED) to look for. If not specified, it return
@@ -365,11 +365,22 @@ function oa_core_get_nids_title_matching($nids, $bundle = OA_SPACE_TYPE, $status
   }
   sort($nids);
   $cid = implode(':', $nids);
+  if (is_array($bundle)) {
+    $cid .= implode(':', $bundle);
+  }
+  elseif (!empty($bundle)) {
+    $cid .= ':' . $bundle;
+  }
   $cache = &drupal_static(__FUNCTION__, array());
   if (!isset($cache[$cid])) {
     $query = db_select('node', 'n');
     if ($bundle) {
-      $query->condition('n.type', $bundle);
+      if (is_array($bundle)) {
+        $query->condition('n.type', $bundle, 'IN');
+      }
+      else {
+        $query->condition('n.type', $bundle);
+      }
     }
     if (isset($status)) {
       $query->condition('n.status', $status);
