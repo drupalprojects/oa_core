@@ -24,7 +24,7 @@
  * @ingroup views_templates
  */
 ?>
-<div class='oa-list <?print ($display == 'user_activity') ? 'oa-user-activity' : ''; ?> oa-river well clearfix >'>
+<div class='oa-list <?php print ($display == 'user_activity') ? 'oa-user-activity' : ''; ?> oa-river well clearfix >'>
   <?php if ($display != 'user_activity'): ?>
     <div class='user-picture pull-left'>
       <?php print $field_user_picture; ?>
