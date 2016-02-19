@@ -30,6 +30,7 @@ function oa_users_oa_members_toolbar_render($subtype, $conf, $args, $context = N
   $space_id = oa_core_get_space_context();
   if (isset($space_id) && ($space = node_load($space_id)) && node_access('view', $space)) {
     $vars = array();
+    $vars['title'] = t('Space Members');
     $vars['member_url'] = url('node/' . $space_id . '/members');
     $vars['space_title'] = $space->title;
 
