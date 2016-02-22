@@ -255,10 +255,14 @@ function oa_core_get_space_home_context() {
 
 /**
  * Returns the current section id context
+ * @param $node optional current page node
  * @return int Section ID
  */
-function oa_core_get_section_context() {
-  if (defined('OA_SESSION_SECTION') && isset($_SESSION[OA_SESSION_SECTION])) {
+function oa_core_get_section_context($node = NULL) {
+  if (isset($node) && ($node->type == OA_SECTION_TYPE)) {
+    return $node->nid;
+  }
+  elseif (defined('OA_SESSION_SECTION') && isset($_SESSION[OA_SESSION_SECTION])) {
     return $_SESSION[OA_SESSION_SECTION];
   }
   else {
