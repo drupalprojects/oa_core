@@ -1978,9 +1978,8 @@ function oa_core_process_exposed_group_input($filter) {
  * Implements hook_panelizer_defaults_override_alter().
  */
 function oa_core_panelizer_defaults_override_alter(&$data) {
+  drupal_alter('oa_core_layout', $data);
   // Add any custom widgets coming from Atrium plugins
-  // Change layout from radix_phelan to selby_flipped
-  _oa_core_change_panel_layout($data, 'user:user:default', 'selby_flipped', 'contentheader', array('column2' => 'sidebar'));
   $info = module_invoke_all('oa_core_add_panes');
   foreach ($info as $panelizer => $panes) {
     if (isset($data[$panelizer]->display)) {
@@ -2022,6 +2021,7 @@ function oa_core_panelizer_defaults_override_alter(&$data) {
  * $data['node_edit_panel_context']->conf['display']->content
  */
 function oa_core_default_page_manager_handlers_alter(&$data) {
+  drupal_alter('oa_core_layout', $data);
   $info = module_invoke_all('oa_core_add_panes');
   foreach ($info as $panelizer => $panes) {
     if (isset($data[$panelizer]->conf['display'])) {
@@ -2063,6 +2063,7 @@ function oa_core_default_page_manager_handlers_alter(&$data) {
  * $data['node_edit_panel_context']->conf['display']->content
  */
 function oa_core_default_panels_mini_alter(&$data) {
+  drupal_alter('oa_core_layout', $data);
   $info = module_invoke_all('oa_core_add_panes');
   foreach ($info as $panelizer => $panes) {
     if (isset($data[$panelizer]->display)) {
