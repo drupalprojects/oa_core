@@ -111,20 +111,25 @@ function oa_users_default_page_manager_pages() {
     'context' => array(
       0 => 'argument_entity_id:user_1',
     ),
-    'view_mode' => 'teaser',
-    'widget_title' => NULL,
+    'view_mode' => 'full',
+    'widget_title' => 'Recent Activity',
     'exposed' => array(
-      'sort_by' => NULL,
-      'sort_order' => NULL,
+      'field_oa_message_space_target_id' => 'All',
+      'field_oa_message_section_target_id' => array(),
+      'type' => array(),
     ),
-    'use_pager' => NULL,
-    'pager_id' => NULL,
+    'use_pager' => 1,
+    'pager_id' => '',
     'offset' => NULL,
     'link_to_view' => NULL,
     'more_link' => NULL,
     'path' => NULL,
     'view_settings' => 'fields',
     'header_type' => 'none',
+    'show_exposed_form' => 1,
+    'override_title' => '',
+    'override_title_text' => '',
+    'override_title_heading' => 'h2',
   );
   $pane->cache = array();
   $pane->style = array(
