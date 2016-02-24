@@ -15,12 +15,14 @@
           <h3><?php print $space_title; ?></h3>
           <?php print $links; ?>
           <?php if (!empty($admins)): ?>
-            <h4><?php print t('Admins'); ?></h4>
+            <h4 class="oa-border-top"><?php print t('Admins'); ?></h4>
             <?php print $admins; ?>
           <?php endif; ?>
-          <h4><?php print t('Members'); ?></h4>
+          <h4 class="oa-border-top"><?php print t('Members'); ?></h4>
           <?php if (!empty($members)): ?>
             <?php print $members; ?>
+          <?php else: ?>
+            <h5><?php print t('No members'); ?></h5>
           <?php endif; ?>
         </div>
       </li>
