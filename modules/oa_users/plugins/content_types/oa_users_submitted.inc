@@ -45,6 +45,9 @@ function oa_user_submitted_render($subtype, $conf, $args, $context = NULL) {
     // Used in the oa_pane_title to supress the page title
     $GLOBALS['oa_hide_page_title'] = TRUE;
   }
+  else {
+    $vars['show_title'] = FALSE;
+  }
 
   $image_style = !empty($conf['image_style']) ? $conf['image_style'] : 'oa_medium_thumbnail';
   $vars['userlink'] = l(format_username($user), 'user/' . $user->uid);
