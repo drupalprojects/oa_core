@@ -24,7 +24,6 @@ $plugin = array(
   ),
 );
 
-
 /**
  * Run-time rendering of the body of the block (content type)
  * See ctools_plugin_examples for more advanced info
@@ -42,7 +41,7 @@ function oa_user_submitted_render($subtype, $conf, $args, $context = NULL) {
 
   $vars['show_title'] = !empty($conf['node_title']) ? $conf['node_title'] : FALSE;
   $vars['title'] = $vars['show_title'] ? theme('head_title') : '';
-  if ($vars['show_title']) {
+  if (!empty($vars['title'])) {
     // Used in the oa_pane_title to supress the page title
     $GLOBALS['oa_hide_page_title'] = TRUE;
   }
