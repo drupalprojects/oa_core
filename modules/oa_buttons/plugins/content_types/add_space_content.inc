@@ -50,7 +50,7 @@ function oa_buttons_add_space_content_render($subtype, $conf, $args, $context) {
       $classes = array(
         'use_dropdowns' => TRUE,
         'dropdown_label' => $caption,
-        'btn_title' => $btn_title,
+        'btn_title' => !empty($btn_title) ? $btn_title : $caption,
         'direction' => !empty($conf['direction']) ? check_plain($conf['direction']) : '',
         'icon_class' => !empty($conf['icon']) ? check_plain($conf['icon']) : '',
         'show_caret' => isset($conf['caret']) ? $conf['caret'] : TRUE,
