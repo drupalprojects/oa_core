@@ -6,7 +6,7 @@
 ?>
 <ul class="oa-members-toolbar oa_toolbar">
   <li class='dropdown btn-group'>
-    <a href="<?php print $member_url; ?>" class="dropdown-toggle <?php print $btn_class; ?> <?php print $direction; ?>" data-toggle='dropdown' data-target="#" title="<?php print $title?>">
+    <a href="#" class="dropdown-toggle <?php print $btn_class; ?> <?php print $direction; ?>" data-toggle='dropdown' title="<?php print $title?>">
       <i class="<?php print $icon; ?>"></i><span class="element-invisible"><?php print $title;?></span>
     </a>
     <ul class="dropdown-menu" role="menu">
