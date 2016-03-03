@@ -145,7 +145,7 @@ function oa_layouts_default_panels_mini() {
   $pane->access = array();
   $pane->configuration = array(
     'menu_name' => 'menu-footer',
-    'parent_mlid' => 'menu-footer:menu-footer:menu-footer:0',
+    'parent_mlid' => '',
     'title_link' => 0,
     'admin_title' => '',
     'level' => '1',
