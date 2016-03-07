@@ -60,7 +60,7 @@ function oa_users_oa_members_toolbar_render($subtype, $conf, $args, $context = N
       );
       $links[] = array(
         'title' => t('Bulk manage'),
-        'href' => url('node/' . $space_id . '/admin/people'),
+        'href' => url('group/node/' . $space_id . '/admin/people'),
       );
 
       $vars['links'] = theme('links', array(
