@@ -17,7 +17,6 @@ $plugin = array(
  */
 function oa_buttons_add_space_content_render($subtype, $conf, $args, $context) {
   global $user;
-  $block = new stdClass();
   $context = og_context();
   $section = oa_core_get_section_context();
   $content = '';
@@ -70,8 +69,12 @@ function oa_buttons_add_space_content_render($subtype, $conf, $args, $context) {
     }
   }
 
-  $block->content = $content;
+  if (empty($buttons) && empty($entities)) {
+    return;
+  }
 
+  $block = new stdClass();
+  $block->content = $content;
   return $block;
 }
 
