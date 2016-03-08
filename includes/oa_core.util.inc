@@ -1021,7 +1021,7 @@ function oa_core_get_all_groups($match = NULL, $match_operator = 'CONTAINS', $li
  * @return array
  *   An associative array of fully loaded user objects, keyed by user id.
  */
-function oa_core_get_users_for_space($space_id, $state = OG_STATE_ACTIVE) {
+function oa_core_get_users_for_space($space_id, $state = OG_STATE_ACTIVE, $sort = FALSE) {
   $query = db_select('og_membership', 'og')
     ->fields('og', array('etid'))
     ->condition('og.entity_type', 'user')
@@ -1030,6 +1030,10 @@ function oa_core_get_users_for_space($space_id, $state = OG_STATE_ACTIVE) {
     ->condition('og.gid', $space_id);
   $query->join('users', 'u', 'u.uid = og.etid');
   $query->condition('u.status', 1);
+  if (!empty($sort)) {
+    $query->join('realname', 'n', 'n.uid = og.etid');
+    $query->orderBy('n.realname');
+  }
   $uids = $query->execute()->fetchCol();
   return user_load_multiple($uids);
 }
@@ -1196,6 +1200,11 @@ function oa_core_sort_users_by_name($u1, $u2) {
  * Helper to return last word of a string
  */
 function oa_core_get_last_word($string) {
+  // Strip any text in parens or brackets
+  // Also strip any title ending in period, like PhD.
+  // Also strip roman numerals I, II, IV, etc
+  $string = preg_replace('/([\(\[].*[\)\]]|\s[^\s]+\.$|\s[IV]+)/', '', $string);
+  $string = trim($string);
   return ($pos =  strrpos($string, ' ')) ?  substr($string, $pos + 1) : $string;
 }
 
