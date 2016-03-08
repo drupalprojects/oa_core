@@ -62,14 +62,16 @@ function oa_buttons_add_space_content_render($subtype, $conf, $args, $context) {
         ),
       );
 
-      $content = command_buttons_render_buttons($entities, $classes, $buttons);
+      if (!empty($entities) && !empty($buttons)) {
+        $content = command_buttons_render_buttons($entities, $classes, $buttons);
+      }
 
       // Cache for 1 hour.
       cache_set($cache_key, $content, 'cache_oa_section_buttons', time() + 6000);
     }
   }
 
-  if (empty($buttons) && empty($entities)) {
+  if (empty($content)) {
     return;
   }
 
