@@ -228,14 +228,20 @@ function oa_core_node_update($node) {
   if (($node->type == OA_SPACE_TYPE) || ($node->type == OA_GROUP_TYPE)) {
     // check if group access changed and update space content grants
     $rebuild = module_invoke_all('oa_core_og_content_needs_rebuild', $node);
-    $batch = batch_get();
-    if (in_array(TRUE, $rebuild, TRUE) && empty($batch)) {
+    if (in_array(TRUE, $rebuild, TRUE)) {
       // Get all subgroups for this node.
       $subgroup_nids = oa_core_get_groups_by_parent($node->nid, $node->type, NULL, FALSE, NULL, TRUE);
-      // Prepare the batch.
-      _oa_core_update_access_records_batch_prepare($subgroup_nids);
-      // Trigger the batch.
-      batch_process();
+      $batch = batch_get();
+      // Don't do nested batch
+      if (empty($batch)) {
+        // Prepare the batch.
+        _oa_core_update_access_records_batch_prepare($subgroup_nids);
+        // Trigger the batch.
+        batch_process();
+      }
+      else {
+        oa_core_update_access_records($subgroup_nids);
+      }
     }
     oa_core_clear_group_cache($node);
   }
