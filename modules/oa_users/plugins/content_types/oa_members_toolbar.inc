@@ -31,7 +31,8 @@ function oa_users_oa_members_toolbar_render($subtype, $conf, $args, $context = N
   if (isset($space_id) && ($space = node_load($space_id)) && node_access('view', $space)) {
     $vars = array();
     $vars['title'] = t('Space Members');
-    $vars['member_url'] = url('node/' . $space_id . '/members');
+    $member_url = url('node/' . $space_id . '/members');
+    $vars['member_url'] = drupal_valid_path($member_url) ? $member_url : '';
     $vars['space_title'] = $space->title;
     $admins = array();
     $members = array();
@@ -54,14 +55,19 @@ function oa_users_oa_members_toolbar_render($subtype, $conf, $args, $context = N
       }
 
       $links = array();
-      $links[] = array(
-        'title' => t('Member list'),
-        'href' => $vars['member_url'],
-      );
-      $links[] = array(
-        'title' => t('Bulk manage'),
-        'href' => url('group/node/' . $space_id . '/admin/people'),
-      );
+      if (drupal_valid_path($member_url)) {
+        $links[] = array(
+          'title' => t('Member list'),
+          'href' => $vars['member_url'],
+        );
+      }
+      $url = url('group/node/' . $space_id . '/admin/people');
+      if (drupal_valid_path($url)) {
+        $links[] = array(
+          'title' => t('Bulk manage'),
+          'href' => $url,
+        );
+      }
 
       $vars['links'] = theme('links', array(
         'links' => $links,
