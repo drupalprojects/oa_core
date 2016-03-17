@@ -228,7 +228,8 @@ function oa_core_node_update($node) {
   if (($node->type == OA_SPACE_TYPE) || ($node->type == OA_GROUP_TYPE)) {
     // check if group access changed and update space content grants
     $rebuild = module_invoke_all('oa_core_og_content_needs_rebuild', $node);
-    if (in_array(TRUE, $rebuild, TRUE)) {
+    $batch = batch_get();
+    if (in_array(TRUE, $rebuild, TRUE) && empty($batch)) {
       // Get all subgroups for this node.
       $subgroup_nids = oa_core_get_groups_by_parent($node->nid, $node->type, NULL, FALSE, NULL, TRUE);
       // Prepare the batch.
