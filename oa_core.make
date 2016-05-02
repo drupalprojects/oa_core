@@ -115,7 +115,7 @@ projects[og][patch][2403619] = https://www.drupal.org/files/issues/2403619-og_wi
 ; Fix group manager regranted default
 projects[og][patch][2411041] = https://www.drupal.org/files/issues/2411041-og-og_is_member-5-12.patch
 ; Prevent infinite loops in og_context
-projects[og][patch][2717489] = https://www.drupal.org/files/issues/og_context_infinite_loop-2717489-4.patch
+projects[og][patch][2717489] = https://www.drupal.org/files/issues/og_context_infinite_loop-2717489-8.patch
 
 ; Og menu single
 projects[og_menu_single][version] = 1.0-beta2
