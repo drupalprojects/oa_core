@@ -247,7 +247,7 @@ function oa_core_get_space_home_context() {
   }
   $space_id = oa_core_get_space_context();
   $node = menu_get_object();
-  if (drupal_is_front_page() || (!isset($node) || $node->type != OA_SPACE_TYPE)) {
+  if (drupal_is_front_page() && !(isset($node) && ($node->type == OA_SPACE_TYPE))) {
     return 0;  // front page, not a space page
   }
   return $space_id;
