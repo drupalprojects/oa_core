@@ -714,7 +714,7 @@ function oa_core_get_taxonomy_term_access($tid, $gid = NULL, $vocab_name = 'spac
   // When checking OG Permission, don't let Admin Group override this since all
   // Space admins typically have Admin Group but we want to limit types of subspaces
   // to be created.
-  if (!$gid || !module_exists('oa_subspaces')
+  if (!$gid || !module_exists('oa_subspaces') || $vocab_name == 'section_type'
     || user_access('administer group') || user_access('create oa_space content')
     || og_user_access('node', $gid, 'use any oa button space_type', NULL, FALSE, TRUE)) {
     $result = TRUE;
