@@ -723,6 +723,14 @@ function oa_core_get_taxonomy_term_access($tid, $gid = NULL, $vocab_name = 'spac
     $result = og_user_access('node', $gid, _oa_buttons_perm_name($vocab_name, $tid), NULL, FALSE, TRUE);
   }
 
+  // Allow other modules to override access to terms.
+  $context = array(
+    'tid' => $tid,
+    'gid' => $gid,
+    'vocab_name' => $vocab_name,
+  );
+  drupal_alter('oa_core_get_taxonomy_term_access', $result, $context);
+
   $cache[$tid][$gid][$vocab_name] = $result;
   return $result;
 }
