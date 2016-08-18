@@ -26,7 +26,7 @@ function oa_news_panelizer_defaults() {
   $panelizer->title_element = 'H2';
   $panelizer->link_to_entity = TRUE;
   $panelizer->extra = array();
-  $panelizer->pipeline = 'ipe_node_access';
+  $panelizer->pipeline = 'ipe';
   $panelizer->contexts = array();
   $panelizer->relationships = array(
     0 => array(
