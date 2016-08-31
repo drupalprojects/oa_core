@@ -1225,7 +1225,7 @@ function oa_core_entity_build_display($entity, $id, $space, $subpage = '') {
       $display['title'] = l($entity->title, 'node/' . $entity->nid . $subpage);
     }
     else {
-      $display['title'] = t('A @type', array('@type' => array('@type' => node_type_get_name($entity->type))));
+      $display['title'] = t('A @type', array('@type' => node_type_get_name($entity->type)));
     }
     $display['picture'] = '';
     $display['uid'] = 0;
