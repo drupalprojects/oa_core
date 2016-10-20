@@ -185,7 +185,12 @@ function oa_messages_determine_user_notifiers($user, $entity, $message, $notifie
 
   if (!empty($entity->{OA_SPACE_FIELD}[LANGUAGE_NONE][0]['target_id'])) {
     $space_id = $entity->{OA_SPACE_FIELD}[LANGUAGE_NONE][0]['target_id'];
+  }
+  else {
+    $space_id = oa_core_get_group_from_node($entity);
+  }
 
+  if (isset($space_id)) {
     // If no settings have been saved, set defaults.
     if (empty($settings[$space_id])) {
       foreach ($notifiers as $notifier) {
