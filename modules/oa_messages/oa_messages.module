@@ -119,6 +119,8 @@ function oa_messages_create($message_type, $entity = NULL, $entity_type = 'node'
           format_plural(count($subscribe_options['uids']), '1 user', '@count users'));
       }
     }
+
+    return $message;
   }
 }
 
