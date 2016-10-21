@@ -146,6 +146,10 @@ projects[paragraphs][patch][2560601] = https://www.drupal.org/files/issues/25606
 projects[realname][version] = 1.3
 projects[realname][subdir] = contrib
 
+; References Dialog
+projects[references_dialog][version] = 1.0-beta2
+projects[references_dialog][subdir] = contrib
+
 ; Reference Option Limit
 projects[reference_option_limit][version] = 1.x-dev
 projects[reference_option_limit][subdir] = contrib
