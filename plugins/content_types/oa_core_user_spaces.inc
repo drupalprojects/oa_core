@@ -75,7 +75,8 @@ function oa_core_user_spaces_render($subtype, $conf, $args, $context = NULL) {
   $archived_spaces = array();
   if (module_exists('oa_archive') && ($flag = flag_get_flag('trash'))) {
     $query = db_select('node', 'n');
-    $query->join('flag_content', 'a', 'a.fid = :fid AND n.nid = a.content_id', array(':fid' => $flag->fid));
+    $flag_table = (FLAG_API_VERSION == 2) ? 'flag_content' : 'flagging';
+    $query->join($flag_table, 'a', 'a.fid = :fid AND n.nid = a.content_id', array(':fid' => $flag->fid));
     $query
       ->fields('n', array('nid'))
       ->condition('n.type', $group_types, 'IN')
