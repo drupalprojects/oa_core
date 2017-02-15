@@ -37,7 +37,7 @@ projects[date_facets][version] = 1.0
 projects[date_facets][subdir] = contrib
 
 ; Diff
-projects[diff][version] = 3.2
+projects[diff][version] = 3.3
 projects[diff][subdir] = contrib
 
 ; Features Template
@@ -179,4 +179,3 @@ projects[views_load_more][subdir] = contrib
 ; Ultimate Cron
 projects[ultimate_cron][version] = 2.0
 projects[ultimate_cron][subdir] = contrib
-
