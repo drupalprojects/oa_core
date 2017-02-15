@@ -140,7 +140,7 @@ projects[paragraphs][subdir] = contrib
 projects[paragraphs][download][type] = git
 projects[paragraphs][download][branch] = 7.x-1.x
 projects[paragraphs][download][revision] = d1bdcf7
-projects[paragraphs][patch][2458801] = https://www.drupal.org/files/issues/paragraphs-instructions_setting-2458801-9.patch
+projects[paragraphs][patch][2458801] = https://www.drupal.org/files/issues/paragraphs-instructions_setting-2458801-12.patch
 projects[paragraphs][patch][2481627] = https://www.drupal.org/files/issues/paragraphs-modal_targets_wrong_id-2481627-3.patch
 projects[paragraphs][patch][2560601] = https://www.drupal.org/files/issues/2560601-paragraphs-join_extra-2.patch
 
