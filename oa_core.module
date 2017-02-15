@@ -570,7 +570,7 @@ function oa_core_form_node_form_alter(&$form, &$form_state, $form_id) {
       && empty($form[$field_name][LANGUAGE_NONE][0]['default']['#default_value'])
       && ($group = node_load($form['#node']->{$field_name}[LANGUAGE_NONE][0]['target_id']))
       && (!isset($form[$field_name][LANGUAGE_NONE][0]['admin']['#default_value'])
-        || ($form[$field_name][LANGUAGE_NONE][0]['admin']['#default_value'] == $group->title . ' (' . $group->nid . ')'
+        || (strpos($form[$field_name][LANGUAGE_NONE][0]['admin']['#default_value'], $group->title . ' (' . $group->nid . ')') !== FALSE
         // This will return both user groups and subspaces, is cached.
         && in_array($group->nid, oa_core_get_groups_by_user(NULL, 'node'))))
       ) {
