@@ -137,7 +137,7 @@ projects[panels_customerror][subdir] = contrib
 ; Paragraphs
 projects[paragraphs][version] = 1.0-rc5
 projects[paragraphs][subdir] = contrib
-projects[paragraphs][patch][2458801] = https://www.drupal.org/files/issues/paragraphs-instructions_setting-2458801-12.patch
+projects[paragraphs][patch][2458801] = https://www.drupal.org/files/issues/paragraphs-instructions_setting-2458801-14.patch
 projects[paragraphs][patch][2481627] = https://www.drupal.org/files/issues/paragraphs-modal_targets_wrong_id-2481627-3.patch
 projects[paragraphs][patch][2560601] = https://www.drupal.org/files/issues/2560601-paragraphs-join_extra-2.patch
 
