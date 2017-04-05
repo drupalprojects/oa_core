@@ -124,6 +124,10 @@ function oa_core_get_groups_by_user_access($account = NULL, $include_archived = 
     $states = array(OG_STATE_ACTIVE);
   }
 
+  $sort = !empty($sort) ? $sort : 'title';
+  $limit = !empty($limit) ? $limit : 0;
+  $type = !empty($type) ? $type : OA_SPACE_TYPE;
+
   $cid = oa_core_get_cache_id(OA_CACHE_GROUPS_BY_USER_ACCESS, $uid, $include_archived, array($status, $type, $sort, $limit));
   if (!isset($page) && empty($filter) && ($sort != 'history') && oa_core_get_cache(OA_CACHE_GROUPS_BY_USER_ACCESS, $cid, $result)) {
     return $result;
@@ -136,10 +140,6 @@ function oa_core_get_groups_by_user_access($account = NULL, $include_archived = 
     }
     $query = $query->extend('PagerDefault')->limit(20);
   }
-
-  $sort = isset($sort) ? $sort : 'title';
-  $limit = isset($limit) ? $limit : 0;
-  $type = isset($type) ? $type : OA_SPACE_TYPE;
 
   $query->join('og_membership', 'ogm', 'ogm.gid = n.nid');
   if ($sort == 'history') {
