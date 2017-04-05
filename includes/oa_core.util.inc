@@ -120,10 +120,6 @@ function oa_core_get_groups_by_user_access($account = NULL, $include_archived = 
     $uid = $account->uid;
   }
 
-  if (empty($states)) {
-    $states = array(OG_STATE_ACTIVE);
-  }
-
   $sort = !empty($sort) ? $sort : 'title';
   $limit = !empty($limit) ? $limit : 0;
   $type = !empty($type) ? $type : OA_SPACE_TYPE;
