@@ -383,7 +383,7 @@ function oa_messages_og_membership_prepare($og_membership, $action, $add_type = 
   $group = node_load($og_membership->gid);
   $user = user_load($og_membership->etid);
   $realname = oa_core_realname($user);
-  $text = l($realname, '/user/' . $user->uid) . ' ' . $action;
+  $text = l($realname, 'user/' . $user->uid) . ' ' . $action;
   if ($add_type && isset($group->type)) {
     $info = entity_get_info('node');
     $text .= $info['bundles'][$group->type]['label'];
