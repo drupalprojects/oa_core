@@ -7,6 +7,11 @@ core = 7.x
 projects[advagg][version] = 2.6
 projects[advagg][subdir] = contrib
 
+; Bootstrap Library
+projects[bootstrap_library][version] = 1.4
+projects[bootstrap_library][subdir] = contrib
+projects[bootstrap_library][patch][2244553] = https://www.drupal.org/files/issues/bootstrap_library-jquery_version_check-2244553-8.patch
+
 ; Chosen
 projects[chosen][version] = 2.0
 projects[chosen][subdir] = contrib
