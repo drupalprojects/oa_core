@@ -51,10 +51,10 @@ projects[feeds][patch][2127787] = https://www.drupal.org/files/issues/2127787-fe
 projects[feeds][patch][2828605] = https://www.drupal.org/files/issues/feeds-moved-module-2828605-7.patch
 
 ; SimplePie library used by Feeds
-libraries[simplepie][download][type] = file
-libraries[simplepie][download][url] = http://simplepie.org/downloads/simplepie_1.3.1.compiled.php
-libraries[simplepie][download][filename] = simplepie.compiled.php
-libraries[simplepie][directory_name] = simplepie
+libraries[simplepie][download][type] = "get"
+libraries[simplepie][download][url] = "https://github.com/simplepie/simplepie/archive/1.3.1.tar.gz"
+libraries[simplepie][directory_name] = "simplepie"
+libraries[simplepie][destination] = "libraries"
 
 ; Flag
 projects[flag][version] = 3.9
